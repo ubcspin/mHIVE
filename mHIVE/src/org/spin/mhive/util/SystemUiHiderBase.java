@@ -1,4 +1,4 @@
-package com.example.mhive.util;
+package org.spin.mhive.util;
 
 import android.app.Activity;
 import android.view.View;
