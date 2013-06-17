@@ -6,8 +6,8 @@ LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE            := fmodex
-LOCAL_SRC_FILES         := ../../../api/lib/$(TARGET_ARCH_ABI)/libfmodex.so
-LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/../../../api/inc
+LOCAL_SRC_FILES         := $(LOCAL_PATH)/../api/lib/$(TARGET_ARCH_ABI)/libfmodex.so
+LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/../api/inc
 
 include $(PREBUILT_SHARED_LIBRARY)
 
