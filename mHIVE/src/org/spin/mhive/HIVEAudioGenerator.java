@@ -22,6 +22,8 @@ public class HIVEAudioGenerator
 	
 	public static void Init()
 	{	
+    	System.loadLibrary("fmodex");
+    	System.loadLibrary("main");
 		mFMODAudioDevice.start();
 		cBegin();
 		cPlayDSPSine();
@@ -37,7 +39,7 @@ public class HIVEAudioGenerator
 		}
     	
 		cSetChannelFrequency(freq);
-		cSetChannelVolume((int)(atten*100));
+		cSetChannelVolume(atten);
 
 	}
 	
@@ -52,11 +54,11 @@ public class HIVEAudioGenerator
 
 	}
 	
-	static 
-    {
-    	System.loadLibrary("fmodex");
-        System.loadLibrary("main");
-    }
+//	static 
+//    {
+//    	System.loadLibrary("fmodex");
+//        System.loadLibrary("main");
+//    }
     
 	public native static void cBegin();
 	public native static void cUpdate();

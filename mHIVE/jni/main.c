@@ -29,7 +29,7 @@ float gFrequency = 440.0f;
 	} \
 }
 
-void Java_org_fmod_generatetone_Example_cBegin(JNIEnv *env, jobject thiz)
+void Java_org_spin_mhive_HIVEAudioGenerator_cBegin(JNIEnv *env, jobject thiz)
 {
 	FMOD_RESULT result = FMOD_OK;
 
@@ -49,7 +49,7 @@ void Java_org_fmod_generatetone_Example_cBegin(JNIEnv *env, jobject thiz)
 
 }
 
-void Java_org_fmod_generatetone_Example_cUpdate(JNIEnv *env, jobject thiz)
+void Java_org_spin_mhive_HIVEAudioGenerator_cUpdate(JNIEnv *env, jobject thiz)
 {
 	FMOD_RESULT	result = FMOD_OK;
 
@@ -57,7 +57,7 @@ void Java_org_fmod_generatetone_Example_cUpdate(JNIEnv *env, jobject thiz)
 	CHECK_RESULT(result);
 }
 
-void Java_org_fmod_generatetone_Example_cEnd(JNIEnv *env, jobject thiz)
+void Java_org_spin_mhive_HIVEAudioGenerator_cEnd(JNIEnv *env, jobject thiz)
 {
 	FMOD_RESULT result = FMOD_OK;
 
@@ -68,7 +68,7 @@ void Java_org_fmod_generatetone_Example_cEnd(JNIEnv *env, jobject thiz)
 	CHECK_RESULT(result);
 }
 
-void Java_org_fmod_generatetone_Example_cPlayDSPSine(JNIEnv *env, jobject thiz, int id)
+void Java_org_spin_mhive_HIVEAudioGenerator_cPlayDSPSine(JNIEnv *env, jobject thiz, int id)
 {
 	FMOD_RESULT result = FMOD_OK;
 
@@ -80,7 +80,7 @@ void Java_org_fmod_generatetone_Example_cPlayDSPSine(JNIEnv *env, jobject thiz, 
     FMOD_Channel_SetPaused(gChannel, 0);
 }
 
-void Java_org_fmod_generatetone_Example_cPlayDSPSquare(JNIEnv *env, jobject thiz, int id)
+void Java_org_spin_mhive_HIVEAudioGenerator_cPlayDSPSquare(JNIEnv *env, jobject thiz, int id)
 {
 	FMOD_RESULT result = FMOD_OK;
 
@@ -92,7 +92,7 @@ void Java_org_fmod_generatetone_Example_cPlayDSPSquare(JNIEnv *env, jobject thiz
     FMOD_Channel_SetPaused(gChannel, 0);
 }
 
-void Java_org_fmod_generatetone_Example_cPlayDSPSawUp(JNIEnv *env, jobject thiz, int id)
+void Java_org_spin_mhive_HIVEAudioGenerator_cPlayDSPSawUp(JNIEnv *env, jobject thiz, int id)
 {
 	FMOD_RESULT result = FMOD_OK;
 
@@ -104,7 +104,7 @@ void Java_org_fmod_generatetone_Example_cPlayDSPSawUp(JNIEnv *env, jobject thiz,
     FMOD_Channel_SetPaused(gChannel, 0);
 }
 
-void Java_org_fmod_generatetone_Example_cPlayDSPTriangle(JNIEnv *env, jobject thiz, int id)
+void Java_org_spin_mhive_HIVEAudioGenerator_cPlayDSPTriangle(JNIEnv *env, jobject thiz, int id)
 {
 	FMOD_RESULT result = FMOD_OK;
 
@@ -116,7 +116,7 @@ void Java_org_fmod_generatetone_Example_cPlayDSPTriangle(JNIEnv *env, jobject th
     FMOD_Channel_SetPaused(gChannel, 0);
 }
 
-void Java_org_fmod_generatetone_Example_cPlayDSPNoise(JNIEnv *env, jobject thiz, int id)
+void Java_org_spin_mhive_HIVEAudioGenerator_cPlayDSPNoise(JNIEnv *env, jobject thiz, int id)
 {
 	FMOD_RESULT result = FMOD_OK;
 
@@ -128,7 +128,7 @@ void Java_org_fmod_generatetone_Example_cPlayDSPNoise(JNIEnv *env, jobject thiz,
     FMOD_Channel_SetPaused(gChannel, 0);
 }
 
-jboolean Java_org_fmod_generatetone_Example_cGetIsChannelPlaying(JNIEnv *env, jobject thiz)
+jboolean Java_org_spin_mhive_HIVEAudioGenerator_cGetIsChannelPlaying(JNIEnv *env, jobject thiz)
 {
 	int isplaying = 0;
 
@@ -137,7 +137,7 @@ jboolean Java_org_fmod_generatetone_Example_cGetIsChannelPlaying(JNIEnv *env, jo
 	return isplaying;
 }
 
-jfloat Java_org_fmod_generatetone_Example_cGetChannelFrequency(JNIEnv *env, jobject thiz)
+jfloat Java_org_spin_mhive_HIVEAudioGenerator_cGetChannelFrequency(JNIEnv *env, jobject thiz)
 {
 	//float frequency = 0.0f;
 
@@ -146,7 +146,7 @@ jfloat Java_org_fmod_generatetone_Example_cGetChannelFrequency(JNIEnv *env, jobj
 	return gFrequency;
 }
 
-jfloat Java_org_fmod_generatetone_Example_cGetChannelVolume(JNIEnv *env, jobject thiz)
+jfloat Java_org_spin_mhive_HIVEAudioGenerator_cGetChannelVolume(JNIEnv *env, jobject thiz)
 {
 	float volume = 0.0f;
 
@@ -155,7 +155,7 @@ jfloat Java_org_fmod_generatetone_Example_cGetChannelVolume(JNIEnv *env, jobject
 	return volume;
 }
 
-jfloat Java_org_fmod_generatetone_Example_cGetChannelPan(JNIEnv *env, jobject thiz)
+jfloat Java_org_spin_mhive_HIVEAudioGenerator_cGetChannelPan(JNIEnv *env, jobject thiz)
 {
 	float pan = 0.0f;
 
@@ -164,12 +164,12 @@ jfloat Java_org_fmod_generatetone_Example_cGetChannelPan(JNIEnv *env, jobject th
 	return pan;
 }
 
-void Java_org_fmod_generatetone_Example_cSetChannelVolume(JNIEnv *env, jobject thiz, jfloat volume)
+void Java_org_spin_mhive_HIVEAudioGenerator_cSetChannelVolume(JNIEnv *env, jobject thiz, jfloat volume)
 {
 	FMOD_Channel_SetVolume(gChannel, volume);
 }
 
-void Java_org_fmod_generatetone_Example_cSetChannelFrequency(JNIEnv *env, jobject thiz, jfloat frequency)
+void Java_org_spin_mhive_HIVEAudioGenerator_cSetChannelFrequency(JNIEnv *env, jobject thiz, jfloat frequency)
 {
 	gFrequency = (float)frequency;
 	//FMOD_Channel_SetFrequency(gChannel, frequency);
@@ -178,7 +178,7 @@ void Java_org_fmod_generatetone_Example_cSetChannelFrequency(JNIEnv *env, jobjec
 	CHECK_RESULT(result);
 }
 
-void Java_org_fmod_generatetone_Example_cSetChannelPan(JNIEnv *env, jobject thiz, jfloat pan)
+void Java_org_spin_mhive_HIVEAudioGenerator_cSetChannelPan(JNIEnv *env, jobject thiz, jfloat pan)
 {
 	FMOD_Channel_SetPan(gChannel, pan);
 }
