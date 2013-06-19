@@ -125,7 +125,7 @@ public class MainActivity extends Activity {
         	float xVal = event.getX()/screenWidth;
         	float yVal = (float) (1.0 - Math.log(event.getY()) / Math.log(screenHeight));
         	yVal = Math.min(Math.max(yVal, 0.0f), 1.0f);
-        	int freq = (int)(xVal * maxFreq) + minFreq;
+        	int freq = (int)(xVal * (maxFreq-minFreq)) + minFreq;
         	float atten = yVal; //attenuation
     		HIVEAudioGenerator.Play(freq, atten);
     	}
