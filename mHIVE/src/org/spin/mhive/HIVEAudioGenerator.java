@@ -16,6 +16,7 @@ public class HIVEAudioGenerator
 	
 	
 	private static boolean initiated = false;
+	private static boolean playing = false;
 	private final static int minBufferSize = 4096;
 	public final static double tau = 2*Math.PI;
 	public final static String TAG = "HIVEAudioGenerator";
@@ -24,10 +25,9 @@ public class HIVEAudioGenerator
 	{	
     	System.loadLibrary("fmodex");
     	System.loadLibrary("main");
+		initiated = true;
 		mFMODAudioDevice.start();
 		cBegin();
-		cPlayDSPSine();
-		initiated = true;
 	}
 	
 	
@@ -37,6 +37,11 @@ public class HIVEAudioGenerator
 		{
 			Init();
 		}
+		if(!playing)
+		{
+			cPlayDSPSine();
+			playing = true;
+		}
     	
 		cSetChannelFrequency(freq);
 		cSetChannelVolume(atten);
@@ -45,11 +50,12 @@ public class HIVEAudioGenerator
 	
 	public static void Stop()
 	{
-		if(initiated)
+		if(playing)
 		{
-	    	cEnd();
-	    	mFMODAudioDevice.stop();
-	    	initiated = false;
+	    	//cEnd();
+	    	//mFMODAudioDevice.stop();
+			cSetChannelVolume(0);
+	    	playing = false;
 		}
 
 	}
