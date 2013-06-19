@@ -28,6 +28,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:background="#006688"
         android:layout_weight="1" >
         
 
