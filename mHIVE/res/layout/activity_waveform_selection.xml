@@ -2,30 +2,36 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal" >
+    android:orientation="horizontal"
+    android:gravity="center"
+    style="@android:style/ButtonBar" >
 
     <Button
         android:id="@+id/btnWaveformSelectSine"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="125dp"
+        android:layout_height="125dp"
+        android:textSize="27sp"
         android:text="@string/waveform_text_sine" />
 
     <Button
         android:id="@+id/btnWaveformSelectSquare"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="125dp"
+        android:layout_height="125dp"
+        android:textSize="27sp"
         android:text="@string/waveform_text_square" />
 
     <Button
         android:id="@+id/btnWaveformSelectSawUp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="125dp"
+        android:layout_height="125dp"
+        android:textSize="27sp"
         android:text="@string/waveform_text_sawup" />
 
     <Button
         android:id="@+id/btnWaveformSelectTriangle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="125dp"
+        android:layout_height="125dp"
+        android:textSize="27sp"
         android:text="@string/waveform_text_triangle" />
 
 </LinearLayout>
