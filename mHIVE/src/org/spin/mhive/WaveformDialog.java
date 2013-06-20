@@ -24,10 +24,10 @@ public class WaveformDialog extends DialogFragment
 	{
 		View view = inflater.inflate(R.layout.activity_waveform_selection, container);
 		context = view.getContext();
-		((Button)view.findViewById(R.id.btnWaveformSelectSine)).setOnClickListener(new OnWaveformDialogButtonListener());
-		((Button)view.findViewById(R.id.btnWaveformSelectSquare)).setOnClickListener(new OnWaveformDialogButtonListener());
-		((Button)view.findViewById(R.id.btnWaveformSelectSawUp)).setOnClickListener(new OnWaveformDialogButtonListener());
-		((Button)view.findViewById(R.id.btnWaveformSelectTriangle)).setOnClickListener(new OnWaveformDialogButtonListener());
+		((Button)view.findViewById(R.id.btnWaveformSelectSine)).setOnClickListener(new OnWaveformDialogButtonListener(HIVEAudioGenerator.OSCILLATOR_SINE));
+		((Button)view.findViewById(R.id.btnWaveformSelectSquare)).setOnClickListener(new OnWaveformDialogButtonListener(HIVEAudioGenerator.OSCILLATOR_SQUARE));
+		((Button)view.findViewById(R.id.btnWaveformSelectSawUp)).setOnClickListener(new OnWaveformDialogButtonListener(HIVEAudioGenerator.OSCILLATOR_SAWUP));
+		((Button)view.findViewById(R.id.btnWaveformSelectTriangle)).setOnClickListener(new OnWaveformDialogButtonListener(HIVEAudioGenerator.OSCILLATOR_TRIANGLE));
 		
 		return view;
 	}
@@ -35,9 +35,17 @@ public class WaveformDialog extends DialogFragment
 	
 	class OnWaveformDialogButtonListener implements OnClickListener
 	{
+		private int value;
+		public OnWaveformDialogButtonListener(int value)
+		{
+			this.value = value;
+		}
+		
 		@Override
 		public void onClick(View v) 
 		{
+			MainActivity callingActivity = (MainActivity) getActivity();
+			callingActivity.SetWaveform(value);
 			dismiss();
 		}
 		

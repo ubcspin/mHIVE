@@ -12,10 +12,10 @@ public class HIVEAudioGenerator
 
     //These are integers for tighter integration with JNI
     //ENUM would be better, but unfortunately
-    public final int OSCILLATOR_SINE = 0;
-    public final int OSCILLATOR_SQUARE = 1;
-    public final int OSCILLATOR_SAWUP = 2;
-    public final int OSCILLATOR_TRIANGLE = 4;
+    public static final int OSCILLATOR_SINE = 0;
+    public static final int OSCILLATOR_SQUARE = 1;
+    public static final int OSCILLATOR_SAWUP = 2;
+    public static final int OSCILLATOR_TRIANGLE = 4;
     private int currentWaveform = OSCILLATOR_SINE;
 	
 	private boolean initiated = false;
@@ -61,7 +61,6 @@ public class HIVEAudioGenerator
 		}
 		return "Error - unsupported waveform for waveform "+currentWaveform;
 	}
-	
 	
 	public HIVEAudioGenerator()
 	{	

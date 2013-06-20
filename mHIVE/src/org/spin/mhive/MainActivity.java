@@ -79,6 +79,12 @@ public class MainActivity extends Activity {
     	return false;
     }
     
+    public void SetWaveform(int waveform)
+    {
+    	hiveAudioGenerator.setWaveform(waveform);
+    	((Button)findViewById(R.id.btnWaveform)).setText(hiveAudioGenerator.getCurrentWaveformName());
+    }
+    
     class WaveformClickListener implements OnClickListener
     {
 
