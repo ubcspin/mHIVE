@@ -2,16 +2,21 @@ package org.spin.mhive;
 
 import org.fmod.FMODAudioDevice;
 
+import android.R;
+
 //Handles audio generation for mHIVE
 public class HIVEAudioGenerator
 {
 	
     private FMODAudioDevice mFMODAudioDevice = new FMODAudioDevice();
 
-    private final int OSCILLATOR_SINE = 0;
-    private final int OSCILLATOR_SQUARE = 1;
-    private final int OSCILLATOR_SAWUP = 2;
-    private final int OSCILLATOR_TRIANGLE = 4;
+    //These are integers for tighter integration with JNI
+    //ENUM would be better, but unfortunately
+    public final int OSCILLATOR_SINE = 0;
+    public final int OSCILLATOR_SQUARE = 1;
+    public final int OSCILLATOR_SAWUP = 2;
+    public final int OSCILLATOR_TRIANGLE = 4;
+    private int currentWaveform = OSCILLATOR_SINE;
 	
 	private boolean initiated = false;
 	private boolean playing = false;
@@ -23,12 +28,47 @@ public class HIVEAudioGenerator
 	}
 	
 	
+	public void setWaveform(int waveform)
+	{
+		if(		waveform == OSCILLATOR_SINE
+				|| waveform == OSCILLATOR_SQUARE
+				|| waveform == OSCILLATOR_SAWUP
+				|| waveform == OSCILLATOR_TRIANGLE)
+		{
+			currentWaveform = waveform;
+			cSetWaveform(currentWaveform);
+		}
+	}
+	
+	public int getCurrentWaveform()
+	{
+		return currentWaveform;
+	}
+	
+	public String getCurrentWaveformName()
+	{
+		//TODO: Access resources for this
+		switch(currentWaveform)
+		{
+			case OSCILLATOR_SINE:
+				return "Sine";
+			case OSCILLATOR_SQUARE:
+				return "Square";
+			case OSCILLATOR_SAWUP:
+				return "SawUp";
+			case OSCILLATOR_TRIANGLE:
+				return "Triangle";
+		}
+		return "Error - unsupported waveform for waveform "+currentWaveform;
+	}
+	
+	
 	public HIVEAudioGenerator()
 	{	
 		initiated = true;
 		mFMODAudioDevice.start();
 		cBegin();
-		cSetWaveform(OSCILLATOR_SINE);
+		cSetWaveform(currentWaveform);
 		cSetChannelVolume(0);
 	}
 	
