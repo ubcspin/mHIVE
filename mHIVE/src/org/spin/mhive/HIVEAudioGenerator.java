@@ -31,7 +31,7 @@ public class HIVEAudioGenerator
 		mFMODAudioDevice.start();
 		cBegin();
 		cSetWaveform(OSCILLATOR_SINE);
-		//cSetChannelVolume(0);
+		cSetChannelVolume(0);
 	}
 	
 	
