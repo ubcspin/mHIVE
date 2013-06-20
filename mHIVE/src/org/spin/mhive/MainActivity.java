@@ -32,7 +32,6 @@ public class MainActivity extends Activity {
     private int minFreq = 20;
     private int maxFreq = 140;
     private View mainInputView;
-    private Rect mainInputRect;
     private AudioTrack track;
     
 
@@ -48,23 +47,22 @@ public class MainActivity extends Activity {
         screenWidth = size.x;
         screenHeight = size.y;
         
-        mainInputView = findViewById(R.id.fullscreen_content);
-        mainInputRect = new Rect();
-        mainInputView.getHitRect(mainInputRect);
-
-
+    	mainInputView = findViewById(R.id.fullscreen_content);
     }
-
+    
     @Override
     public boolean onTouchEvent(MotionEvent event) {
     	if(event.getAction() == MotionEvent.ACTION_DOWN
     			|| event.getAction() == MotionEvent.ACTION_MOVE)
     	{
-    		if (mainInputRect.contains((int)event.getX(), (int)event.getY()))
+    		if (mainInputView.getX() <= event.getX() 
+    				&& mainInputView.getX()+mainInputView.getWidth() >= event.getX()
+    				&& mainInputView.getY() <= event.getY() 
+    	    				&& mainInputView.getY()+mainInputView.getHeight() >= event.getY())
     		{
-	        	float xVal = (event.getX()-mainInputRect.left)/mainInputRect.width();
-	        	float yVal = (event.getY()-mainInputRect.top)/mainInputRect.height();
-	        	yVal = (float) (1.0 - Math.log(event.getY()) / Math.log(screenHeight));
+	        	float xVal = (event.getX()-mainInputView.getX())/mainInputView.getWidth();
+	        	float yVal = (event.getY()-mainInputView.getY())/mainInputView.getHeight();
+	        	yVal = (float) (1.0 - Math.log(event.getY()) / Math.log(mainInputView.getHeight()));
 	        	yVal = Math.min(Math.max(yVal, 0.0f), 1.0f);
 	        	int freq = (int)(xVal * (maxFreq-minFreq)) + minFreq;
 	        	float atten = yVal; //attenuation
