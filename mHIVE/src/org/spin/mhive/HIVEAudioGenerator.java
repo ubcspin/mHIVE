@@ -37,6 +37,7 @@ public class HIVEAudioGenerator
 		{
 			currentWaveform = waveform;
 			cSetWaveform(currentWaveform);
+			cSetChannelVolume(0);
 		}
 	}
 	

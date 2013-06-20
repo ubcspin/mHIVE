@@ -42,6 +42,7 @@ public class MainActivity extends Activity {
     	
     	//set up Audio Generator
     	hiveAudioGenerator = new HIVEAudioGenerator();
+    	SetWaveform(HIVEAudioGenerator.OSCILLATOR_SINE);
     	
     	//setup waveform button
     	waveformDialog = new WaveformDialog();
