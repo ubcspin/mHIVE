@@ -2,7 +2,7 @@ package org.spin.mhive;
 
 import org.fmod.FMODAudioDevice;
 
-//Singleton class for handling audio generation for mHIVE
+//Handles audio generation for mHIVE
 public class HIVEAudioGenerator
 {
 	
@@ -15,8 +15,6 @@ public class HIVEAudioGenerator
 	
 	private boolean initiated = false;
 	private boolean playing = false;
-	private final int minBufferSize = 4096;
-	public final double tau = 2*Math.PI;
 	public final String TAG = "HIVEAudioGenerator";
 	
 	static {
@@ -51,12 +49,17 @@ public class HIVEAudioGenerator
 	{
 		if(playing)
 		{
-	    	//cEnd();
-	    	//mFMODAudioDevice.stop();
 			cSetChannelVolume(0);
 	    	playing = false;
 		}
 
+	}
+	
+	public void Close()
+	{
+		Stop();
+		cEnd();
+    	mFMODAudioDevice.stop();
 	}
 	
     
