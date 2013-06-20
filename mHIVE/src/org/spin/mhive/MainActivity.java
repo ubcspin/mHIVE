@@ -4,20 +4,10 @@ import com.example.mhive.R;
 
 import android.app.Activity;
 import android.graphics.Point;
-import android.graphics.Rect;
-import android.media.AudioFormat;
-import android.media.AudioManager;
-import android.media.AudioTrack;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.Display;
-import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnDragListener;
-import android.view.View.OnTouchListener;
-import android.widget.TextView;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -27,12 +17,9 @@ import android.widget.TextView;
  */
 public class MainActivity extends Activity {
 
-	private int screenHeight;
-    private int screenWidth;
     private int minFreq = 20;
     private int maxFreq = 140;
     private View mainInputView;
-    private AudioTrack track;
     
 
     @Override
@@ -44,8 +31,6 @@ public class MainActivity extends Activity {
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
-        screenWidth = size.x;
-        screenHeight = size.y;
         
     	mainInputView = findViewById(R.id.fullscreen_content);
     }

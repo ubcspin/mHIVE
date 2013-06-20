@@ -112,10 +112,6 @@ jboolean Java_org_spin_mhive_HIVEAudioGenerator_cGetIsChannelPlaying(JNIEnv *env
 
 jfloat Java_org_spin_mhive_HIVEAudioGenerator_cGetChannelFrequency(JNIEnv *env, jobject thiz)
 {
-	//float frequency = 0.0f;
-
-	//FMOD_Channel_GetFrequency(gChannel, &frequency);
-
 	return gFrequency;
 }
 
@@ -145,7 +141,6 @@ void Java_org_spin_mhive_HIVEAudioGenerator_cSetChannelVolume(JNIEnv *env, jobje
 void Java_org_spin_mhive_HIVEAudioGenerator_cSetChannelFrequency(JNIEnv *env, jobject thiz, jfloat frequency)
 {
 	gFrequency = (float)frequency;
-	//FMOD_Channel_SetFrequency(gChannel, frequency);
 	FMOD_RESULT result = FMOD_OK;
 	result = FMOD_DSP_SetParameter(gDSP, FMOD_DSP_OSCILLATOR_RATE, gFrequency);
 	CHECK_RESULT(result);

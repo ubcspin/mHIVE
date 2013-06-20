@@ -2,11 +2,6 @@ package org.spin.mhive;
 
 import org.fmod.FMODAudioDevice;
 
-import android.media.AudioFormat;
-import android.media.AudioManager;
-import android.media.AudioTrack;
-import android.util.Log;
-
 //Singleton class for handling audio generation for mHIVE
 public class HIVEAudioGenerator
 {
@@ -31,7 +26,7 @@ public class HIVEAudioGenerator
 		initiated = true;
 		mFMODAudioDevice.start();
 		cBegin();
-		cSetWaveform(0);
+		cSetWaveform(OSCILLATOR_SINE);
 		//cSetChannelVolume(0);
 	}
 	
