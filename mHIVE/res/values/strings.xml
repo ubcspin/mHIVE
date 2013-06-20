@@ -3,5 +3,9 @@
 
     <string name="app_name">mHIVE</string>
     <string name="dummy_content">mHIVE</string>
+    <string name="waveform_text_sine">Sine</string>
+    <string name="waveform_text_square">Square</string>
+    <string name="waveform_text_sawup">SawUp</string>
+    <string name="waveform_text_triangle">Triangle</string>
 
 </resources>
