@@ -19,11 +19,11 @@ FMOD_CHANNEL *gChannel = 0;
 FMOD_DSP	 *gDSP	   = 0;
 float gFrequency = 440.0f;
 
-const unsigned long OSCILLATOR_SINE = 0;
-const unsigned long OSCILLATOR_SQUARE = 1;
-const unsigned long OSCILLATOR_SAWUP = 2;
+const long OSCILLATOR_SINE = 0;
+const long OSCILLATOR_SQUARE = 1;
+const long OSCILLATOR_SAWUP = 2;
 //NO IDEA WHAT #3 IS...
-const unsigned long OSCILLATOR_TRIANGLE = 4;
+const long OSCILLATOR_TRIANGLE = 4;
 //NOT SUPPORTING NOISE FOR NOW
 //const unsigned long OSCILLATOR_NOISE = 5;
 
@@ -86,7 +86,7 @@ void Java_org_spin_mhive_HIVEAudioGenerator_cSetWaveform(JNIEnv *env, jlong jWav
 {
 	FMOD_RESULT result = FMOD_ERR_UNSUPPORTED;
 
-	unsigned long waveform = (unsigned long)jWaveform;
+	long waveform = (long)jWaveform;
 	if(		waveform == OSCILLATOR_SINE
 			|| waveform == OSCILLATOR_SQUARE
 			|| waveform == OSCILLATOR_SAWUP
