@@ -5,9 +5,12 @@ import com.example.mhive.R;
 import android.app.Activity;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -15,11 +18,13 @@ import android.view.View;
  *
  * @see SystemUiHider
  */
-public class MainActivity extends Activity {
+public class MainActivity extends FragmentActivity {
 
     private int minFreq = 20;
     private int maxFreq = 140;
     private View mainInputView;
+    
+    WaveformDialog waveformDialog;
     
 
     @Override
@@ -33,6 +38,11 @@ public class MainActivity extends Activity {
         display.getSize(size);
         
     	mainInputView = findViewById(R.id.fullscreen_content);
+    	
+    	//setup waveform button
+    	waveformDialog = new WaveformDialog();
+    	Button btnWaveform = (Button)findViewById(R.id.btnWaveform);
+    	btnWaveform.setOnClickListener(new WaveformClickListener());
     }
     
     @Override
@@ -63,5 +73,16 @@ public class MainActivity extends Activity {
     	}
 
     	return false;
-    }          
+    }
+    
+    class WaveformClickListener implements OnClickListener
+    {
+
+		@Override
+		public void onClick(View v)
+		{
+			waveformDialog.show(getSupportFragmentManager(), "test");
+		}
+    	
+    }
 }
