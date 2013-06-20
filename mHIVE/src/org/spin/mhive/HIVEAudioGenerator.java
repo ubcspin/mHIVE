@@ -13,7 +13,10 @@ public class HIVEAudioGenerator
 	
     private static FMODAudioDevice mFMODAudioDevice = new FMODAudioDevice();
 
-	
+    private static final int OSCILLATOR_SINE = 0;
+    private static final int OSCILLATOR_SQUARE = 1;
+    private static final int OSCILLATOR_SAWUP = 2;
+    private static final int OSCILLATOR_TRIANGLE = 4;
 	
 	private static boolean initiated = false;
 	private static boolean playing = false;
@@ -28,6 +31,8 @@ public class HIVEAudioGenerator
 		initiated = true;
 		mFMODAudioDevice.start();
 		cBegin();
+		cSetWaveform(0);
+		//cSetChannelVolume(0);
 	}
 	
 	
@@ -39,7 +44,6 @@ public class HIVEAudioGenerator
 		}
 		if(!playing)
 		{
-			cPlayDSPSine();
 			playing = true;
 		}
     	
@@ -70,11 +74,7 @@ public class HIVEAudioGenerator
 	public native static void cUpdate();
 	public native static void cEnd();
 	
-	public native static void cPlayDSPSine();
-	//public native void cPlayDSPSquare();
-	//public native void cPlayDSPSawUp();
-	//public native void cPlayDSPTriangle();
-	//public native void cPlayDSPNoise();	
+	public native static void cSetWaveform(int waveform);	
 	
 	public native static boolean cGetIsChannelPlaying();
 	public native static float cGetChannelFrequency();

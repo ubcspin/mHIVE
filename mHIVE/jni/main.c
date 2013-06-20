@@ -19,6 +19,16 @@ FMOD_CHANNEL *gChannel = 0;
 FMOD_DSP	 *gDSP	   = 0;
 float gFrequency = 440.0f;
 
+const unsigned long OSCILLATOR_SINE = 0;
+const unsigned long OSCILLATOR_SQUARE = 1;
+const unsigned long OSCILLATOR_SAWUP = 2;
+//NO IDEA WHAT #3 IS...
+const unsigned long OSCILLATOR_TRIANGLE = 4;
+//NOT SUPPORTING NOISE FOR NOW
+//const unsigned long OSCILLATOR_NOISE = 5;
+
+
+
 #define CHECK_RESULT(x) \
 { \
 	FMOD_RESULT _result = x; \
@@ -47,6 +57,10 @@ void Java_org_spin_mhive_HIVEAudioGenerator_cBegin(JNIEnv *env, jobject thiz)
     result = FMOD_DSP_SetParameter(gDSP, FMOD_DSP_OSCILLATOR_RATE, 440.0f);       /* musical note 'A' */
     CHECK_RESULT(result);
 
+    /* Play */
+	result = FMOD_System_PlayDSP(gSystem, FMOD_CHANNEL_REUSE, gDSP, 1, &gChannel);
+	CHECK_RESULT(result);
+
 }
 
 void Java_org_spin_mhive_HIVEAudioGenerator_cUpdate(JNIEnv *env, jobject thiz)
@@ -68,64 +82,23 @@ void Java_org_spin_mhive_HIVEAudioGenerator_cEnd(JNIEnv *env, jobject thiz)
 	CHECK_RESULT(result);
 }
 
-void Java_org_spin_mhive_HIVEAudioGenerator_cPlayDSPSine(JNIEnv *env, jobject thiz, int id)
+void Java_org_spin_mhive_HIVEAudioGenerator_cSetWaveform(JNIEnv *env, jlong jWaveform)
 {
-	FMOD_RESULT result = FMOD_OK;
+	FMOD_RESULT result = FMOD_ERR_UNSUPPORTED;
 
-    result = FMOD_System_PlayDSP(gSystem, FMOD_CHANNEL_REUSE, gDSP, 1, &gChannel);
-	CHECK_RESULT(result);
-    FMOD_Channel_SetVolume(gChannel, 0.5f);
-    result = FMOD_DSP_SetParameter(gDSP, FMOD_DSP_OSCILLATOR_TYPE, 0);
+	unsigned long waveform = (unsigned long)jWaveform;
+	if(		waveform == OSCILLATOR_SINE
+			|| waveform == OSCILLATOR_SQUARE
+			|| waveform == OSCILLATOR_SAWUP
+			|| waveform == OSCILLATOR_TRIANGLE
+			)
+	{
+		result = FMOD_System_PlayDSP(gSystem, FMOD_CHANNEL_REUSE, gDSP, 1, &gChannel);
+		CHECK_RESULT(result);
+		result = FMOD_DSP_SetParameter(gDSP, FMOD_DSP_OSCILLATOR_TYPE, waveform);
+		FMOD_Channel_SetPaused(gChannel, 0);
+	}
     CHECK_RESULT(result);
-    FMOD_Channel_SetPaused(gChannel, 0);
-}
-
-void Java_org_spin_mhive_HIVEAudioGenerator_cPlayDSPSquare(JNIEnv *env, jobject thiz, int id)
-{
-	FMOD_RESULT result = FMOD_OK;
-
-    result = FMOD_System_PlayDSP(gSystem, FMOD_CHANNEL_REUSE, gDSP, 1, &gChannel);
-	CHECK_RESULT(result);
-    FMOD_Channel_SetVolume(gChannel, 0.125f);
-    result = FMOD_DSP_SetParameter(gDSP, FMOD_DSP_OSCILLATOR_TYPE, 1);
-    CHECK_RESULT(result);
-    FMOD_Channel_SetPaused(gChannel, 0);
-}
-
-void Java_org_spin_mhive_HIVEAudioGenerator_cPlayDSPSawUp(JNIEnv *env, jobject thiz, int id)
-{
-	FMOD_RESULT result = FMOD_OK;
-
-    result = FMOD_System_PlayDSP(gSystem, FMOD_CHANNEL_REUSE, gDSP, 1, &gChannel);
-	CHECK_RESULT(result);
-    FMOD_Channel_SetVolume(gChannel, 0.125f);
-    result = FMOD_DSP_SetParameter(gDSP, FMOD_DSP_OSCILLATOR_TYPE, 2);
-    CHECK_RESULT(result);
-    FMOD_Channel_SetPaused(gChannel, 0);
-}
-
-void Java_org_spin_mhive_HIVEAudioGenerator_cPlayDSPTriangle(JNIEnv *env, jobject thiz, int id)
-{
-	FMOD_RESULT result = FMOD_OK;
-
-    result = FMOD_System_PlayDSP(gSystem, FMOD_CHANNEL_REUSE, gDSP, 1, &gChannel);
-	CHECK_RESULT(result);
-    FMOD_Channel_SetVolume(gChannel, 0.5f);
-    result = FMOD_DSP_SetParameter(gDSP, FMOD_DSP_OSCILLATOR_TYPE, 4);
-    CHECK_RESULT(result);
-    FMOD_Channel_SetPaused(gChannel, 0);
-}
-
-void Java_org_spin_mhive_HIVEAudioGenerator_cPlayDSPNoise(JNIEnv *env, jobject thiz, int id)
-{
-	FMOD_RESULT result = FMOD_OK;
-
-    result = FMOD_System_PlayDSP(gSystem, FMOD_CHANNEL_REUSE, gDSP, 1, &gChannel);
-	CHECK_RESULT(result);
-    FMOD_Channel_SetVolume(gChannel, 0.25f);
-    result = FMOD_DSP_SetParameter(gDSP, FMOD_DSP_OSCILLATOR_TYPE, 5);
-    CHECK_RESULT(result);
-    FMOD_Channel_SetPaused(gChannel, 0);
 }
 
 jboolean Java_org_spin_mhive_HIVEAudioGenerator_cGetIsChannelPlaying(JNIEnv *env, jobject thiz)
