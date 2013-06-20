@@ -6,23 +6,27 @@ import org.fmod.FMODAudioDevice;
 public class HIVEAudioGenerator
 {
 	
-    private static FMODAudioDevice mFMODAudioDevice = new FMODAudioDevice();
+    private FMODAudioDevice mFMODAudioDevice = new FMODAudioDevice();
 
-    private static final int OSCILLATOR_SINE = 0;
-    private static final int OSCILLATOR_SQUARE = 1;
-    private static final int OSCILLATOR_SAWUP = 2;
-    private static final int OSCILLATOR_TRIANGLE = 4;
+    private final int OSCILLATOR_SINE = 0;
+    private final int OSCILLATOR_SQUARE = 1;
+    private final int OSCILLATOR_SAWUP = 2;
+    private final int OSCILLATOR_TRIANGLE = 4;
 	
-	private static boolean initiated = false;
-	private static boolean playing = false;
-	private final static int minBufferSize = 4096;
-	public final static double tau = 2*Math.PI;
-	public final static String TAG = "HIVEAudioGenerator";
+	private boolean initiated = false;
+	private boolean playing = false;
+	private final int minBufferSize = 4096;
+	public final double tau = 2*Math.PI;
+	public final String TAG = "HIVEAudioGenerator";
 	
-	public static void Init()
-	{	
+	static {
     	System.loadLibrary("fmodex");
     	System.loadLibrary("main");
+	}
+	
+	
+	public HIVEAudioGenerator()
+	{	
 		initiated = true;
 		mFMODAudioDevice.start();
 		cBegin();
@@ -31,12 +35,8 @@ public class HIVEAudioGenerator
 	}
 	
 	
-	public static void Play(int freq, float atten)
+	public void Play(int freq, float atten)
 	{
-		if(!initiated)
-		{
-			Init();
-		}
 		if(!playing)
 		{
 			playing = true;
@@ -47,7 +47,7 @@ public class HIVEAudioGenerator
 
 	}
 	
-	public static void Stop()
+	public void Stop()
 	{
 		if(playing)
 		{
@@ -59,25 +59,20 @@ public class HIVEAudioGenerator
 
 	}
 	
-//	static 
-//    {
-//    	System.loadLibrary("fmodex");
-//        System.loadLibrary("main");
-//    }
     
-	public native static void cBegin();
-	public native static void cUpdate();
-	public native static void cEnd();
+	public native void cBegin();
+	public native void cUpdate();
+	public native void cEnd();
 	
-	public native static void cSetWaveform(int waveform);	
+	public native void cSetWaveform(int waveform);	
 	
-	public native static boolean cGetIsChannelPlaying();
-	public native static float cGetChannelFrequency();
-	public native static float cGetChannelVolume();
-	public native static float cGetChannelPan();
+	public native boolean cGetIsChannelPlaying();
+	public native float cGetChannelFrequency();
+	public native float cGetChannelVolume();
+	public native float cGetChannelPan();
 	
-	public native static void cSetChannelFrequency(float frequency);
-	public native static void cSetChannelVolume(float volume);
-	public native static void cSetChannelPan(float pan);
+	public native void cSetChannelFrequency(float frequency);
+	public native void cSetChannelVolume(float volume);
+	public native void cSetChannelPan(float pan);
 
 }

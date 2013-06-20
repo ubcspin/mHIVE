@@ -24,6 +24,8 @@ public class MainActivity extends FragmentActivity {
     private int maxFreq = 140;
     private View mainInputView;
     
+    private HIVEAudioGenerator hiveAudioGenerator;
+    
     WaveformDialog waveformDialog;
     
 
@@ -38,6 +40,9 @@ public class MainActivity extends FragmentActivity {
         display.getSize(size);
         
     	mainInputView = findViewById(R.id.fullscreen_content);
+    	
+    	//set up Audio Generator
+    	hiveAudioGenerator = new HIVEAudioGenerator();
     	
     	//setup waveform button
     	waveformDialog = new WaveformDialog();
@@ -61,15 +66,15 @@ public class MainActivity extends FragmentActivity {
 	        	yVal = Math.min(Math.max(yVal, 0.0f), 1.0f);
 	        	int freq = (int)(xVal * (maxFreq-minFreq)) + minFreq;
 	        	float atten = yVal; //attenuation
-	    		HIVEAudioGenerator.Play(freq, atten);
+	        	hiveAudioGenerator.Play(freq, atten);
     		} else {
-    			HIVEAudioGenerator.Stop();
+    			hiveAudioGenerator.Stop();
     		}
     		
     	}
     	else if (event.getAction() == MotionEvent.ACTION_UP)
     	{
-    		HIVEAudioGenerator.Stop();
+    		hiveAudioGenerator.Stop();
     	}
 
     	return false;
