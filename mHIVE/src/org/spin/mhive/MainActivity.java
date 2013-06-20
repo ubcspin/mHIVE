@@ -5,7 +5,6 @@ import com.example.mhive.R;
 import android.app.Activity;
 import android.graphics.Point;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
@@ -18,7 +17,7 @@ import android.widget.Button;
  *
  * @see SystemUiHider
  */
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends Activity {
 
     private int minFreq = 20;
     private int maxFreq = 140;
@@ -86,7 +85,7 @@ public class MainActivity extends FragmentActivity {
 		@Override
 		public void onClick(View v)
 		{
-			waveformDialog.show(getSupportFragmentManager(), "test");
+			waveformDialog.show(getFragmentManager(), "WaveformDialog");
 		}
     	
     }
