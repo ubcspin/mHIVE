@@ -3,6 +3,7 @@ package org.spin.mhive;
 import org.fmod.FMODAudioDevice;
 
 import android.R;
+import java.lang.UnsupportedOperationException;;
 
 //Handles audio generation for mHIVE
 public class HIVEAudioGenerator
@@ -102,7 +103,31 @@ public class HIVEAudioGenerator
     	mFMODAudioDevice.stop();
 	}
 	
-    
+	
+	/**
+	 * ADSR STUB METHODS
+	 */
+	public void EnableADSR() {EnableADSR(true);}
+	public void DisableADSR() {EnableADSR(false);}
+	public void EnableADSR(boolean b)
+	{
+		throw new UnsupportedOperationException("EnableADSR is a stub method");
+	}
+	
+	public void SetADSR(ADSREnvelope envelope) {SetADSR(envelope.getAttack(), envelope.getDecay(), envelope.getSustain(), envelope.getRelease());}
+	public void SetADSR(float attack, float decay, float sustain, float release)
+	{
+		throw new UnsupportedOperationException("SetADSR is a stub method");
+	}
+	
+	public ADSREnvelope GetADSR(float attack, float decay, float sustain, float release)
+	{
+		throw new UnsupportedOperationException("GetADSR is a stub method");
+	}
+	
+	/**
+	 * Native Methods
+	 */
 	public native void cBegin();
 	public native void cUpdate();
 	public native void cEnd();
