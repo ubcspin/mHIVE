@@ -103,7 +103,7 @@ void Java_org_spin_mhive_HIVEAudioGenerator_cBegin(JNIEnv *env, jobject thiz)
 //	sevp.sigev_notify=SIGEV_SIGNAL;
 	//sevp.sigev_signo=SIG;//doesn't matter with SIGEV_THREAD
 	sevp.sigev_value.sival_ptr=&gTimer_id;
-	sevp.sigev_notify_function=(void*)ADSRCallback;
+	sevp.sigev_notify_function=ADSRCallback;
 	sevp.sigev_notify_attributes=NULL;
 	int timer_result = timer_create(CLOCK_REALTIME, NULL, &gTimer_id);
 	if(timer_result != 0)
