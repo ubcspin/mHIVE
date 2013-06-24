@@ -22,7 +22,7 @@ FMOD_CHANNEL *gChannel = 0;
 FMOD_DSP	 *gDSP	   = 0;
 float gFrequency = 440.0f;
 
-#define SIG SIGRTMIN
+#define SIG SIGALRM
 
 timer_t gTimer_id;
 sigset_t sigMask;
@@ -47,7 +47,7 @@ const long OSCILLATOR_TRIANGLE = 4;
 	} \
 }
 
-void *ADSRCallback(void* v)
+void ADSRCallback(union sigval arg)
 {
 	__android_log_print(ANDROID_LOG_ERROR, "fmod", "ADSR CALLBACK");
 }
@@ -103,9 +103,9 @@ void Java_org_spin_mhive_HIVEAudioGenerator_cBegin(JNIEnv *env, jobject thiz)
 //	sevp.sigev_notify=SIGEV_SIGNAL;
 	//sevp.sigev_signo=SIG;//doesn't matter with SIGEV_THREAD
 	sevp.sigev_value.sival_ptr=&gTimer_id;
-	sevp.sigev_notify_function=ADSRCallback;
+	sevp.sigev_notify_function=&ADSRCallback;
 	sevp.sigev_notify_attributes=NULL;
-	int timer_result = timer_create(CLOCK_REALTIME, NULL, &gTimer_id);
+	int timer_result = timer_create(CLOCK_REALTIME, &sevp, &gTimer_id);
 	if(timer_result != 0)
 	{
 		__android_log_print(ANDROID_LOG_ERROR, "fmod", "Timer Failure");
