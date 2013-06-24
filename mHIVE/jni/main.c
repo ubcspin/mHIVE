@@ -24,9 +24,17 @@ float gFrequency = 440.0f;
 
 #define SIG SIGALRM
 
-timer_t gTimer_id;
-sigset_t sigMask;
+//ADSR envelope timer & data
+const int AMPLITUDE_UPDATE_TIMER_INTERVAL_IN_NS = 10000000;
+//struct AmplitudeSettings
+//{
+//	jboolean ADSR_Enabled;
+//	timer_t timer_id;
+//	float attack, decay, sustain, release;
+//
+//};
 
+//Waveform data
 const long OSCILLATOR_SINE = 0;
 const long OSCILLATOR_SQUARE = 1;
 const long OSCILLATOR_SAWUP = 2;
@@ -52,13 +60,6 @@ void ADSRCallback(union sigval arg)
 	__android_log_print(ANDROID_LOG_ERROR, "fmod", "ADSR CALLBACK");
 }
 
-void handler(int sig, siginfo_t *si, void *uc)
-{
-	__android_log_print(ANDROID_LOG_ERROR, "fmod", "handler");
-	//signal(sig, SIG_IGN);
-}
-
-
 void Java_org_spin_mhive_HIVEAudioGenerator_cBegin(JNIEnv *env, jobject thiz)
 {
 	FMOD_RESULT result = FMOD_OK;
@@ -80,46 +81,6 @@ void Java_org_spin_mhive_HIVEAudioGenerator_cBegin(JNIEnv *env, jobject thiz)
     /* Play */
 	result = FMOD_System_PlayDSP(gSystem, FMOD_CHANNEL_REUSE, gDSP, 1, &gChannel);
 	CHECK_RESULT(result);
-
-
-	//Block SIG
-//	sigemptyset(&sigMask);
-//	sigaddset(&sigMask, SIG);
-//	if (0 != sigprocmask(SIG_SETMASK, &sigMask, NULL))
-//	{
-//		__android_log_print(ANDROID_LOG_ERROR, "fmod", "Error blocking signal #%d", SIG);
-//	}
-	//Set up timer
-//	struct sigaction sa;
-//	sa.sa_flags=SA_SIGINFO;
-//	sa.sa_sigaction=handler;
-//	sigemptyset(&sa.sa_mask);
-//	if(0 != sigaction(SIG, &sa, NULL))
-//	{
-//		__android_log_print(ANDROID_LOG_ERROR, "fmod", "Error setting up signal handler");
-//	}
-	struct sigevent sevp;
-	sevp.sigev_notify=SIGEV_THREAD;
-//	sevp.sigev_notify=SIGEV_SIGNAL;
-	//sevp.sigev_signo=SIG;//doesn't matter with SIGEV_THREAD
-	sevp.sigev_value.sival_ptr=&gTimer_id;
-	sevp.sigev_notify_function=&ADSRCallback;
-	sevp.sigev_notify_attributes=NULL;
-	int timer_result = timer_create(CLOCK_REALTIME, &sevp, &gTimer_id);
-	if(timer_result != 0)
-	{
-		__android_log_print(ANDROID_LOG_ERROR, "fmod", "Timer Failure");
-	}
-	//start time
-	struct itimerspec spec;
-	spec.it_interval.tv_sec = 1; //seconds
-	spec.it_interval.tv_nsec = 0; //nanoseconds
-	spec.it_value.tv_sec = 1; //seconds
-	spec.it_value.tv_nsec = 0; //nanoseconds
-	if(0 != timer_settime(gTimer_id, 0, &spec, NULL))
-	{
-		__android_log_print(ANDROID_LOG_ERROR, "fmod", "Timer Set Failure");
-	}
 }
 
 void Java_org_spin_mhive_HIVEAudioGenerator_cUpdate(JNIEnv *env, jobject thiz)
@@ -209,3 +170,12 @@ void Java_org_spin_mhive_HIVEAudioGenerator_cSetChannelPan(JNIEnv *env, jobject 
 {
 	FMOD_Channel_SetPan(gChannel, pan);
 }
+
+
+//ADSR Functions
+void Java_org_spin_mhive_HIVEAudioGenerator_cEnableADSR(JNIEnv *env, jobject thiz, jboolean b)
+{
+	//TODO
+}
+
+
