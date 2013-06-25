@@ -32,9 +32,9 @@ typedef struct
 	long int attack, decay, release;//in ms
 	float sustain;
 	long int start_time;
+	long int release_time;
+	jboolean note_on;
 } ADSRSettings;
-jboolean note_on = JNI_FALSE;
-long int release_time = 0;
 
 //TODO: Make this local!
 ADSRSettings *gADSRSettings;
@@ -86,7 +86,7 @@ FMOD_RESULT F_CALLBACK ADSRCallback(FMOD_DSP_STATE *dsp_state, float *inbuffer, 
 
     float fraction = 1.0f;
 
-    if(note_on == JNI_TRUE)
+    if(adsrSettings->note_on == JNI_TRUE)
     {
 
 		if (elapsed <= adsrSettings->attack)
@@ -104,7 +104,7 @@ FMOD_RESULT F_CALLBACK ADSRCallback(FMOD_DSP_STATE *dsp_state, float *inbuffer, 
 	//__android_log_print(ANDROID_LOG_ERROR, "fmod", "startmillis %li\tnowmillis %li\telapsed %li\tfraction %f", adsrSettings->start_time, millis, elapsed, fraction);
     } else
     {
-    	elapsed = millis - release_time;
+    	elapsed = millis - adsrSettings->release_time;
     	if(elapsed <= adsrSettings->release)
     	{
     		fraction = adsrSettings->sustain * (1.0f - ((float)elapsed)/((float)adsrSettings->release));
@@ -289,16 +289,17 @@ void Java_org_spin_mhive_HIVEAudioGenerator_cResetADSR(JNIEnv *env, jobject thiz
 	newADSRSettings->sustain = 0.5f;
 	newADSRSettings->release = 500;
 	newADSRSettings->start_time = GetCurrentTimeMillis();
+	newADSRSettings->release_time = 0;
+	newADSRSettings->note_on = JNI_TRUE;
 	oldADSRSettings = gADSRSettings;
 	gADSRSettings = newADSRSettings;
 	free(oldADSRSettings);
-	note_on = JNI_TRUE;
 }
 
 void Java_org_spin_mhive_HIVEAudioGenerator_cNoteOff(JNIEnv *env, jobject thiz)
 {
-	release_time = GetCurrentTimeMillis();
-	note_on = JNI_FALSE;
+	gADSRSettings->release_time = GetCurrentTimeMillis();
+	gADSRSettings->note_on = JNI_FALSE;
 }
 
 
