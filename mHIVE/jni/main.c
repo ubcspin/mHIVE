@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <signal.h>
+#include <semaphore.h>
 #include "fmod.h"
 #include "fmod_errors.h"
 
@@ -34,6 +35,7 @@ typedef struct
 	long int start_time;
 	long int release_time;
 	jboolean note_on;
+	sem_t sem;
 } ADSRSettings;
 
 //TODO: Make this local!
@@ -76,7 +78,9 @@ FMOD_RESULT F_CALLBACK ADSRCallback(FMOD_DSP_STATE *dsp_state, float *inbuffer, 
     ADSRSettings *adsrSettings;
     FMOD_DSP *thisdsp = dsp_state->instance;
 
-    //FMOD_DSP_GetInfo(thisdsp, name, 0, 0, 0, 0);
+	sem_wait(&(gADSRSettings->sem));
+
+
 
     //FMOD_DSP_GetUserData(thisdsp, (void **)&adsrSettings);
     adsrSettings = gADSRSettings;
@@ -136,6 +140,8 @@ FMOD_RESULT F_CALLBACK ADSRCallback(FMOD_DSP_STATE *dsp_state, float *inbuffer, 
         }
     }
 
+	sem_post(&(gADSRSettings->sem));
+
     return FMOD_OK;
 }
 
@@ -159,11 +165,14 @@ void Java_org_spin_mhive_HIVEAudioGenerator_cBegin(JNIEnv *env, jobject thiz)
 
     //add in ADSR
     gADSRSettings = (ADSRSettings*)malloc(sizeof(ADSRSettings));
-    gADSRSettings->attack = 300;
-    gADSRSettings->decay = 300;
-    gADSRSettings->sustain = 0.5f;
-    gADSRSettings->release = 100;
+    gADSRSettings->attack = 0;
+    gADSRSettings->decay = 0;
+    gADSRSettings->sustain = 1.0f;
+    gADSRSettings->release = 0;
     gADSRSettings->start_time = GetCurrentTimeMillis();
+    gADSRSettings->release_time = GetCurrentTimeMillis();
+    gADSRSettings->note_on = JNI_FALSE;
+    sem_init(&(gADSRSettings->sem), 0, 1);
 
 	FMOD_DSP_DESCRIPTION  dspdesc;
 	memset(&dspdesc, 0, sizeof(FMOD_DSP_DESCRIPTION));
@@ -200,6 +209,8 @@ void Java_org_spin_mhive_HIVEAudioGenerator_cEnd(JNIEnv *env, jobject thiz)
 	result = FMOD_DSP_Release(gADSRDSP);
 	CHECK_RESULT(result);
 	free(gADSRDSP);
+	sem_destroy(&(gADSRSettings->sem));
+	free(gADSRSettings);
 
     result = FMOD_DSP_Release(gDSP);
     CHECK_RESULT(result);
@@ -282,24 +293,24 @@ void Java_org_spin_mhive_HIVEAudioGenerator_cSetChannelPan(JNIEnv *env, jobject 
 //ADSR Functions
 void Java_org_spin_mhive_HIVEAudioGenerator_cResetADSR(JNIEnv *env, jobject thiz)
 {
-	ADSRSettings *newADSRSettings, *oldADSRSettings;
-	newADSRSettings = (ADSRSettings*)malloc(sizeof(ADSRSettings));
-	newADSRSettings->attack = 100;
-	newADSRSettings->decay = 100;
-	newADSRSettings->sustain = 0.5f;
-	newADSRSettings->release = 500;
-	newADSRSettings->start_time = GetCurrentTimeMillis();
-	newADSRSettings->release_time = 0;
-	newADSRSettings->note_on = JNI_TRUE;
-	oldADSRSettings = gADSRSettings;
-	gADSRSettings = newADSRSettings;
-	free(oldADSRSettings);
+	sem_wait(&(gADSRSettings->sem));
+//	newADSRSettings = (ADSRSettings*)malloc(sizeof(ADSRSettings));
+//	newADSRSettings->attack = 100;
+//	newADSRSettings->decay = 100;
+//	newADSRSettings->sustain = 0.5f;
+//	newADSRSettings->release = 500;
+	gADSRSettings->start_time = GetCurrentTimeMillis();
+//	newADSRSettings->release_time = 0;
+	gADSRSettings->note_on = JNI_TRUE;
+	sem_post(&(gADSRSettings->sem));
 }
 
 void Java_org_spin_mhive_HIVEAudioGenerator_cNoteOff(JNIEnv *env, jobject thiz)
 {
+	sem_wait(&(gADSRSettings->sem));
 	gADSRSettings->release_time = GetCurrentTimeMillis();
 	gADSRSettings->note_on = JNI_FALSE;
+	sem_post(&(gADSRSettings->sem));
 }
 
 
