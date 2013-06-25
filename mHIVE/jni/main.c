@@ -89,7 +89,7 @@ FMOD_RESULT F_CALLBACK ADSRCallback(FMOD_DSP_STATE *dsp_state, float *inbuffer, 
     } else if (elapsed <= adsrSettings->attack + adsrSettings->decay)
     {
     	fraction = adsrSettings->sustain
-    			+ (1.0f-adsrSettings->sustain)*((float)(elapsed-adsrSettings->attack)) / ((float)adsrSettings->decay);
+    			+ (1.0f-adsrSettings->sustain)* (1.0f-((float)(elapsed-adsrSettings->attack)) / ((float)adsrSettings->decay));
     } else
     {
     	fraction = adsrSettings->sustain;
