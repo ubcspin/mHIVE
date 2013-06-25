@@ -25,14 +25,16 @@ float gFrequency = 440.0f;
 #define SIG SIGALRM
 
 //ADSR envelope timer & data
+FMOD_DSP	 *gADSRDSP   = 0;
 const int AMPLITUDE_UPDATE_TIMER_INTERVAL_IN_NS = 10000000;
-//struct AmplitudeSettings
-//{
-//	jboolean ADSR_Enabled;
-//	timer_t timer_id;
-//	float attack, decay, sustain, release;
-//
-//};
+typedef struct
+{
+	long int attack, decay, release;//in ms
+	float sustain;
+	long int start_time;
+} ADSRSettings;
+//TODO: Make this local!
+ADSRSettings *gADSRSettings;
 
 //Waveform data
 const long OSCILLATOR_SINE = 0;
@@ -55,9 +57,70 @@ const long OSCILLATOR_TRIANGLE = 4;
 	} \
 }
 
-void ADSRCallback(union sigval arg)
+
+long int GetCurrentTimeMillis()
 {
-	__android_log_print(ANDROID_LOG_ERROR, "fmod", "ADSR CALLBACK");
+    struct timeval curTime;
+    gettimeofday(&curTime, NULL);
+	long int millis = curTime.tv_sec * 1000 + curTime.tv_usec / 1000;
+	return millis;
+}
+
+FMOD_RESULT F_CALLBACK ADSRCallback(FMOD_DSP_STATE *dsp_state, float *inbuffer, float *outbuffer, unsigned int length, int inchannels, int outchannels)
+{
+    unsigned int count;
+    int count2;
+    ADSRSettings *adsrSettings;
+    FMOD_DSP *thisdsp = dsp_state->instance;
+
+    //FMOD_DSP_GetInfo(thisdsp, name, 0, 0, 0, 0);
+
+    //FMOD_DSP_GetUserData(thisdsp, (void **)&adsrSettings);
+    adsrSettings = gADSRSettings;
+    long int millis = GetCurrentTimeMillis();
+
+    long int elapsed = millis - adsrSettings->start_time;
+
+    float fraction = 1.0f;
+
+    if (elapsed <= adsrSettings->attack)
+    {
+    	fraction = ((float)elapsed) / ((float)adsrSettings->attack);
+    } else if (elapsed <= adsrSettings->attack + adsrSettings->decay)
+    {
+    	fraction = adsrSettings->sustain
+    			+ (1.0f-adsrSettings->sustain)*((float)(elapsed-adsrSettings->attack)) / ((float)adsrSettings->decay);
+    } else
+    {
+    	fraction = adsrSettings->sustain;
+    }
+
+	//__android_log_print(ANDROID_LOG_ERROR, "fmod", "startmillis %li\tnowmillis %li\telapsed %li\tfraction %f", adsrSettings->start_time, millis, elapsed, fraction);
+
+
+    /*
+        This loop assumes inchannels = outchannels, which it will be if the DSP is created with '0'
+        as the number of channels in FMOD_DSP_DESCRIPTION.
+        Specifying an actual channel count will mean you have to take care of any number of channels coming in,
+        but outputting the number of channels specified.  Generally it is best to keep the channel
+        count at 0 for maximum compatibility.
+    */
+    for (count = 0; count < length; count++)
+    {
+        /*
+            Feel free to unroll this.
+        */
+        for (count2 = 0; count2 < outchannels; count2++)
+        {
+            /*
+                This DSP filter just fractions the volume!
+                Input is modified, and sent to output.
+            */
+            outbuffer[(count * outchannels) + count2] = inbuffer[(count * inchannels) + count2] * fraction;
+        }
+    }
+
+    return FMOD_OK;
 }
 
 void Java_org_spin_mhive_HIVEAudioGenerator_cBegin(JNIEnv *env, jobject thiz)
@@ -78,6 +141,28 @@ void Java_org_spin_mhive_HIVEAudioGenerator_cBegin(JNIEnv *env, jobject thiz)
     result = FMOD_DSP_SetParameter(gDSP, FMOD_DSP_OSCILLATOR_RATE, 440.0f);       /* musical note 'A' */
     CHECK_RESULT(result);
 
+    //add in ADSR
+    gADSRSettings = (ADSRSettings*)malloc(sizeof(ADSRSettings));
+    gADSRSettings->attack = 300;
+    gADSRSettings->decay = 300;
+    gADSRSettings->sustain = 0.5f;
+    gADSRSettings->start_time = GetCurrentTimeMillis();
+
+	FMOD_DSP_DESCRIPTION  dspdesc;
+	memset(&dspdesc, 0, sizeof(FMOD_DSP_DESCRIPTION));
+	strcpy(dspdesc.name, "ADSR Envelope");
+	dspdesc.channels     = 0;                   // 0 = whatever comes in, else specify.
+	dspdesc.read         = ADSRCallback;
+	dspdesc.userdata     = NULL;
+
+	result = FMOD_System_CreateDSP(gSystem, &dspdesc, &gADSRDSP);
+	CHECK_RESULT(result);
+//		Inactive by default.
+	//FMOD_DSP_SetBypass(gADSRDSP, 1);
+//		Add to system
+	result = FMOD_System_AddDSP(gSystem, gADSRDSP, 0);
+	CHECK_RESULT(result);
+
     /* Play */
 	result = FMOD_System_PlayDSP(gSystem, FMOD_CHANNEL_REUSE, gDSP, 1, &gChannel);
 	CHECK_RESULT(result);
@@ -95,11 +180,16 @@ void Java_org_spin_mhive_HIVEAudioGenerator_cEnd(JNIEnv *env, jobject thiz)
 {
 	FMOD_RESULT result = FMOD_OK;
 
+	result = FMOD_DSP_Release(gADSRDSP);
+	CHECK_RESULT(result);
+	free(gADSRDSP);
+
     result = FMOD_DSP_Release(gDSP);
     CHECK_RESULT(result);
 
 	result = FMOD_System_Release(gSystem);
 	CHECK_RESULT(result);
+
 }
 
 void Java_org_spin_mhive_HIVEAudioGenerator_cSetWaveform(JNIEnv *env, jlong jWaveform)
@@ -173,6 +263,20 @@ void Java_org_spin_mhive_HIVEAudioGenerator_cSetChannelPan(JNIEnv *env, jobject 
 
 
 //ADSR Functions
+void Java_org_spin_mhive_HIVEAudioGenerator_cResetADSR(JNIEnv *env, jobject thiz)
+{
+	ADSRSettings *newADSRSettings, *oldADSRSettings;
+	newADSRSettings = (ADSRSettings*)malloc(sizeof(ADSRSettings));
+	newADSRSettings->attack = 1000;
+	newADSRSettings->decay = 1000;
+	newADSRSettings->sustain = 0.25f;
+	newADSRSettings->start_time = GetCurrentTimeMillis();
+	oldADSRSettings = gADSRSettings;
+	gADSRSettings = newADSRSettings;
+	free(oldADSRSettings);
+}
+
+
 void Java_org_spin_mhive_HIVEAudioGenerator_cEnableADSR(JNIEnv *env, jobject thiz, jboolean b)
 {
 	//TODO

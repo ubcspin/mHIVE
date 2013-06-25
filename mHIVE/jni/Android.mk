@@ -17,7 +17,7 @@ include $(PREBUILT_SHARED_LIBRARY)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE           := main
-LOCAL_SRC_FILES        := AmplitudeManager.cpp main.c
+LOCAL_SRC_FILES        := main.c
 LOCAL_LDLIBS 		   := -llog
 LOCAL_SHARED_LIBRARIES := fmodex
 

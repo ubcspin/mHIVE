@@ -79,6 +79,7 @@ public class HIVEAudioGenerator
 		if(!playing)
 		{
 			playing = true;
+			cResetADSR();
 		}
     	
 		cSetChannelFrequency(freq);
@@ -142,5 +143,7 @@ public class HIVEAudioGenerator
 	public native void cSetChannelFrequency(float frequency);
 	public native void cSetChannelVolume(float volume);
 	public native void cSetChannelPan(float pan);
+	
+	public native void cResetADSR();
 
 }
