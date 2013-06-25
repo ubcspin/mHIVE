@@ -91,8 +91,9 @@ public class HIVEAudioGenerator
 	{
 		if(playing)
 		{
-			cSetChannelVolume(0);
+			//cSetChannelVolume(0);
 	    	playing = false;
+	    	cNoteOff();
 		}
 
 	}
@@ -145,5 +146,6 @@ public class HIVEAudioGenerator
 	public native void cSetChannelPan(float pan);
 	
 	public native void cResetADSR();
+	public native void cNoteOff();
 
 }
