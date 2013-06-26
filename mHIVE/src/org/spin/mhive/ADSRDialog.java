@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
+import android.widget.TextView;
 
 public class ADSRDialog extends DialogFragment {
 	
@@ -25,11 +26,11 @@ public class ADSRDialog extends DialogFragment {
 		seekSustain = (SeekBar)view.findViewById(R.id.seekSustain);
 		seekRelease = (SeekBar)view.findViewById(R.id.seekRelease);
 		
-		OnWaveformDialogButtonListener listener = new OnWaveformDialogButtonListener();
-		seekAttack.setOnSeekBarChangeListener(listener);
-		seekDecay.setOnSeekBarChangeListener(listener);
-		seekSustain.setOnSeekBarChangeListener(listener);
-		seekRelease.setOnSeekBarChangeListener(listener);
+		seekAttack.setOnSeekBarChangeListener(new ADSRDialogSeekBarChangeListener((TextView)view.findViewById(R.id.txtAttackValue), MAX_MS));
+		seekDecay.setOnSeekBarChangeListener(new ADSRDialogSeekBarChangeListener((TextView)view.findViewById(R.id.txtDecayValue), MAX_MS));
+		seekSustain.setOnSeekBarChangeListener(new ADSRDialogSeekBarChangeListener((TextView)view.findViewById(R.id.txtSustainValue), 1));
+		seekRelease.setOnSeekBarChangeListener(new ADSRDialogSeekBarChangeListener((TextView)view.findViewById(R.id.txtReleaseValue), MAX_MS));
+		
 		
 		return view;
 	}
@@ -69,11 +70,22 @@ public class ADSRDialog extends DialogFragment {
 				(int)((float)seekRelease.getProgress()/(float)seekRelease.getMax()*(float)MAX_MS));
 	}
 	
-	class OnWaveformDialogButtonListener implements OnSeekBarChangeListener
+	class ADSRDialogSeekBarChangeListener implements OnSeekBarChangeListener
 	{
+		TextView displayView;
+		int max;
+		public ADSRDialogSeekBarChangeListener(TextView displayView, int max)
+		{
+			this.displayView = displayView;
+			this.max = max;
+		}
 
 		@Override
-		public void onProgressChanged(SeekBar arg0, int arg1, boolean arg2){}
+		public void onProgressChanged(SeekBar arg0, int arg1, boolean arg2)
+		{
+			float value = ((float)arg1/(float)arg0.getMax() * (float) max); 
+			displayView.setText(""+value);
+		}
 		@Override
 		public void onStartTrackingTouch(SeekBar arg0) {}
 
