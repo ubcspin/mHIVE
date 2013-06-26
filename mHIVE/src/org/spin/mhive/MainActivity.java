@@ -126,6 +126,7 @@ public class MainActivity extends Activity {
 		public void onClick(View v)
 		{
 			adsrDialog.show(getFragmentManager(), "ADSRDialog");
+			adsrDialog.SetADSR(hiveAudioGenerator.GetADSR());
 		}
     }
 }
