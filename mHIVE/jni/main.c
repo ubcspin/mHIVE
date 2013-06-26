@@ -116,6 +116,12 @@ FMOD_RESULT F_CALLBACK ADSRCallback(FMOD_DSP_STATE *dsp_state, float *inbuffer, 
 				fraction = 0;
 			}
 		}
+    } else
+    {
+    	if (gADSRSettings->note_on == JNI_FALSE)
+    	{
+    		fraction = 0;
+    	}
     }
 
     /*
