@@ -30,11 +30,11 @@ FMOD_DSP	 *gADSRDSP   = 0;
 const int AMPLITUDE_UPDATE_TIMER_INTERVAL_IN_NS = 10000000;
 typedef struct
 {
-	long int attack, decay, release;//in ms
-	float sustain;
-	long int start_time;
-	long int release_time;
-	jboolean note_on;
+	long attack, decay, release;//in ms
+	float sustain; //from 0 to 1
+	long start_time; //ms
+	long release_time; //ms
+	jboolean note_on, enabled;
 	sem_t sem;
 } ADSRSettings;
 
@@ -63,11 +63,11 @@ const long OSCILLATOR_TRIANGLE = 4;
 }
 
 
-long int GetCurrentTimeMillis()
+long GetCurrentTimeMillis()
 {
     struct timeval curTime;
     gettimeofday(&curTime, NULL);
-	long int millis = curTime.tv_sec * 1000 + curTime.tv_usec / 1000;
+	long millis = curTime.tv_sec * 1000 + curTime.tv_usec / 1000;
 	return millis;
 }
 
@@ -84,38 +84,38 @@ FMOD_RESULT F_CALLBACK ADSRCallback(FMOD_DSP_STATE *dsp_state, float *inbuffer, 
 
     //FMOD_DSP_GetUserData(thisdsp, (void **)&adsrSettings);
     adsrSettings = gADSRSettings;
-    long int millis = GetCurrentTimeMillis();
+    long millis = GetCurrentTimeMillis();
 
-    long int elapsed = millis - adsrSettings->start_time;
+    long elapsed = millis - adsrSettings->start_time;
 
     float fraction = 1.0f;
-
-    if(adsrSettings->note_on == JNI_TRUE)
+    if (adsrSettings->enabled == JNI_TRUE)
     {
+		if(adsrSettings->note_on == JNI_TRUE)
+		{
+			if (elapsed <= adsrSettings->attack)
+			{
+				fraction = ((float)elapsed) / ((float)adsrSettings->attack);
+			} else if (elapsed <= adsrSettings->attack + adsrSettings->decay)
+			{
+				fraction = adsrSettings->sustain
+						+ (1.0f-adsrSettings->sustain)* (1.0f-((float)(elapsed-adsrSettings->attack)) / ((float)adsrSettings->decay));
+			} else
+			{
+				fraction = adsrSettings->sustain;
+			}
 
-		if (elapsed <= adsrSettings->attack)
-		{
-			fraction = ((float)elapsed) / ((float)adsrSettings->attack);
-		} else if (elapsed <= adsrSettings->attack + adsrSettings->decay)
-		{
-			fraction = adsrSettings->sustain
-					+ (1.0f-adsrSettings->sustain)* (1.0f-((float)(elapsed-adsrSettings->attack)) / ((float)adsrSettings->decay));
 		} else
 		{
-			fraction = adsrSettings->sustain;
+			elapsed = millis - adsrSettings->release_time;
+			if(elapsed <= adsrSettings->release)
+			{
+				fraction = adsrSettings->sustain * (1.0f - ((float)elapsed)/((float)adsrSettings->release));
+			} else
+			{
+				fraction = 0;
+			}
 		}
-
-	//__android_log_print(ANDROID_LOG_ERROR, "fmod", "startmillis %li\tnowmillis %li\telapsed %li\tfraction %f", adsrSettings->start_time, millis, elapsed, fraction);
-    } else
-    {
-    	elapsed = millis - adsrSettings->release_time;
-    	if(elapsed <= adsrSettings->release)
-    	{
-    		fraction = adsrSettings->sustain * (1.0f - ((float)elapsed)/((float)adsrSettings->release));
-    	} else
-    	{
-    		fraction = 0;
-    	}
     }
 
     /*
@@ -291,14 +291,9 @@ void Java_org_spin_mhive_HIVEAudioGenerator_cSetChannelPan(JNIEnv *env, jobject 
 
 
 //ADSR Functions
-void Java_org_spin_mhive_HIVEAudioGenerator_cResetADSR(JNIEnv *env, jobject thiz)
+void Java_org_spin_mhive_HIVEAudioGenerator_cNoteOn(JNIEnv *env, jobject thiz)
 {
 	sem_wait(&(gADSRSettings->sem));
-//	newADSRSettings = (ADSRSettings*)malloc(sizeof(ADSRSettings));
-//	newADSRSettings->attack = 100;
-//	newADSRSettings->decay = 100;
-//	newADSRSettings->sustain = 0.5f;
-//	newADSRSettings->release = 500;
 	gADSRSettings->start_time = GetCurrentTimeMillis();
 //	newADSRSettings->release_time = 0;
 	gADSRSettings->note_on = JNI_TRUE;
@@ -313,10 +308,58 @@ void Java_org_spin_mhive_HIVEAudioGenerator_cNoteOff(JNIEnv *env, jobject thiz)
 	sem_post(&(gADSRSettings->sem));
 }
 
-
-void Java_org_spin_mhive_HIVEAudioGenerator_cEnableADSR(JNIEnv *env, jobject thiz, jboolean b)
+void Java_org_spin_mhive_HIVEAudioGenerator_cSetADSR(JNIEnv *env, jobject thiz, jint attack, jint decay, jfloat sustain, jint release)
 {
-	//TODO
+	sem_wait(&(gADSRSettings->sem));
+	gADSRSettings->attack = attack;
+	gADSRSettings->decay = decay;
+	gADSRSettings->sustain = (float)sustain;
+	gADSRSettings->release = release;
+	sem_post(&(gADSRSettings->sem));
+}
+
+
+void Java_org_spin_mhive_HIVEAudioGenerator_cSetADSREnabled(JNIEnv *env, jobject thiz, jboolean b)
+{
+	sem_wait(&(gADSRSettings->sem));
+	gADSRSettings->enabled = b;
+	sem_post(&(gADSRSettings->sem));
+}
+
+jlong Java_org_spin_mhive_HIVEAudioGenerator_cGetADSRAttack(JNIEnv *env, jobject thiz)
+{
+	if(gADSRSettings != NULL)
+	{
+		return (jlong)gADSRSettings->attack;
+	}
+	return 0;
+}
+
+jlong Java_org_spin_mhive_HIVEAudioGenerator_cGetADSRDecay(JNIEnv *env, jobject thiz)
+{
+	if(gADSRSettings != NULL)
+	{
+		return (jlong)gADSRSettings->decay;
+	}
+	return 0;
+}
+
+jfloat Java_org_spin_mhive_HIVEAudioGenerator_cGetADSRSustain(JNIEnv *env, jobject thiz)
+{
+	if(gADSRSettings != NULL)
+	{
+		return (jfloat)gADSRSettings->sustain;
+	}
+	return 0.0f;
+}
+
+jlong Java_org_spin_mhive_HIVEAudioGenerator_cGetADSRRelease(JNIEnv *env, jobject thiz)
+{
+	if(gADSRSettings != NULL)
+	{
+		return (jlong)gADSRSettings->release;
+	}
+	return 0;
 }
 
 

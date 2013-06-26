@@ -71,6 +71,8 @@ public class HIVEAudioGenerator
 		cBegin();
 		cSetWaveform(currentWaveform);
 		cSetChannelVolume(0);
+		SetADSR(100, 100, 0.5f, 300);
+		EnableADSR();
 	}
 	
 	
@@ -79,7 +81,7 @@ public class HIVEAudioGenerator
 		if(!playing)
 		{
 			playing = true;
-			cResetADSR();
+			cNoteOn();
 		}
     	
 		cSetChannelFrequency(freq);
@@ -113,39 +115,47 @@ public class HIVEAudioGenerator
 	public void DisableADSR() {EnableADSR(false);}
 	public void EnableADSR(boolean b)
 	{
-		throw new UnsupportedOperationException("EnableADSR is a stub method");
+		cSetADSREnabled(b);
 	}
 	
 	public void SetADSR(ADSREnvelope envelope) {SetADSR(envelope.getAttack(), envelope.getDecay(), envelope.getSustain(), envelope.getRelease());}
-	public void SetADSR(float attack, float decay, float sustain, float release)
+	public void SetADSR(int attack, int decay, float sustain, int release)
 	{
-		throw new UnsupportedOperationException("SetADSR is a stub method");
+		cSetADSR(attack, decay, sustain, release);
 	}
 	
-	public ADSREnvelope GetADSR(float attack, float decay, float sustain, float release)
+	public ADSREnvelope GetADSR()
 	{
-		throw new UnsupportedOperationException("GetADSR is a stub method");
+		return new ADSREnvelope(cGetADSRAttack(),cGetADSRDecay(),cGetADSRSustain(),cGetADSRRelease());
 	}
 	
 	/**
 	 * Native Methods
 	 */
+
+	//Fundamentals
 	public native void cBegin();
 	public native void cUpdate();
 	public native void cEnd();
 	
+	//Basic controls
 	public native void cSetWaveform(int waveform);	
-	
 	public native boolean cGetIsChannelPlaying();
 	public native float cGetChannelFrequency();
 	public native float cGetChannelVolume();
 	public native float cGetChannelPan();
-	
 	public native void cSetChannelFrequency(float frequency);
 	public native void cSetChannelVolume(float volume);
 	public native void cSetChannelPan(float pan);
 	
-	public native void cResetADSR();
+	//ADSR and note handling
+	public native void cNoteOn();
 	public native void cNoteOff();
+	public native void cSetADSR(int attack, int decay, float sustain, int release);
+	public native void cSetADSREnabled(boolean b);
+	public native int cGetADSRAttack();
+	public native int cGetADSRDecay();
+	public native float cGetADSRSustain();
+	public native int cGetADSRRelease();
 
 }

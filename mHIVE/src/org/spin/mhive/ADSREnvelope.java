@@ -2,17 +2,17 @@ package org.spin.mhive;
 
 public class ADSREnvelope
 {
-	private float attack; //in ms
-	private float decay; //in ms
+	private int attack; //in ms
+	private int decay; //in ms
 	private float sustain; //level, from 0-1
-	private float release; //in ms
+	private int release; //in ms
 	
-	public float getAttack() {return attack;}
-	public float getDecay() {return decay;}
+	public int getAttack() {return attack;}
+	public int getDecay() {return decay;}
 	public float getSustain() {return sustain;}
-	public float getRelease() {return release;}
+	public int getRelease() {return release;}
 	
-	public ADSREnvelope(float attack, float decay, float sustain, float release)
+	public ADSREnvelope(int attack, int decay, float sustain, int release)
 	{
 		this.attack = attack;
 		this.decay = decay;
