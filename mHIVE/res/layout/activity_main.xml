@@ -39,7 +39,24 @@
 	        android:layout_height="75dp"
 	        android:gravity="center"
 	        android:text="Waveform" />
-    
+
+	    <Space
+	        android:layout_width="match_parent"
+	        android:layout_height="100dp" />
+
+	    <Button
+	        android:id="@+id/btnADSR"
+	        style="?android:attr/buttonStyleSmall"
+	        android:layout_width="100dp"
+	        android:layout_height="75dp"
+	        android:text="ADSR" />
+
+		 <ToggleButton
+		     android:id="@+id/tglADSR"
+		     android:layout_width="100dp"
+		     android:layout_height="50dp"
+		     android:text="ADSR" />
+		    
      </LinearLayout>
     
     
