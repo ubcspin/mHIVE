@@ -10,6 +10,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.ToggleButton;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -48,6 +50,16 @@ public class MainActivity extends Activity {
     	waveformDialog = new WaveformDialog();
     	Button btnWaveform = (Button)findViewById(R.id.btnWaveform);
     	btnWaveform.setOnClickListener(new WaveformClickListener());
+    	
+    	//setup ADSR toggle button
+    	ToggleButton tglADSR = (ToggleButton)findViewById(R.id.tglADSR);
+    	tglADSR.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+				@Override
+				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+					hiveAudioGenerator.EnableADSR(isChecked);
+				}
+			});
+    	tglADSR.setChecked(true);
     }
     
     @Override
