@@ -28,6 +28,7 @@ public class MainActivity extends Activity {
     private HIVEAudioGenerator hiveAudioGenerator;
     
     WaveformDialog waveformDialog;
+    ADSRDialog adsrDialog;
     
 
     @Override
@@ -60,6 +61,11 @@ public class MainActivity extends Activity {
 				}
 			});
     	tglADSR.setChecked(true);
+    	
+    	//setup ADSR main button
+    	adsrDialog = new ADSRDialog();
+    	Button btnADSR = (Button)findViewById(R.id.btnADSR);
+    	btnADSR.setOnClickListener(new ADSRClickListener());
     }
     
     @Override
@@ -107,5 +113,19 @@ public class MainActivity extends Activity {
 			waveformDialog.show(getFragmentManager(), "WaveformDialog");
 		}
     	
+    }
+    
+    public void SetADSR(ADSREnvelope envelope)
+    {
+    	hiveAudioGenerator.SetADSR(envelope);
+    }
+    
+    class ADSRClickListener implements OnClickListener
+    {
+		@Override
+		public void onClick(View v)
+		{
+			adsrDialog.show(getFragmentManager(), "ADSRDialog");
+		}
     }
 }
