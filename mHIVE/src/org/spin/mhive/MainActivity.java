@@ -1,5 +1,7 @@
 package org.spin.mhive;
 
+import org.spin.mhive.WaveformDialog.OnWaveformDialogButtonListener;
+
 import com.example.mhive.R;
 
 import android.app.Activity;
@@ -48,9 +50,11 @@ public class MainActivity extends Activity {
     	SetWaveform(HIVEAudioGenerator.OSCILLATOR_SINE);
     	
     	//setup waveform button
-    	waveformDialog = new WaveformDialog();
-    	Button btnWaveform = (Button)findViewById(R.id.btnWaveform);
-    	btnWaveform.setOnClickListener(new WaveformClickListener());
+    	((Button)findViewById(R.id.btnWaveformSelectSine)).setOnClickListener(new OnWaveformDialogButtonListener(HIVEAudioGenerator.OSCILLATOR_SINE));
+		((Button)findViewById(R.id.btnWaveformSelectSquare)).setOnClickListener(new OnWaveformDialogButtonListener(HIVEAudioGenerator.OSCILLATOR_SQUARE));
+		((Button)findViewById(R.id.btnWaveformSelectSawUp)).setOnClickListener(new OnWaveformDialogButtonListener(HIVEAudioGenerator.OSCILLATOR_SAWUP));
+		((Button)findViewById(R.id.btnWaveformSelectTriangle)).setOnClickListener(new OnWaveformDialogButtonListener(HIVEAudioGenerator.OSCILLATOR_TRIANGLE));
+		
     	
     	//setup ADSR toggle button
     	ToggleButton tglADSR = (ToggleButton)findViewById(R.id.tglADSR);
@@ -101,19 +105,23 @@ public class MainActivity extends Activity {
     public void SetWaveform(int waveform)
     {
     	hiveAudioGenerator.setWaveform(waveform);
-    	((Button)findViewById(R.id.btnWaveform)).setText(hiveAudioGenerator.getCurrentWaveformName());
     }
     
-    class WaveformClickListener implements OnClickListener
-    {
-
-		@Override
-		public void onClick(View v)
+    class OnWaveformDialogButtonListener implements OnClickListener
+	{
+		private int value;
+		public OnWaveformDialogButtonListener(int value)
 		{
-			waveformDialog.show(getFragmentManager(), "WaveformDialog");
+			this.value = value;
 		}
-    	
-    }
+		
+		@Override
+		public void onClick(View v) 
+		{
+			SetWaveform(value);
+		}
+	}
+		
     
     public void SetADSR(ADSREnvelope envelope)
     {
@@ -129,4 +137,5 @@ public class MainActivity extends Activity {
 			adsrDialog.SetADSR(hiveAudioGenerator.GetADSR());
 		}
     }
+    
 }
