@@ -1,5 +1,6 @@
 package org.spin.mhive;
 
+import org.spin.mhive.ADSRDialog.ADSRDialogSeekBarChangeListener;
 import org.spin.mhive.WaveformDialog.OnWaveformDialogButtonListener;
 
 import com.example.mhive.R;
@@ -13,7 +14,10 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.ToggleButton;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -26,6 +30,9 @@ public class MainActivity extends Activity {
     private int minFreq = 20;
     private int maxFreq = 140;
     private View mainInputView;
+    
+	private SeekBar seekAttack, seekDecay, seekSustain, seekRelease;
+	private final int MAX_MS = 1000;
     
     private HIVEAudioGenerator hiveAudioGenerator;
     
@@ -67,9 +74,15 @@ public class MainActivity extends Activity {
     	tglADSR.setChecked(true);
     	
     	//setup ADSR main button
-    	adsrDialog = new ADSRDialog();
-    	Button btnADSR = (Button)findViewById(R.id.btnADSR);
-    	btnADSR.setOnClickListener(new ADSRClickListener());
+    	seekAttack = (SeekBar)findViewById(R.id.seekAttack);
+		seekDecay = (SeekBar)findViewById(R.id.seekDecay);
+		seekSustain = (SeekBar)findViewById(R.id.seekSustain);
+		seekRelease = (SeekBar)findViewById(R.id.seekRelease);
+		
+		seekAttack.setOnSeekBarChangeListener(new ADSRDialogSeekBarChangeListener((TextView)findViewById(R.id.txtAttackValue), MAX_MS));
+		seekDecay.setOnSeekBarChangeListener(new ADSRDialogSeekBarChangeListener((TextView)findViewById(R.id.txtDecayValue), MAX_MS));
+		seekSustain.setOnSeekBarChangeListener(new ADSRDialogSeekBarChangeListener((TextView)findViewById(R.id.txtSustainValue), 1));
+		seekRelease.setOnSeekBarChangeListener(new ADSRDialogSeekBarChangeListener((TextView)findViewById(R.id.txtReleaseValue), MAX_MS));
     }
     
     @Override
@@ -126,16 +139,67 @@ public class MainActivity extends Activity {
     public void SetADSR(ADSREnvelope envelope)
     {
     	hiveAudioGenerator.SetADSR(envelope);
-    }
-    
-    class ADSRClickListener implements OnClickListener
-    {
-		@Override
-		public void onClick(View v)
+		if(seekAttack != null)
 		{
-			adsrDialog.show(getFragmentManager(), "ADSRDialog");
-			adsrDialog.SetADSR(hiveAudioGenerator.GetADSR());
+			seekAttack.setMax(MAX_MS);
+			seekAttack.setProgress(envelope.getAttack());
+		}
+		
+		if(seekDecay != null)
+		{
+			seekDecay.setMax(MAX_MS);
+			seekDecay.setProgress(envelope.getDecay());
+		}
+		
+		if(seekSustain != null)
+		{
+			seekSustain.setMax(100);
+			seekSustain.setProgress((int)(envelope.getSustain()*100));
+		}
+		
+		if(seekRelease != null)
+		{
+			seekRelease.setMax(MAX_MS);
+			seekRelease.setProgress(envelope.getRelease());
 		}
     }
+    
+	public ADSREnvelope GetADSR()
+	{
+		return new ADSREnvelope((int)((float)seekAttack.getProgress()/(float)seekAttack.getMax()*(float)MAX_MS), 
+				(int)((float)seekDecay.getProgress()/(float)seekDecay.getMax()*(float)MAX_MS),
+				(float)seekSustain.getProgress()/(float)seekSustain.getMax(),
+				(int)((float)seekRelease.getProgress()/(float)seekRelease.getMax()*(float)MAX_MS));
+	}
+    
+	class ADSRDialogSeekBarChangeListener implements OnSeekBarChangeListener
+	{
+		TextView displayView;
+		int max;
+		public ADSRDialogSeekBarChangeListener(TextView displayView, int max)
+		{
+			this.displayView = displayView;
+			this.max = max;
+		}
+
+		@Override
+		public void onProgressChanged(SeekBar arg0, int arg1, boolean arg2)
+		{
+			float value = ((float)arg1/(float)arg0.getMax() * (float) max); 
+			displayView.setText(""+value);
+		}
+		@Override
+		public void onStartTrackingTouch(SeekBar arg0) {}
+
+		@Override
+		public void onStopTrackingTouch(SeekBar arg0)
+		{
+			SetADSR(GetADSR());			
+		}
+		
+	}
+    
+    
+    
     
 }
