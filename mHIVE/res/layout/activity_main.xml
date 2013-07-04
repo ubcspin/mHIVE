@@ -9,18 +9,165 @@
     tools:context=".MainActivity" >
 
 
-	<!-- Main input View -->    
-    <TextView
-        android:id="@+id/fullscreen_content"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_weight="100"
-        android:gravity="center"
-        android:keepScreenOn="true"
-        android:text="@string/dummy_content"
-        android:textColor="#33b5e5"
-        android:textSize="50sp"
-        android:textStyle="bold" />
+        android:orientation="vertical"
+        android:layout_weight="100" >
+    
+			<!-- Main input View -->    
+		    <TextView
+		        android:id="@+id/fullscreen_content"
+		        android:layout_width="match_parent"
+		        android:layout_height="match_parent"
+		        android:layout_weight="100"
+		        android:gravity="center"
+		        android:keepScreenOn="true"
+		        android:text="@string/dummy_content"
+		        android:textColor="#33b5e5"
+		        android:textSize="50sp"
+		        android:textStyle="bold" />
+		    
+		        <LinearLayout
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+			        android:orientation="horizontal"
+			        android:background="#006688"
+			        android:layout_weight="1" >
+			        
+		            <ToggleButton
+					     android:id="@+id/tglADSR"
+					     android:layout_width="100dp"
+					     android:layout_height="50dp"
+					     android:text="ADSR" />
+					 
+					 <LinearLayout
+				        android:layout_width="wrap_content"
+				        android:layout_height="wrap_content"
+				        android:orientation="vertical" >
+							    
+					      <!-- ATTACK -->
+					    <LinearLayout
+					        android:layout_width="match_parent"
+					        android:layout_height="wrap_content"
+					        android:paddingBottom="10dp"
+					        android:paddingTop="10dp" >
+					
+					        <TextView
+					            android:id="@+id/txtAttack"
+					            android:layout_width="wrap_content"
+					            android:layout_height="wrap_content"
+					            android:text="Attack"
+					            android:textAppearance="?android:attr/textAppearanceLarge" />
+					
+					        <SeekBar
+					            android:id="@+id/seekAttack"
+					            android:layout_width="300dp"
+					            android:layout_height="wrap_content"
+					            android:layout_weight="1" />
+					
+					        <TextView
+					            android:id="@+id/txtAttackValue"
+					            android:layout_width="wrap_content"
+					            android:layout_height="wrap_content"
+					            android:text="0"
+					            android:textAppearance="?android:attr/textAppearanceMedium" />
+					
+					    </LinearLayout>
+					
+					    <!-- DECAY -->
+					    <LinearLayout
+					        android:layout_width="match_parent"
+					        android:layout_height="wrap_content"
+					        android:paddingBottom="10dp"
+					        android:paddingTop="10dp"  >
+					
+					        <TextView
+					            android:id="@+id/txtDecay"
+					            android:layout_width="wrap_content"
+					            android:layout_height="wrap_content"
+					            android:text="Decay"
+					            android:textAppearance="?android:attr/textAppearanceLarge" />
+					
+					        <SeekBar
+					            android:id="@+id/seekDecay"
+					            android:layout_width="300dp"
+					            android:layout_height="wrap_content"
+					            android:layout_weight="1" />
+					
+					        <TextView
+					            android:id="@+id/txtDecayValue"
+					            android:layout_width="wrap_content"
+					            android:layout_height="wrap_content"
+					            android:text="0"
+					            android:textAppearance="?android:attr/textAppearanceMedium" />
+					
+					    </LinearLayout>
+					    
+					    <!-- SUSTAIN -->
+					    <LinearLayout
+					        android:layout_width="match_parent"
+					        android:layout_height="wrap_content"
+					        android:paddingBottom="10dp"
+					        android:paddingTop="10dp"  >
+					
+					        <TextView
+					            android:id="@+id/txtSustain"
+					            android:layout_width="wrap_content"
+					            android:layout_height="wrap_content"
+					            android:text="Sustain"
+					            android:textAppearance="?android:attr/textAppearanceLarge" />
+					
+					        <SeekBar
+					            android:id="@+id/seekSustain"
+					            android:layout_width="300dp"
+					            android:layout_height="wrap_content"
+					            android:layout_weight="1" />
+					
+					        <TextView
+					            android:id="@+id/txtSustainValue"
+					            android:layout_width="wrap_content"
+					            android:layout_height="wrap_content"
+					            android:text="0"
+					            android:textAppearance="?android:attr/textAppearanceMedium" />
+					
+					    </LinearLayout>
+					    
+					    
+					    <!-- RELEASE -->
+					    <LinearLayout
+					        android:layout_width="match_parent"
+					        android:layout_height="wrap_content"
+					        android:paddingBottom="10dp"
+					        android:paddingTop="10dp"  >
+					
+					        <TextView
+					            android:id="@+id/txtRelease"
+					            android:layout_width="wrap_content"
+					            android:layout_height="wrap_content"
+					            android:text="Release"
+					            android:textAppearance="?android:attr/textAppearanceLarge" />
+					
+					        <SeekBar
+					            android:id="@+id/seekRelease"
+					            android:layout_width="300dp"
+					            android:layout_height="wrap_content"
+					            android:layout_weight="1" />
+					
+					        <TextView
+					            android:id="@+id/txtReleaseValue"
+					            android:layout_width="wrap_content"
+					            android:layout_height="wrap_content"
+					            android:text="0"
+					            android:textAppearance="?android:attr/textAppearanceMedium" />
+			
+			    			</LinearLayout>	
+				        
+				     </LinearLayout>
+        
+	            </LinearLayout>
+    
+    </LinearLayout>
     
     <!-- Vertical linear layout for sidebar-->
     
@@ -74,135 +221,7 @@
 	        android:layout_width="match_parent"
 	        android:layout_height="100dp" />
 
-		 <ToggleButton
-		     android:id="@+id/tglADSR"
-		     android:layout_width="100dp"
-		     android:layout_height="50dp"
-		     android:text="ADSR" />
 		 
-		 <LinearLayout
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:orientation="vertical" >
-				    
-		      <!-- ATTACK -->
-		    <LinearLayout
-		        android:layout_width="match_parent"
-		        android:layout_height="wrap_content"
-		        android:paddingBottom="10dp"
-		        android:paddingTop="10dp" >
-		
-		        <TextView
-		            android:id="@+id/txtAttack"
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-		            android:text="Attack"
-		            android:textAppearance="?android:attr/textAppearanceLarge" />
-		
-		        <SeekBar
-		            android:id="@+id/seekAttack"
-		            android:layout_width="300dp"
-		            android:layout_height="wrap_content"
-		            android:layout_weight="1" />
-		
-		        <TextView
-		            android:id="@+id/txtAttackValue"
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-		            android:text="0"
-		            android:textAppearance="?android:attr/textAppearanceMedium" />
-		
-		    </LinearLayout>
-		
-		    <!-- DECAY -->
-		    <LinearLayout
-		        android:layout_width="match_parent"
-		        android:layout_height="wrap_content"
-		        android:paddingBottom="10dp"
-		        android:paddingTop="10dp"  >
-		
-		        <TextView
-		            android:id="@+id/txtDecay"
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-		            android:text="Decay"
-		            android:textAppearance="?android:attr/textAppearanceLarge" />
-		
-		        <SeekBar
-		            android:id="@+id/seekDecay"
-		            android:layout_width="300dp"
-		            android:layout_height="wrap_content"
-		            android:layout_weight="1" />
-		
-		        <TextView
-		            android:id="@+id/txtDecayValue"
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-		            android:text="0"
-		            android:textAppearance="?android:attr/textAppearanceMedium" />
-		
-		    </LinearLayout>
-		    
-		    <!-- SUSTAIN -->
-		    <LinearLayout
-		        android:layout_width="match_parent"
-		        android:layout_height="wrap_content"
-		        android:paddingBottom="10dp"
-		        android:paddingTop="10dp"  >
-		
-		        <TextView
-		            android:id="@+id/txtSustain"
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-		            android:text="Sustain"
-		            android:textAppearance="?android:attr/textAppearanceLarge" />
-		
-		        <SeekBar
-		            android:id="@+id/seekSustain"
-		            android:layout_width="300dp"
-		            android:layout_height="wrap_content"
-		            android:layout_weight="1" />
-		
-		        <TextView
-		            android:id="@+id/txtSustainValue"
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-		            android:text="0"
-		            android:textAppearance="?android:attr/textAppearanceMedium" />
-		
-		    </LinearLayout>
-		    
-		    
-		    <!-- RELEASE -->
-		    <LinearLayout
-		        android:layout_width="match_parent"
-		        android:layout_height="wrap_content"
-		        android:paddingBottom="10dp"
-		        android:paddingTop="10dp"  >
-		
-		        <TextView
-		            android:id="@+id/txtRelease"
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-		            android:text="Release"
-		            android:textAppearance="?android:attr/textAppearanceLarge" />
-		
-		        <SeekBar
-		            android:id="@+id/seekRelease"
-		            android:layout_width="300dp"
-		            android:layout_height="wrap_content"
-		            android:layout_weight="1" />
-		
-		        <TextView
-		            android:id="@+id/txtReleaseValue"
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-		            android:text="0"
-		            android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    </LinearLayout>	
-	        
-	     </LinearLayout>
 		    
      </LinearLayout>
     
