@@ -62,9 +62,7 @@
 					
 					        <SeekBar
 					            android:id="@+id/seekAttack"
-					            android:layout_width="300dp"
-					            android:layout_height="wrap_content"
-					            android:layout_weight="1" />
+					            style="@style/ADSRSeekBarStyle" />
 					
 					        <TextView
 					            android:id="@+id/txtAttackValue"
@@ -91,9 +89,7 @@
 					
 					        <SeekBar
 					            android:id="@+id/seekDecay"
-					            android:layout_width="300dp"
-					            android:layout_height="wrap_content"
-					            android:layout_weight="1" />
+					            style="@style/ADSRSeekBarStyle" />
 					
 					        <TextView
 					            android:id="@+id/txtDecayValue"
@@ -120,9 +116,7 @@
 					
 					        <SeekBar
 					            android:id="@+id/seekSustain"
-					            android:layout_width="300dp"
-					            android:layout_height="wrap_content"
-					            android:layout_weight="1" />
+					            style="@style/ADSRSeekBarStyle" />
 					
 					        <TextView
 					            android:id="@+id/txtSustainValue"
@@ -150,9 +144,7 @@
 					
 					        <SeekBar
 					            android:id="@+id/seekRelease"
-					            android:layout_width="300dp"
-					            android:layout_height="wrap_content"
-					            android:layout_weight="1" />
+					            style="@style/ADSRSeekBarStyle" />
 					
 					        <TextView
 					            android:id="@+id/txtReleaseValue"
@@ -193,6 +185,7 @@
 								        android:id="@+id/btnWaveformSelectTriangle"
 								        style="@style/WaveformButtonStyle"
 								        android:text="@string/waveform_text_triangle" />
+
 				</RadioGroup>
 	            </LinearLayout>
 	            

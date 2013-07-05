@@ -43,5 +43,10 @@
         <item name="android:textSize">27sp</item>
         <item name="android:gravity">center</item>
     </style>
+    
+    <style name="ADSRSeekBarStyle" parent="@android:style/Widget.SeekBar">
+        <item name="android:layout_width">300dp</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
 
 </resources>
