@@ -202,8 +202,13 @@
         android:background="#006688"
         android:layout_weight="1" >
 
+        <ToggleButton
+        android:id="@+id/tglRecordButton"
+        style="@style/RecordButtonStyle" />
+        
+        
         <ListView
-            android:id="@+id/listView1"
+            android:id="@+id/lstHistory"
             android:layout_width="200dp"
             android:layout_height="wrap_content" >
         </ListView>
