@@ -12,10 +12,15 @@ import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.SeekBar;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 import android.widget.SeekBar.OnSeekBarChangeListener;
@@ -36,6 +41,9 @@ public class MainActivity extends Activity {
 	private final int MAX_MS = 1000;
     
     private HIVEAudioGenerator hiveAudioGenerator;
+    
+    private HapticNoteList noteHistory;
+    private ArrayAdapter<HapticNote> noteHistoryAdapter;
     
     WaveformDialog waveformDialog;
     ADSRDialog adsrDialog;
@@ -86,7 +94,24 @@ public class MainActivity extends Activity {
 		seekDecay.setOnSeekBarChangeListener(new ADSRDialogSeekBarChangeListener((TextView)findViewById(R.id.txtDecayValue), MAX_MS));
 		seekSustain.setOnSeekBarChangeListener(new ADSRDialogSeekBarChangeListener((TextView)findViewById(R.id.txtSustainValue), 1));
 		seekRelease.setOnSeekBarChangeListener(new ADSRDialogSeekBarChangeListener((TextView)findViewById(R.id.txtReleaseValue), MAX_MS));
-		SetADSR(new ADSREnvelope(100, 100, 0.8f, 100));			
+		SetADSR(new ADSREnvelope(100, 100, 0.8f, 100));
+		
+		//set up STUB recording
+		noteHistory = new HapticNoteList();
+		ToggleButton tglRecordButton = (ToggleButton)findViewById(R.id.tglRecordButton);
+		ListView lstHistory = (ListView)findViewById(R.id.lstHistory);
+		noteHistoryAdapter = new ArrayAdapter<HapticNote>(this, android.R.layout.simple_list_item_1, noteHistory);
+		lstHistory.setAdapter(noteHistoryAdapter);
+		tglRecordButton.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+														@Override
+														public void onCheckedChanged(CompoundButton buttonView,
+																boolean isChecked) {
+															if(!isChecked)
+															{
+																noteHistory.add(new HapticNote("Test"));
+																noteHistoryAdapter.notifyDataSetChanged();
+															}
+														}});
     }
     
     @Override
