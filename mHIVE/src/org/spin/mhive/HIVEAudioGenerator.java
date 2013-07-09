@@ -3,6 +3,8 @@ package org.spin.mhive;
 import org.fmod.FMODAudioDevice;
 import org.spin.mhive.replay.HapticNote;
 import org.spin.mhive.replay.HapticNoteRecord;
+import org.spin.mhive.replay.HapticNoteRecordADSR;
+import org.spin.mhive.replay.HapticNoteRecordEnableADSR;
 import org.spin.mhive.replay.HapticNoteRecordPlay;
 import org.spin.mhive.replay.HapticNoteRecordStop;
 
@@ -48,7 +50,15 @@ public class HIVEAudioGenerator
 			currentWaveform = waveform;
 			cSetWaveform(currentWaveform);
 			cSetChannelVolume(0);
+			if(currentlyRecording)
+			{
+	    		long currentTime = System.currentTimeMillis();
+	    		recordingNote.AddRecord(new HapticNoteRecordWaveform(currentTime - previousRecordTime, waveform));
+	    		previousRecordTime = currentTime;
+			}
 		}
+		
+		
 	}
 	
 	public int getCurrentWaveform()
@@ -135,7 +145,7 @@ public class HIVEAudioGenerator
 	
 	public void StartRecording()
 	{
-		recordingNote = HapticNote.NewIncrementedHapticNote("Recording ", GetADSR(), getCurrentWaveform());
+		recordingNote = HapticNote.NewIncrementedHapticNote("Recording ", GetADSR(), getCurrentWaveform(), cGetADSREnabled());
 		previousRecordTime = System.currentTimeMillis();
 		currentlyRecording = true;
 	}
@@ -182,8 +192,6 @@ public class HIVEAudioGenerator
 		public void run()
 		{
 			Stop();
-			SetADSR(hapticNote.GetADSREnvelope());
-			setWaveform(hapticNote.GetWaveform()); //TODO: Sloppy naming conventions...
 			
 			for (HapticNoteRecord hnr : hapticNote)
 			{
@@ -220,12 +228,24 @@ public class HIVEAudioGenerator
 	public void EnableADSR(boolean b)
 	{
 		cSetADSREnabled(b);
+		if(currentlyRecording)
+		{
+    		long currentTime = System.currentTimeMillis();
+    		recordingNote.AddRecord(new HapticNoteRecordEnableADSR(currentTime - previousRecordTime, b));
+    		previousRecordTime = currentTime;
+		}
 	}
 	
 	public void SetADSR(ADSREnvelope envelope) {SetADSR(envelope.getAttack(), envelope.getDecay(), envelope.getSustain(), envelope.getRelease());}
 	public void SetADSR(int attack, int decay, float sustain, int release)
 	{
 		cSetADSR(attack, decay, sustain, release);
+		if(currentlyRecording)
+		{
+    		long currentTime = System.currentTimeMillis();
+    		recordingNote.AddRecord(new HapticNoteRecordADSR(currentTime - previousRecordTime, new ADSREnvelope(attack, decay, sustain, release)));
+    		previousRecordTime = currentTime;
+		}
 	}
 	
 	public ADSREnvelope GetADSR()
@@ -257,6 +277,7 @@ public class HIVEAudioGenerator
 	public native void cNoteOff();
 	public native void cSetADSR(int attack, int decay, float sustain, int release);
 	public native void cSetADSREnabled(boolean b);
+	public native boolean cGetADSREnabled();
 	public native int cGetADSRAttack();
 	public native int cGetADSRDecay();
 	public native float cGetADSRSustain();

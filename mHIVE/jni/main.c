@@ -332,6 +332,11 @@ void Java_org_spin_mhive_HIVEAudioGenerator_cSetADSREnabled(JNIEnv *env, jobject
 	sem_post(&(gADSRSettings->sem));
 }
 
+jboolean Java_org_spin_mhive_HIVEAudioGenerator_cGetADSREnabled(JNIEnv *env, jobject thiz)
+{
+	return gADSRSettings->enabled;
+}
+
 jlong Java_org_spin_mhive_HIVEAudioGenerator_cGetADSRAttack(JNIEnv *env, jobject thiz)
 {
 	if(gADSRSettings != NULL)

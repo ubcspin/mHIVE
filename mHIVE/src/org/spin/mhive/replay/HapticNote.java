@@ -4,29 +4,30 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.spin.mhive.ADSREnvelope;
+import org.spin.mhive.HapticNoteRecordWaveform;
 
 public class HapticNote extends LinkedList<HapticNoteRecord>
 {
 	static int counter = 1;
 	
-	public static HapticNote NewIncrementedHapticNote(String name, ADSREnvelope adsrEnvelope, int waveform)
+	public static HapticNote NewIncrementedHapticNote(String name, ADSREnvelope adsrEnvelope, int waveform, boolean adsrEnabled)
 	{
 		name = name + counter;
 		counter += 1;
-		return new HapticNote(name, adsrEnvelope, waveform);
+		return new HapticNote(name, adsrEnvelope, waveform, adsrEnabled);
 	}
 	
 	
 	
 	String name;
-	ADSREnvelope adsrEnvelope;
-	int waveform;
 	
-	public HapticNote(String name, ADSREnvelope adsrEnvelope, int waveform)
+	public HapticNote(String name, ADSREnvelope adsrEnvelope, int waveform, boolean adsrEnabled)
 	{
 		this.name = name;
-		this.adsrEnvelope = adsrEnvelope;
-		this.waveform = waveform;
+
+		add(new HapticNoteRecordADSR(0, adsrEnvelope));
+		add(new HapticNoteRecordWaveform(0, waveform));
+		add(new HapticNoteRecordEnableADSR(0, adsrEnabled));
 	}
 	
 	
@@ -43,23 +44,4 @@ public class HapticNote extends LinkedList<HapticNoteRecord>
 		return name;
 	}
 	
-	public void SetADSREnvelope(ADSREnvelope adsrEnvelope)
-	{
-		this.adsrEnvelope = adsrEnvelope;
-	}
-	
-	public ADSREnvelope GetADSREnvelope()
-	{
-		return this.adsrEnvelope;
-	}
-	
-	public void SetWaveform(int waveform)
-	{
-		this.waveform = waveform;
-	}
-	
-	public int GetWaveform()
-	{
-		return this.waveform;
-	}
 }
