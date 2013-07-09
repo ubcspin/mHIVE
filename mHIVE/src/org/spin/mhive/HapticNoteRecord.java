@@ -7,11 +7,10 @@ package org.spin.mhive;
  *
  */
 public class HapticNoteRecord {
-	public long dt;
-	public double x, y;
-	public float target_amplitude, frequency;
+	public long dt; //time BEFORE this record
+	public float x, y, target_amplitude, frequency;
 	
-	public HapticNoteRecord(long dt, double x, double y, float target_amplitude, float frequency)
+	public HapticNoteRecord(long dt, float x,  float y, float target_amplitude, float frequency)
 	{
 		this.dt = dt;
 		this.x = x;

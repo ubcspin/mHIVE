@@ -44,6 +44,9 @@ public class MainActivity extends Activity {
     
     private HapticNoteList noteHistory;
     private ArrayAdapter<HapticNote> noteHistoryAdapter;
+    private boolean currentlyRecording = false;
+    private HapticNote recordingNote;
+    private long previousRecordTime = 0L;
     
     WaveformDialog waveformDialog;
     ADSRDialog adsrDialog;
@@ -102,16 +105,7 @@ public class MainActivity extends Activity {
 		ListView lstHistory = (ListView)findViewById(R.id.lstHistory);
 		noteHistoryAdapter = new ArrayAdapter<HapticNote>(this, android.R.layout.simple_list_item_1, noteHistory);
 		lstHistory.setAdapter(noteHistoryAdapter);
-		tglRecordButton.setOnCheckedChangeListener(new OnCheckedChangeListener(){
-														@Override
-														public void onCheckedChanged(CompoundButton buttonView,
-																boolean isChecked) {
-															if(!isChecked)
-															{
-																noteHistory.add(new HapticNote("Test"));
-																noteHistoryAdapter.notifyDataSetChanged();
-															}
-														}});
+		tglRecordButton.setOnCheckedChangeListener(new RecordingButtonCheckedListener());
     }
     
     @Override
@@ -131,8 +125,16 @@ public class MainActivity extends Activity {
 	        	int freq = (int)(xVal * (maxFreq-minFreq)) + minFreq;
 	        	float atten = yVal; //attenuation
 	        	hiveAudioGenerator.Play(freq, atten);
+	        	if(currentlyRecording)
+	        	{
+	        		long currentTime = System.currentTimeMillis();
+	        		recordingNote.AddRecord(new HapticNoteRecord(currentTime - previousRecordTime, xVal, yVal, atten, freq));
+	        		previousRecordTime = currentTime;
+	        	}
+	        	
     		} else {
     			hiveAudioGenerator.Stop();
+    			//TODO: need to have a new kind of record here.
     		}
     		
     	}
@@ -147,6 +149,11 @@ public class MainActivity extends Activity {
     public void SetWaveform(int waveform)
     {
     	hiveAudioGenerator.setWaveform(waveform);
+    }
+    
+    public int GetWaveform()
+    {
+    	return hiveAudioGenerator.getCurrentWaveform();
     }
     
     class OnWaveformDialogButtonListener implements OnClickListener
@@ -226,6 +233,26 @@ public class MainActivity extends Activity {
 			SetADSR(GetADSR());			
 		}
 		
+	}
+	
+	class RecordingButtonCheckedListener implements OnCheckedChangeListener
+	{
+		@Override
+		public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+			if(isChecked)
+			{
+				recordingNote = new HapticNote("New Recording", GetADSR(), GetWaveform());
+				previousRecordTime = System.currentTimeMillis();
+				currentlyRecording = true;
+				//TODO: Disable ADSR and Waveform
+			}
+			else
+			{
+				currentlyRecording = false;
+				noteHistory.add(recordingNote);
+				noteHistoryAdapter.notifyDataSetChanged();
+			}
+		}
 	}
     
     

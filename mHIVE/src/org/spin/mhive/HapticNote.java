@@ -7,10 +7,14 @@ public class HapticNote
 {
 	String name;
 	List<HapticNoteRecord> records = new LinkedList<HapticNoteRecord>();
+	ADSREnvelope adsrEnvelope;
+	int waveform;
 	
-	public HapticNote(String name)
+	public HapticNote(String name, ADSREnvelope adsrEnvelope, int waveform)
 	{
 		this.name = name;
+		this.adsrEnvelope = adsrEnvelope;
+		this.waveform = waveform;
 	}
 	
 	public void AddRecord(HapticNoteRecord record)
@@ -22,5 +26,25 @@ public class HapticNote
 	public String toString()
 	{
 		return name;
+	}
+	
+	public void SetADSREnvelope(ADSREnvelope adsrEnvelope)
+	{
+		this.adsrEnvelope = adsrEnvelope;
+	}
+	
+	public ADSREnvelope GetADSREnvelope()
+	{
+		return this.adsrEnvelope;
+	}
+	
+	public void SetWaveform(int waveform)
+	{
+		this.waveform = waveform;
+	}
+	
+	public int GetWaveform()
+	{
+		return this.waveform;
 	}
 }
