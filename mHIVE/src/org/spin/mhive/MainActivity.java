@@ -138,9 +138,7 @@ public class MainActivity extends Activity {
     	}
     	else if (event.getAction() == MotionEvent.ACTION_UP)
     	{
-    		//TODO: put the recording stuff in HIVEAudioGenerator!
     		hiveAudioGenerator.Stop();
-    		
     	}
 
     	return false;
