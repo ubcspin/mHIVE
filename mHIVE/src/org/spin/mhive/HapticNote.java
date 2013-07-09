@@ -5,6 +5,17 @@ import java.util.List;
 
 public class HapticNote extends LinkedList<HapticNoteRecord>
 {
+	static int counter = 1;
+	
+	static HapticNote NewIncrementedHapticNote(String name, ADSREnvelope adsrEnvelope, int waveform)
+	{
+		name = name + counter;
+		counter += 1;
+		return new HapticNote(name, adsrEnvelope, waveform);
+	}
+	
+	
+	
 	String name;
 	ADSREnvelope adsrEnvelope;
 	int waveform;
@@ -15,6 +26,9 @@ public class HapticNote extends LinkedList<HapticNoteRecord>
 		this.adsrEnvelope = adsrEnvelope;
 		this.waveform = waveform;
 	}
+	
+	
+	
 	
 	public void AddRecord(HapticNoteRecord record)
 	{

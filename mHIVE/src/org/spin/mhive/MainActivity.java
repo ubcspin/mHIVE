@@ -244,7 +244,7 @@ public class MainActivity extends Activity {
 		public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 			if(isChecked)
 			{
-				recordingNote = new HapticNote("New Recording", GetADSR(), GetWaveform());
+				recordingNote = HapticNote.NewIncrementedHapticNote("Recording ", GetADSR(), GetWaveform());
 				previousRecordTime = System.currentTimeMillis();
 				currentlyRecording = true;
 				//TODO: Disable ADSR and Waveform
