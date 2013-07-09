@@ -7,5 +7,9 @@
     <string name="waveform_text_square">Square</string>
     <string name="waveform_text_sawup">SawUp</string>
     <string name="waveform_text_triangle">Triangle</string>
+    <string name="attack">Attack</string>
+    <string name="decay">Decay</string>
+    <string name="sustain">Sustain</string>
+    <string name="release">Release</string>
 
 </resources>
