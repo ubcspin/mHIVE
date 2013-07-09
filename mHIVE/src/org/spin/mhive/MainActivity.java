@@ -12,6 +12,8 @@ import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Adapter;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -106,6 +108,7 @@ public class MainActivity extends Activity {
 		noteHistoryAdapter = new ArrayAdapter<HapticNote>(this, android.R.layout.simple_list_item_1, noteHistory);
 		lstHistory.setAdapter(noteHistoryAdapter);
 		tglRecordButton.setOnCheckedChangeListener(new RecordingButtonCheckedListener());
+		lstHistory.setOnItemClickListener(new HistoryItemSelectedListener());
     }
     
     @Override
@@ -253,6 +256,16 @@ public class MainActivity extends Activity {
 				noteHistoryAdapter.notifyDataSetChanged();
 			}
 		}
+	}
+	
+	
+	class HistoryItemSelectedListener implements AdapterView.OnItemClickListener
+	{
+		@Override
+		public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
+			hiveAudioGenerator.Replay(noteHistory.get(position));
+		}
+		
 	}
     
     

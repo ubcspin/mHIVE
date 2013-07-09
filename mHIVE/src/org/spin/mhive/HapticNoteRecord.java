@@ -8,9 +8,10 @@ package org.spin.mhive;
  */
 public class HapticNoteRecord {
 	public long dt; //time BEFORE this record
-	public float x, y, target_amplitude, frequency;
+	int frequency;
+	public float x, y, target_amplitude;
 	
-	public HapticNoteRecord(long dt, float x,  float y, float target_amplitude, float frequency)
+	public HapticNoteRecord(long dt, float x,  float y, float target_amplitude, int frequency)
 	{
 		this.dt = dt;
 		this.x = x;

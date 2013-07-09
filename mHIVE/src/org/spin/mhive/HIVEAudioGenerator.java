@@ -23,6 +23,8 @@ public class HIVEAudioGenerator
 	private boolean playing = false;
 	public final String TAG = "HIVEAudioGenerator";
 	
+	ReplayThread replayThread;
+	
 	static {
     	System.loadLibrary("fmodex");
     	System.loadLibrary("main");
@@ -105,6 +107,68 @@ public class HIVEAudioGenerator
 		Stop();
 		cEnd();
     	mFMODAudioDevice.stop();
+	}
+	
+	/*
+	 *REPLAYING METHODS AND CLASSES 
+	 */
+	public void Replay(HapticNote hapticNote)
+	{
+		StopReplay();
+		replayThread = new ReplayThread(hapticNote);
+		replayThread.start();
+	}
+	
+	public void StopReplay()
+	{
+		if(null != replayThread)
+		{
+			replayThread.stopPlaying();
+		}
+	}
+	
+	class ReplayThread extends Thread
+	{
+		
+		HapticNote hapticNote;
+		boolean running = true;
+		
+		public ReplayThread(HapticNote hapticNote)
+		{
+			this.hapticNote = hapticNote;
+		}
+		
+		@Override
+		public void run()
+		{
+			Stop();
+			SetADSR(hapticNote.GetADSREnvelope());
+			setWaveform(hapticNote.GetWaveform()); //TODO: Sloppy naming conventions...
+			
+			for (HapticNoteRecord hnr : hapticNote)
+			{
+				try {
+					sleep(hnr.dt);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				Play(hnr.frequency, hnr.target_amplitude);
+				
+				if(!running)
+				{
+					break; //TODO: break should probably be reworked
+				}
+			}
+			
+			Stop();
+		}
+		
+		public void stopPlaying()
+		{
+			running = false;
+		}
 	}
 	
 	

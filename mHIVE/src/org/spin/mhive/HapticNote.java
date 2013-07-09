@@ -3,10 +3,9 @@ package org.spin.mhive;
 import java.util.LinkedList;
 import java.util.List;
 
-public class HapticNote
+public class HapticNote extends LinkedList<HapticNoteRecord>
 {
 	String name;
-	List<HapticNoteRecord> records = new LinkedList<HapticNoteRecord>();
 	ADSREnvelope adsrEnvelope;
 	int waveform;
 	
@@ -19,7 +18,7 @@ public class HapticNote
 	
 	public void AddRecord(HapticNoteRecord record)
 	{
-		this.records.add(record);
+		add(record);
 	}
 	
 	@Override
