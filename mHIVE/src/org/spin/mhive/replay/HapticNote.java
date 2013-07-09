@@ -1,13 +1,15 @@
-package org.spin.mhive;
+package org.spin.mhive.replay;
 
 import java.util.LinkedList;
 import java.util.List;
+
+import org.spin.mhive.ADSREnvelope;
 
 public class HapticNote extends LinkedList<HapticNoteRecord>
 {
 	static int counter = 1;
 	
-	static HapticNote NewIncrementedHapticNote(String name, ADSREnvelope adsrEnvelope, int waveform)
+	public static HapticNote NewIncrementedHapticNote(String name, ADSREnvelope adsrEnvelope, int waveform)
 	{
 		name = name + counter;
 		counter += 1;

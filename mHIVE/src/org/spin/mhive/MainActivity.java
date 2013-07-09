@@ -2,6 +2,11 @@ package org.spin.mhive;
 
 import org.spin.mhive.ADSRDialog.ADSRDialogSeekBarChangeListener;
 import org.spin.mhive.WaveformDialog.OnWaveformDialogButtonListener;
+import org.spin.mhive.replay.HapticNote;
+import org.spin.mhive.replay.HapticNoteList;
+import org.spin.mhive.replay.HapticNoteRecord;
+import org.spin.mhive.replay.HapticNoteRecordPlay;
+import org.spin.mhive.replay.HapticNoteRecordStop;
 
 import com.example.mhive.R;
 
@@ -131,19 +136,31 @@ public class MainActivity extends Activity {
 	        	if(currentlyRecording)
 	        	{
 	        		long currentTime = System.currentTimeMillis();
-	        		recordingNote.AddRecord(new HapticNoteRecord(currentTime - previousRecordTime, xVal, yVal, atten, freq));
+	        		recordingNote.AddRecord(new HapticNoteRecordPlay(currentTime - previousRecordTime, atten, freq));
 	        		previousRecordTime = currentTime;
 	        	}
 	        	
     		} else {
     			hiveAudioGenerator.Stop();
-    			//TODO: need to have a new kind of record here.
+    			if(currentlyRecording)
+    			{
+	        		long currentTime = System.currentTimeMillis();
+	        		recordingNote.AddRecord(new HapticNoteRecordStop(currentTime - previousRecordTime));
+	        		previousRecordTime = currentTime;
+    			}
     		}
     		
     	}
     	else if (event.getAction() == MotionEvent.ACTION_UP)
     	{
+    		//TODO: put the recording stuff in HIVEAudioGenerator!
     		hiveAudioGenerator.Stop();
+    		if(currentlyRecording)
+			{
+        		long currentTime = System.currentTimeMillis();
+        		recordingNote.AddRecord(new HapticNoteRecordStop(currentTime - previousRecordTime));
+        		previousRecordTime = currentTime;
+			}
     	}
 
     	return false;

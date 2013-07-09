@@ -1,6 +1,8 @@
 package org.spin.mhive;
 
 import org.fmod.FMODAudioDevice;
+import org.spin.mhive.replay.HapticNote;
+import org.spin.mhive.replay.HapticNoteRecord;
 
 import android.R;
 import java.lang.UnsupportedOperationException;;
@@ -115,7 +117,7 @@ public class HIVEAudioGenerator
 	public void Replay(HapticNote hapticNote)
 	{
 		StopReplay();
-		replayThread = new ReplayThread(hapticNote);
+		replayThread = new ReplayThread(this, hapticNote);
 		replayThread.start();
 	}
 	
@@ -131,10 +133,12 @@ public class HIVEAudioGenerator
 	{
 		
 		HapticNote hapticNote;
+		HIVEAudioGenerator parent;
 		boolean running = true;
 		
-		public ReplayThread(HapticNote hapticNote)
+		public ReplayThread(HIVEAudioGenerator parent, HapticNote hapticNote)
 		{
+			this.parent = parent;
 			this.hapticNote = hapticNote;
 		}
 		
@@ -154,7 +158,7 @@ public class HIVEAudioGenerator
 					e.printStackTrace();
 				}
 				
-				Play(hnr.frequency, hnr.target_amplitude);
+				hnr.PerformAction(parent);
 				
 				if(!running)
 				{
@@ -162,7 +166,7 @@ public class HIVEAudioGenerator
 				}
 			}
 			
-			Stop();
+//			Stop();
 		}
 		
 		public void stopPlaying()

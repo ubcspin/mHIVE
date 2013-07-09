@@ -1,4 +1,4 @@
-package org.spin.mhive;
+package org.spin.mhive.replay;
 
 import java.util.LinkedList;
 
