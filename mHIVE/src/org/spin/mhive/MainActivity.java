@@ -51,9 +51,6 @@ public class MainActivity extends Activity {
     
     private HapticNoteList noteHistory;
     private ArrayAdapter<HapticNote> noteHistoryAdapter;
-    private boolean currentlyRecording = false;
-    private HapticNote recordingNote;
-    private long previousRecordTime = 0L;
     
     WaveformDialog waveformDialog;
     ADSRDialog adsrDialog;
@@ -133,21 +130,9 @@ public class MainActivity extends Activity {
 	        	int freq = (int)(xVal * (maxFreq-minFreq)) + minFreq;
 	        	float atten = yVal; //attenuation
 	        	hiveAudioGenerator.Play(freq, atten);
-	        	if(currentlyRecording)
-	        	{
-	        		long currentTime = System.currentTimeMillis();
-	        		recordingNote.AddRecord(new HapticNoteRecordPlay(currentTime - previousRecordTime, atten, freq));
-	        		previousRecordTime = currentTime;
-	        	}
 	        	
     		} else {
     			hiveAudioGenerator.Stop();
-    			if(currentlyRecording)
-    			{
-	        		long currentTime = System.currentTimeMillis();
-	        		recordingNote.AddRecord(new HapticNoteRecordStop(currentTime - previousRecordTime));
-	        		previousRecordTime = currentTime;
-    			}
     		}
     		
     	}
@@ -155,12 +140,7 @@ public class MainActivity extends Activity {
     	{
     		//TODO: put the recording stuff in HIVEAudioGenerator!
     		hiveAudioGenerator.Stop();
-    		if(currentlyRecording)
-			{
-        		long currentTime = System.currentTimeMillis();
-        		recordingNote.AddRecord(new HapticNoteRecordStop(currentTime - previousRecordTime));
-        		previousRecordTime = currentTime;
-			}
+    		
     	}
 
     	return false;
@@ -261,15 +241,12 @@ public class MainActivity extends Activity {
 		public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 			if(isChecked)
 			{
-				recordingNote = HapticNote.NewIncrementedHapticNote("Recording ", GetADSR(), GetWaveform());
-				previousRecordTime = System.currentTimeMillis();
-				currentlyRecording = true;
+				hiveAudioGenerator.StartRecording();
 				//TODO: Disable ADSR and Waveform
 			}
 			else
 			{
-				currentlyRecording = false;
-				noteHistory.add(recordingNote);
+				noteHistory.add(hiveAudioGenerator.StopRecording());
 				noteHistoryAdapter.notifyDataSetChanged();
 			}
 		}

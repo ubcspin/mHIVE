@@ -3,6 +3,8 @@ package org.spin.mhive;
 import org.fmod.FMODAudioDevice;
 import org.spin.mhive.replay.HapticNote;
 import org.spin.mhive.replay.HapticNoteRecord;
+import org.spin.mhive.replay.HapticNoteRecordPlay;
+import org.spin.mhive.replay.HapticNoteRecordStop;
 
 import android.R;
 import java.lang.UnsupportedOperationException;;
@@ -26,6 +28,9 @@ public class HIVEAudioGenerator
 	public final String TAG = "HIVEAudioGenerator";
 	
 	ReplayThread replayThread;
+    private boolean currentlyRecording = false;
+    private HapticNote recordingNote;
+    private long previousRecordTime = 0L;
 	
 	static {
     	System.loadLibrary("fmodex");
@@ -90,6 +95,13 @@ public class HIVEAudioGenerator
     	
 		cSetChannelFrequency(freq);
 		cSetChannelVolume(atten);
+		
+		if(currentlyRecording)
+    	{
+    		long currentTime = System.currentTimeMillis();
+    		recordingNote.AddRecord(new HapticNoteRecordPlay(currentTime - previousRecordTime, atten, freq));
+    		previousRecordTime = currentTime;
+    	}
 
 	}
 	
@@ -101,7 +113,13 @@ public class HIVEAudioGenerator
 	    	playing = false;
 	    	cNoteOff();
 		}
-
+		
+		if(currentlyRecording)
+		{
+    		long currentTime = System.currentTimeMillis();
+    		recordingNote.AddRecord(new HapticNoteRecordStop(currentTime - previousRecordTime));
+    		previousRecordTime = currentTime;
+		}
 	}
 	
 	public void Close()
@@ -114,11 +132,29 @@ public class HIVEAudioGenerator
 	/*
 	 *REPLAYING METHODS AND CLASSES 
 	 */
+	
+	public void StartRecording()
+	{
+		recordingNote = HapticNote.NewIncrementedHapticNote("Recording ", GetADSR(), getCurrentWaveform());
+		previousRecordTime = System.currentTimeMillis();
+		currentlyRecording = true;
+	}
+	
+	public HapticNote StopRecording()
+	{
+		currentlyRecording = false;
+		return recordingNote;
+	}
+	
+	
 	public void Replay(HapticNote hapticNote)
 	{
-		StopReplay();
-		replayThread = new ReplayThread(this, hapticNote);
-		replayThread.start();
+		//if(!currentlyRecording)
+		//{
+			StopReplay();
+			replayThread = new ReplayThread(this, hapticNote);
+			replayThread.start();
+		//}
 	}
 	
 	public void StopReplay()
