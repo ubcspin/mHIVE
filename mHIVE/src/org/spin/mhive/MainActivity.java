@@ -11,6 +11,7 @@ import org.spin.mhive.replay.HapticNoteRecordStop;
 import com.example.mhive.R;
 
 import android.app.Activity;
+import android.app.FragmentTransaction;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.view.Display;
@@ -54,6 +55,7 @@ public class MainActivity extends Activity {
     
     WaveformDialog waveformDialog;
     ADSRDialog adsrDialog;
+    RenameDialog renameDialog;
     
 
     @Override
@@ -111,6 +113,11 @@ public class MainActivity extends Activity {
 		lstHistory.setAdapter(noteHistoryAdapter);
 		tglRecordButton.setOnCheckedChangeListener(new RecordingButtonCheckedListener());
 		lstHistory.setOnItemClickListener(new HistoryItemSelectedListener());
+		lstHistory.setOnItemLongClickListener(new HistoryItemLongSelectedListener());
+		
+		//set up rename dialog
+		renameDialog = new RenameDialog();
+
     }
     
     @Override
@@ -256,6 +263,20 @@ public class MainActivity extends Activity {
 		@Override
 		public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
 			hiveAudioGenerator.Replay(noteHistory.get(position));
+		}
+		
+	}
+	
+	class HistoryItemLongSelectedListener implements AdapterView.OnItemLongClickListener
+	{
+
+		@Override
+		public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int position, long arg3)
+		{
+		    FragmentTransaction ft = getFragmentManager().beginTransaction();
+			renameDialog.SetParameters(noteHistoryAdapter, noteHistory.get(position));
+			renameDialog.show(ft, "RenameDialog");
+			return true;
 		}
 		
 	}

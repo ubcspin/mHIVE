@@ -31,7 +31,15 @@ public class HapticNote extends LinkedList<HapticNoteRecord>
 	}
 	
 	
+	public String GetName()
+	{
+		return name;
+	}
 	
+	public void SetName(String newname)
+	{
+		name = newname;
+	}
 	
 	public void AddRecord(HapticNoteRecord record)
 	{
