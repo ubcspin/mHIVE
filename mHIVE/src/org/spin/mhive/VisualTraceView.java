@@ -81,7 +81,8 @@ public class VisualTraceView extends TextView {
 		{
 			ptList.remove(0);
 		}
-		invalidate();
+		
+		updateDisplayPoints();
 	}
 	
 	public synchronized void addPoint(float x, float y)
@@ -93,32 +94,44 @@ public class VisualTraceView extends TextView {
 			displayPts = new float[ptList.size()*4 - 4];
 		}
 		
-		
-		//we need 2 floats for the first point record (x, y)
-		displayPts[0] = ptList.get(0).x;
-		displayPts[1] = ptList.get(0).y;
-		
-		for(int i = 1; i < ptList.size()-1; i++)
-		{
-			//4 floats for every point record in the middle (x, y, x, y),
-			//    since we need to give a finish and a start
-			int displayPtsInt = 2 + 4*(i-1);
-			displayPts[displayPtsInt] = ptList.get(i).x;
-			displayPts[displayPtsInt+1] = ptList.get(i).y;
-			displayPts[displayPtsInt+2] = ptList.get(i).x;
-			displayPts[displayPtsInt+3] = ptList.get(i).y;
-		}
-		
-		//then, get final point. Only need x, y for this one.
-		displayPts[displayPts.length-2] = ptList.get(ptList.size()-1).x;
-		displayPts[displayPts.length-1] = ptList.get(ptList.size()-1).y;
+		updateDisplayPoints();
 	}
 	
+	
+	public synchronized void updateDisplayPoints()
+	{
+		//we need 2 floats for the first point record (x, y)
+		
+		if(ptList.size() >= 2)
+		{
+			displayPts[0] = ptList.get(0).x;
+			displayPts[1] = ptList.get(0).y;
+			
+			for(int i = 1; i < ptList.size()-1; i++)
+			{
+				//4 floats for every point record in the middle (x, y, x, y),
+				//    since we need to give a finish and a start
+				int displayPtsInt = 2 + 4*(i-1);
+				displayPts[displayPtsInt] = ptList.get(i).x;
+				displayPts[displayPtsInt+1] = ptList.get(i).y;
+				displayPts[displayPtsInt+2] = ptList.get(i).x;
+				displayPts[displayPtsInt+3] = ptList.get(i).y;
+			}
+			
+			//then, get final point. Only need x, y for this one.
+			displayPts[displayPts.length-2] = ptList.get(ptList.size()-1).x;
+			displayPts[displayPts.length-1] = ptList.get(ptList.size()-1).y;
+		} else {
+			displayPts = new float[0];
+		}
+		
+		invalidate();
+	}
 	
 	@Override
 	public void onDraw(Canvas c)
 	{
-		if(ptList.size() >= 4)
+		if(displayPts.length >= 4)
 		{
 			c.drawLines(displayPts, paint);
 		}
