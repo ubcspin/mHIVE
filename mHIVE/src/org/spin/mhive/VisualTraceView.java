@@ -4,14 +4,13 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Timer;
+import java.util.TimerTask;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.os.Handler;
 import android.util.AttributeSet;
-import android.view.DragEvent;
-import android.view.MotionEvent;
-import android.view.View;
 import android.widget.TextView;
 
 public class VisualTraceView extends TextView {
@@ -21,7 +20,9 @@ public class VisualTraceView extends TextView {
 	float[] displayPts;
 	final int INITIAL_ARRAY_SIZE = 4;
 	final int DECAY_TIME_IN_MS = 1000;
-	
+	final int DECAY_UPDATE_RATE_IN_MS = 10;
+	Handler uiHandler;
+	Runnable uiUpdateDecay;
 	
 	public VisualTraceView(Context context) {
 		super(context);
@@ -48,11 +49,42 @@ public class VisualTraceView extends TextView {
 		ptList = new ArrayList<PointRecord>();
 		displayPts = new float[INITIAL_ARRAY_SIZE];
 		
-		//Timer delayTimer = new Timer();
-
+		uiHandler = new Handler();
+		uiUpdateDecay = new Thread()
+		{
+			@Override
+			public void run()
+			{
+				updateDecay();
+			}
+		};
+		
+		
+		Timer delayTimer = new Timer();
+		delayTimer.scheduleAtFixedRate(new DecayUpdateTask(), DECAY_UPDATE_RATE_IN_MS, DECAY_UPDATE_RATE_IN_MS);
 	}
 	
-	public void addPoint(float x, float y)
+	class DecayUpdateTask extends TimerTask {
+
+		@Override
+		public void run()
+		{
+			uiHandler.post(uiUpdateDecay);
+		}
+	}
+	
+	
+	public synchronized void updateDecay()
+	{
+		long t = System.currentTimeMillis();
+		while(ptList.size() > 0 && ptList.get(0).t < t-DECAY_TIME_IN_MS)
+		{
+			ptList.remove(0);
+		}
+		invalidate();
+	}
+	
+	public synchronized void addPoint(float x, float y)
 	{
 		ptList.add(new PointRecord(System.currentTimeMillis(), x, y));
 		
@@ -80,8 +112,6 @@ public class VisualTraceView extends TextView {
 		//then, get final point. Only need x, y for this one.
 		displayPts[displayPts.length-2] = ptList.get(ptList.size()-1).x;
 		displayPts[displayPts.length-1] = ptList.get(ptList.size()-1).y;
-		
-		invalidate();
 	}
 	
 	
@@ -91,7 +121,6 @@ public class VisualTraceView extends TextView {
 		if(ptList.size() >= 4)
 		{
 			c.drawLines(displayPts, paint);
-			//c.drawLines(displayPts, 0, ptList.size()*4, paint);
 		}
 	}
 	
