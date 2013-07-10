@@ -1,5 +1,8 @@
 package org.spin.mhive;
 
+import java.util.LinkedList;
+import java.util.Timer;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -12,9 +15,9 @@ import android.widget.TextView;
 public class VisualTraceView extends TextView {
 
 	Paint paint;
-	float[] pts;
-	final int MAX_SIZE = 100;
-	int i = 0;
+	LinkedList<Float> ptList;
+	float[] displayPts;
+	final int INITIAL_ARRAY_SIZE = 100;
 	
 	public VisualTraceView(Context context) {
 		super(context);
@@ -35,37 +38,35 @@ public class VisualTraceView extends TextView {
 	private void init()
 	{
 		paint = new Paint();
-		paint.setARGB(255, 255, 255, 255);
-		pts = new float[MAX_SIZE];
+		paint.setStyle(Paint.Style.STROKE);
+		paint.setStrokeWidth(10);
+		paint.setARGB(127, 255, 255, 255);
+		ptList = new LinkedList<Float>();
+		displayPts = new float[INITIAL_ARRAY_SIZE];
 		
-//		this.setOnDragListener(new OnDragListener()
-//		{
-//
-//			@Override
-//			public boolean onDrag(View v, DragEvent event) {
-//				addPoint(event.getX(), event.getY());
-//				return false;
-//			}
-//			
-//		});
-//		
-//		this.setOnTouchListener(new OnTouchListener()
-//						{
-//				
-//							@Override
-//							public boolean onTouch(View view, MotionEvent event)
-//							{
-//								addPoint(event.getX(), event.getY());
-//								return false;
-//							}
-//							
-//						});
+		//Timer delayTimer = new Timer();
+
 	}
 	
 	public void addPoint(float x, float y)
 	{
-		pts[(i++)%MAX_SIZE]=x;
-		pts[(i++)%MAX_SIZE]=y;
+		ptList.add(x);
+		ptList.add(y);
+		
+		if(displayPts.length <= ptList.size())
+		{
+			displayPts = new float[ptList.size()*4];
+		}
+		
+		displayPts[0] = ptList.get(0);
+		displayPts[1] = ptList.get(1);
+		for(int i = 2; i < ptList.size(); i+=4)
+		{
+			displayPts[i] = ptList.get(i);
+			displayPts[i+1] = ptList.get(i+1);
+			displayPts[i+2] = ptList.get(i);
+			displayPts[i+3] = ptList.get(i+1);
+		}
 		invalidate();
 	}
 	
@@ -73,9 +74,9 @@ public class VisualTraceView extends TextView {
 	@Override
 	public void onDraw(Canvas c)
 	{
-		if(pts.length >= 4)
+		if(ptList.size() >= 4)
 		{
-			c.drawLines(pts, paint);
+			c.drawLines(displayPts, paint);
 		}
 	}
 	
