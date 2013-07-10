@@ -16,7 +16,7 @@
         android:layout_weight="100" >
     
 			<!-- Main input View -->    
-		    <TextView
+		    <org.spin.mhive.VisualTraceView
 		        android:id="@+id/fullscreen_content"
 		        android:layout_width="match_parent"
 		        android:layout_height="match_parent"
