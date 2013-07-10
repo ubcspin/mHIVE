@@ -1,5 +1,8 @@
 package org.spin.mhive;
 
+import java.util.Observable;
+import java.util.Observer;
+
 import org.spin.mhive.ADSRDialog.ADSRDialogSeekBarChangeListener;
 import org.spin.mhive.WaveformDialog.OnWaveformDialogButtonListener;
 import org.spin.mhive.replay.HapticNote;
@@ -18,6 +21,7 @@ import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -39,7 +43,7 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
  *
  * @see SystemUiHider
  */
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements Observer {
 
     private int minFreq = 20;
     private int maxFreq = 140;
@@ -48,6 +52,8 @@ public class MainActivity extends Activity {
 	private SeekBar seekAttack, seekDecay, seekSustain, seekRelease;
 	private final int MAX_MS = 1000;
     
+	ToggleButton tglADSR;
+	
     private HIVEAudioGenerator hiveAudioGenerator;
     
     private HapticNoteList noteHistory;
@@ -84,11 +90,12 @@ public class MainActivity extends Activity {
 		
     	
     	//setup ADSR toggle button
-    	ToggleButton tglADSR = (ToggleButton)findViewById(R.id.tglADSR);
-    	tglADSR.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+    	tglADSR = (ToggleButton)findViewById(R.id.tglADSR);
+    	tglADSR.setOnTouchListener(new OnTouchListener() {
 				@Override
-				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-					hiveAudioGenerator.EnableADSR(isChecked);
+				public boolean onTouch(View v, MotionEvent event) {
+					hiveAudioGenerator.EnableADSR(tglADSR.isChecked());
+					return true;
 				}
 			});
     	tglADSR.setChecked(true);
@@ -117,7 +124,9 @@ public class MainActivity extends Activity {
 		
 		//set up rename dialog
 		renameDialog = new RenameDialog();
-
+		
+		hiveAudioGenerator.addObserver(this);
+		update(hiveAudioGenerator, null);
     }
     
     @Override
@@ -156,6 +165,25 @@ public class MainActivity extends Activity {
     	hiveAudioGenerator.setWaveform(waveform);
     }
     
+    public void SetWaveformUIElements(int waveform)
+    {
+    	switch(waveform)
+    	{
+    		case HIVEAudioGenerator.OSCILLATOR_SINE:
+    			((RadioButton)findViewById(R.id.btnWaveformSelectSine)).setChecked(true);
+    			break;
+    		case HIVEAudioGenerator.OSCILLATOR_SQUARE:
+    			((RadioButton)findViewById(R.id.btnWaveformSelectSquare)).setChecked(true);
+    			break;
+    		case HIVEAudioGenerator.OSCILLATOR_SAWUP:
+    			((RadioButton)findViewById(R.id.btnWaveformSelectSawUp)).setChecked(true);
+    			break;
+    		case HIVEAudioGenerator.OSCILLATOR_TRIANGLE:
+    			((RadioButton)findViewById(R.id.btnWaveformSelectTriangle)).setChecked(true);
+    			break;
+    	}
+    }
+    
     public int GetWaveform()
     {
     	return hiveAudioGenerator.getCurrentWaveform();
@@ -180,6 +208,10 @@ public class MainActivity extends Activity {
     public void SetADSR(ADSREnvelope envelope)
     {
     	hiveAudioGenerator.SetADSR(envelope);
+    }
+    
+    public void SetADSRUIElements(ADSREnvelope envelope)
+    {
 		if(seekAttack != null)
 		{
 			seekAttack.setMax(MAX_MS);
@@ -279,6 +311,20 @@ public class MainActivity extends Activity {
 			return true;
 		}
 		
+	}
+
+	public void SetADSREnabledUIElements(boolean b)
+	{
+		tglADSR.setChecked(b);
+	}
+	
+
+	@Override
+	public void update(Observable observable, Object data)
+	{
+		SetADSRUIElements(GetADSR());
+		SetWaveformUIElements(GetWaveform());
+		SetADSREnabledUIElements(hiveAudioGenerator.GetADSREnabled());
 	}
     
     
