@@ -19,7 +19,7 @@ public class VisualTraceView extends TextView {
 	List<PointRecord> ptList;
 	float[] displayPts;
 	final int INITIAL_ARRAY_SIZE = 4;
-	final int DECAY_TIME_IN_MS = 1000;
+	final int DECAY_TIME_IN_MS = 500;
 	final int DECAY_UPDATE_RATE_IN_MS = 10;
 	Handler uiHandler;
 	Runnable uiUpdateDecay;
