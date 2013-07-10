@@ -48,7 +48,7 @@ public class MainActivity extends Activity implements Observer {
 
     private int minFreq = 20;
     private int maxFreq = 140;
-    private View mainInputView;
+    private VisualTraceView mainInputView;
     
 	private SeekBar seekAttack, seekDecay, seekSustain, seekRelease;
 	private final int MAX_MS = 1000;
@@ -88,7 +88,7 @@ public class MainActivity extends Activity implements Observer {
         Point size = new Point();
         display.getSize(size);
         
-    	mainInputView = findViewById(R.id.fullscreen_content);
+    	mainInputView = (VisualTraceView)findViewById(R.id.fullscreen_content);
     	
     	//set up Audio Generator
     	hiveAudioGenerator = new HIVEAudioGenerator();
@@ -159,6 +159,8 @@ public class MainActivity extends Activity implements Observer {
 	        	int freq = (int)(xVal * (maxFreq-minFreq)) + minFreq;
 	        	float atten = yVal; //attenuation
 	        	hiveAudioGenerator.Play(freq, atten);
+	        	
+	        	mainInputView.addPoint(event.getX(), event.getY());
 	        	
     		} else {
     			hiveAudioGenerator.Stop();
