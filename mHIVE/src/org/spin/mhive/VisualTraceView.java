@@ -89,21 +89,19 @@ public class VisualTraceView extends TextView {
 	{
 		ptList.add(new PointRecord(System.currentTimeMillis(), x, y));
 		
-		if(displayPts.length <= ptList.size()*4 - 4)
-		{
-			displayPts = new float[ptList.size()*4 - 4];
-		}
-		
 		updateDisplayPoints();
 	}
 	
 	
 	public synchronized void updateDisplayPoints()
 	{
-		//we need 2 floats for the first point record (x, y)
 		
 		if(ptList.size() >= 2)
 		{
+			//inefficient but keeping it around causes bugs
+			displayPts = new float[ptList.size()*4 - 4];
+			
+			//we need 2 floats for the first point record (x, y)
 			displayPts[0] = ptList.get(0).x;
 			displayPts[1] = ptList.get(0).y;
 			
@@ -139,7 +137,7 @@ public class VisualTraceView extends TextView {
 	
 	
 	//TODO: Should this be in a different (non-class) structure for efficiency?
-	class PointRecord
+	class PointRecord implements Comparable<PointRecord>
 	{
 		public long t;
 		public float x, y;
@@ -148,6 +146,12 @@ public class VisualTraceView extends TextView {
 			this.t = t;
 			this.x = x;
 			this.y = y;
+		}
+		
+		
+		@Override
+		public int compareTo(PointRecord another) {
+			return (int) (t - another.t);
 		}
 	}
 

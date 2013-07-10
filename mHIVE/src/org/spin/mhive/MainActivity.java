@@ -159,9 +159,7 @@ public class MainActivity extends Activity implements Observer {
 	        	int freq = (int)(xVal * (maxFreq-minFreq)) + minFreq;
 	        	float atten = yVal; //attenuation
 	        	hiveAudioGenerator.Play(freq, atten);
-	        	
-	        	mainInputView.addPoint(event.getX(), event.getY());
-	        	
+	        		        	
     		} else {
     			hiveAudioGenerator.Stop();
     		}
@@ -171,6 +169,8 @@ public class MainActivity extends Activity implements Observer {
     	{
     		hiveAudioGenerator.Stop();
     	}
+
+    	mainInputView.addPoint(event.getX(), event.getY());
 
     	return false;
     }
