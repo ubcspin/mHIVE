@@ -4,7 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.spin.mhive.ADSREnvelope;
-import org.spin.mhive.HapticNoteRecordWaveform;
 
 public class HapticNote extends LinkedList<HapticNoteRecord>
 {

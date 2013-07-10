@@ -7,6 +7,7 @@ import org.spin.mhive.replay.HapticNoteRecordADSR;
 import org.spin.mhive.replay.HapticNoteRecordEnableADSR;
 import org.spin.mhive.replay.HapticNoteRecordPlay;
 import org.spin.mhive.replay.HapticNoteRecordStop;
+import org.spin.mhive.replay.HapticNoteRecordWaveform;
 
 import android.R;
 import java.lang.UnsupportedOperationException;;
