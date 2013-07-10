@@ -76,7 +76,7 @@ public class MainActivity extends Activity implements Observer {
 			@Override
 			public void run()
 			{
-				SetADSRUIElements(GetADSR());
+				SetADSRUIElements(hiveAudioGenerator.GetADSR());
 				SetWaveformUIElements(GetWaveform());
 				SetADSREnabledUIElements(hiveAudioGenerator.GetADSREnabled());
 			}
@@ -251,7 +251,7 @@ public class MainActivity extends Activity implements Observer {
 		}
     }
     
-	public ADSREnvelope GetADSR()
+	public ADSREnvelope GetUIADSR()
 	{
 		return new ADSREnvelope((int)((float)seekAttack.getProgress()/(float)seekAttack.getMax()*(float)MAX_MS), 
 				(int)((float)seekDecay.getProgress()/(float)seekDecay.getMax()*(float)MAX_MS),
@@ -281,7 +281,7 @@ public class MainActivity extends Activity implements Observer {
 		@Override
 		public void onStopTrackingTouch(SeekBar arg0)
 		{
-			SetADSR(GetADSR());			
+			SetADSR(GetUIADSR());			
 		}
 		
 	}
