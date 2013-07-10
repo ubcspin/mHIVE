@@ -1,6 +1,8 @@
 package org.spin.mhive;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Timer;
 
 import android.content.Context;
@@ -15,9 +17,11 @@ import android.widget.TextView;
 public class VisualTraceView extends TextView {
 
 	Paint paint;
-	LinkedList<Float> ptList;
+	List<PointRecord> ptList;
 	float[] displayPts;
-	final int INITIAL_ARRAY_SIZE = 100;
+	final int INITIAL_ARRAY_SIZE = 4;
+	final int DECAY_TIME_IN_MS = 1000;
+	
 	
 	public VisualTraceView(Context context) {
 		super(context);
@@ -41,7 +45,7 @@ public class VisualTraceView extends TextView {
 		paint.setStyle(Paint.Style.STROKE);
 		paint.setStrokeWidth(10);
 		paint.setARGB(127, 255, 255, 255);
-		ptList = new LinkedList<Float>();
+		ptList = new ArrayList<PointRecord>();
 		displayPts = new float[INITIAL_ARRAY_SIZE];
 		
 		//Timer delayTimer = new Timer();
@@ -50,23 +54,33 @@ public class VisualTraceView extends TextView {
 	
 	public void addPoint(float x, float y)
 	{
-		ptList.add(x);
-		ptList.add(y);
+		ptList.add(new PointRecord(System.currentTimeMillis(), x, y));
 		
-		if(displayPts.length <= ptList.size())
+		if(displayPts.length <= ptList.size()*4 - 4)
 		{
-			displayPts = new float[ptList.size()*4];
+			displayPts = new float[ptList.size()*4 - 4];
 		}
 		
-		displayPts[0] = ptList.get(0);
-		displayPts[1] = ptList.get(1);
-		for(int i = 2; i < ptList.size(); i+=4)
+		
+		//we need 2 floats for the first point record (x, y)
+		displayPts[0] = ptList.get(0).x;
+		displayPts[1] = ptList.get(0).y;
+		
+		for(int i = 1; i < ptList.size()-1; i++)
 		{
-			displayPts[i] = ptList.get(i);
-			displayPts[i+1] = ptList.get(i+1);
-			displayPts[i+2] = ptList.get(i);
-			displayPts[i+3] = ptList.get(i+1);
+			//4 floats for every point record in the middle (x, y, x, y),
+			//    since we need to give a finish and a start
+			int displayPtsInt = 2 + 4*(i-1);
+			displayPts[displayPtsInt] = ptList.get(i).x;
+			displayPts[displayPtsInt+1] = ptList.get(i).y;
+			displayPts[displayPtsInt+2] = ptList.get(i).x;
+			displayPts[displayPtsInt+3] = ptList.get(i).y;
 		}
+		
+		//then, get final point. Only need x, y for this one.
+		displayPts[displayPts.length-2] = ptList.get(ptList.size()-1).x;
+		displayPts[displayPts.length-1] = ptList.get(ptList.size()-1).y;
+		
 		invalidate();
 	}
 	
@@ -77,9 +91,22 @@ public class VisualTraceView extends TextView {
 		if(ptList.size() >= 4)
 		{
 			c.drawLines(displayPts, paint);
+			//c.drawLines(displayPts, 0, ptList.size()*4, paint);
 		}
 	}
 	
 	
+	//TODO: Should this be in a different (non-class) structure for efficiency?
+	class PointRecord
+	{
+		public long t;
+		public float x, y;
+		public PointRecord(long t, float x, float y)
+		{
+			this.t = t;
+			this.x = x;
+			this.y = y;
+		}
+	}
 
 }
