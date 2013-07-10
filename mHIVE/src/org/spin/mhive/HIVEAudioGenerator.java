@@ -7,12 +7,14 @@ import org.spin.mhive.replay.HapticNoteRecordADSR;
 import org.spin.mhive.replay.HapticNoteRecordEnableADSR;
 import org.spin.mhive.replay.HapticNoteRecordPlay;
 import org.spin.mhive.replay.HapticNoteRecordStop;
+import org.spin.mhive.replay.HapticNoteRecordWaveform;
 
 import android.R;
-import java.lang.UnsupportedOperationException;;
+import java.lang.UnsupportedOperationException;
+import java.util.Observable;
 
 //Handles audio generation for mHIVE
-public class HIVEAudioGenerator
+public class HIVEAudioGenerator extends Observable
 {
 	
     private FMODAudioDevice mFMODAudioDevice = new FMODAudioDevice();
@@ -56,6 +58,8 @@ public class HIVEAudioGenerator
 	    		recordingNote.AddRecord(new HapticNoteRecordWaveform(currentTime - previousRecordTime, waveform));
 	    		previousRecordTime = currentTime;
 			}
+			setChanged();
+			notifyObservers();
 		}
 		
 		
@@ -227,14 +231,25 @@ public class HIVEAudioGenerator
 	public void DisableADSR() {EnableADSR(false);}
 	public void EnableADSR(boolean b)
 	{
-		cSetADSREnabled(b);
+		if (b != GetADSREnabled())
+		{
+			setChanged();
+			cSetADSREnabled(b);
+		}
 		if(currentlyRecording)
 		{
     		long currentTime = System.currentTimeMillis();
     		recordingNote.AddRecord(new HapticNoteRecordEnableADSR(currentTime - previousRecordTime, b));
     		previousRecordTime = currentTime;
 		}
+		notifyObservers();
 	}
+	
+	public boolean GetADSREnabled()
+	{
+		return cGetADSREnabled();
+	}
+	
 	
 	public void SetADSR(ADSREnvelope envelope) {SetADSR(envelope.getAttack(), envelope.getDecay(), envelope.getSustain(), envelope.getRelease());}
 	public void SetADSR(int attack, int decay, float sustain, int release)
@@ -246,6 +261,8 @@ public class HIVEAudioGenerator
     		recordingNote.AddRecord(new HapticNoteRecordADSR(currentTime - previousRecordTime, new ADSREnvelope(attack, decay, sustain, release)));
     		previousRecordTime = currentTime;
 		}
+		setChanged();
+		notifyObservers();
 	}
 	
 	public ADSREnvelope GetADSR()

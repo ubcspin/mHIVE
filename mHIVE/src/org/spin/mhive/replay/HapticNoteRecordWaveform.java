@@ -1,6 +1,6 @@
-package org.spin.mhive;
+package org.spin.mhive.replay;
 
-import org.spin.mhive.replay.HapticNoteRecord;
+import org.spin.mhive.HIVEAudioGenerator;
 
 public class HapticNoteRecordWaveform extends HapticNoteRecord
 {
