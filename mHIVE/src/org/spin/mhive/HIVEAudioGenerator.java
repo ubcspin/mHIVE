@@ -210,7 +210,7 @@ public class HIVEAudioGenerator
 				}
 			}
 			
-//			Stop();
+			Stop();
 		}
 		
 		public void stopPlaying()
