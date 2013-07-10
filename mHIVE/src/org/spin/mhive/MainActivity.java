@@ -105,11 +105,10 @@ public class MainActivity extends Activity implements Observer {
     	
     	//setup ADSR toggle button
     	tglADSR = (ToggleButton)findViewById(R.id.tglADSR);
-    	tglADSR.setOnTouchListener(new OnTouchListener() {
+    	tglADSR.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 				@Override
-				public boolean onTouch(View v, MotionEvent event) {
-					hiveAudioGenerator.EnableADSR(tglADSR.isChecked());
-					return true;
+				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+					hiveAudioGenerator.EnableADSR(isChecked);
 				}
 			});
     	tglADSR.setChecked(true);
