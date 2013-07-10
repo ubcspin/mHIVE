@@ -29,6 +29,11 @@ public class VisualTraceView extends TextView {
 		init();
 	}
 
+	public Handler GetUIHandler()
+	{
+		return uiHandler;
+	}
+	
 	public VisualTraceView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		init();

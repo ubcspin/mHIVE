@@ -7,6 +7,7 @@ import org.spin.mhive.replay.HapticNoteRecordADSR;
 import org.spin.mhive.replay.HapticNoteRecordEnableADSR;
 import org.spin.mhive.replay.HapticNoteRecordPlay;
 import org.spin.mhive.replay.HapticNoteRecordStop;
+import org.spin.mhive.replay.HapticNoteRecordVisualPoint;
 import org.spin.mhive.replay.HapticNoteRecordWaveform;
 
 import android.R;
@@ -35,6 +36,7 @@ public class HIVEAudioGenerator extends Observable
     private boolean currentlyRecording = false;
     private HapticNote recordingNote;
     private long previousRecordTime = 0L;
+    VisualTraceView visualTraceView;
 	
 	static {
     	System.loadLibrary("fmodex");
@@ -98,6 +100,16 @@ public class HIVEAudioGenerator extends Observable
 		EnableADSR();
 	}
 	
+	public void SetVisualTraceView(VisualTraceView vtv)
+	{
+		visualTraceView = vtv;
+	}
+	
+	public VisualTraceView GetVisualTraceView()
+	{
+		return visualTraceView;
+	}	
+	
 	
 	public void Play(int freq, float atten)
 	{
@@ -117,6 +129,18 @@ public class HIVEAudioGenerator extends Observable
     		previousRecordTime = currentTime;
     	}
 
+	}
+	
+	
+	public void Play(int freq, float atten, float x, float y)
+	{
+		Play(freq, atten);
+		if(currentlyRecording)
+    	{
+    		long currentTime = System.currentTimeMillis();
+    		recordingNote.AddRecord(new HapticNoteRecordVisualPoint(currentTime - previousRecordTime, x, y));
+    		previousRecordTime = currentTime;
+    	}
 	}
 	
 	public void Stop()

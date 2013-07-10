@@ -92,6 +92,8 @@ public class MainActivity extends Activity implements Observer {
     	
     	//set up Audio Generator
     	hiveAudioGenerator = new HIVEAudioGenerator();
+    	hiveAudioGenerator.SetVisualTraceView(mainInputView);
+    	
     	SetWaveform(HIVEAudioGenerator.OSCILLATOR_SINE);
     	
     	//setup waveform button
@@ -158,7 +160,7 @@ public class MainActivity extends Activity implements Observer {
 	        	yVal = Math.min(Math.max(yVal, 0.0f), 1.0f);
 	        	int freq = (int)(xVal * (maxFreq-minFreq)) + minFreq;
 	        	float atten = yVal; //attenuation
-	        	hiveAudioGenerator.Play(freq, atten);
+	        	hiveAudioGenerator.Play(freq, atten, event.getX(), event.getY());
 	        		        	
     		} else {
     			hiveAudioGenerator.Stop();
