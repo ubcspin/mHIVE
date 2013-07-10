@@ -17,6 +17,7 @@ import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
@@ -58,6 +59,8 @@ public class MainActivity extends Activity implements Observer {
     
     private HapticNoteList noteHistory;
     private ArrayAdapter<HapticNote> noteHistoryAdapter;
+    Handler uiHandler;
+    Runnable updateThread;
     
     WaveformDialog waveformDialog;
     ADSRDialog adsrDialog;
@@ -68,6 +71,17 @@ public class MainActivity extends Activity implements Observer {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+		uiHandler = new Handler();
+		updateThread = new Thread() {
+			@Override
+			public void run()
+			{
+				SetADSRUIElements(GetADSR());
+				SetWaveformUIElements(GetWaveform());
+				SetADSREnabledUIElements(hiveAudioGenerator.GetADSREnabled());
+			}
+		};
+        
         setContentView(R.layout.activity_main);
         
         Display display = getWindowManager().getDefaultDisplay();
@@ -322,9 +336,7 @@ public class MainActivity extends Activity implements Observer {
 	@Override
 	public void update(Observable observable, Object data)
 	{
-		SetADSRUIElements(GetADSR());
-		SetWaveformUIElements(GetWaveform());
-		SetADSREnabledUIElements(hiveAudioGenerator.GetADSREnabled());
+		uiHandler.post(updateThread);
 	}
     
     
