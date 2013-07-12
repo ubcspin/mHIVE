@@ -50,9 +50,6 @@ public class MainActivity extends Activity implements Observer {
     private int maxFreq = 140;
     private VisualTraceView mainInputView;
     
-	private SeekBar seekAttack, seekDecay, seekSustain, seekRelease;
-	private final int MAX_MS = 3000;
-    
 	ToggleButton tglADSR;
 	
     private HIVEAudioGenerator hiveAudioGenerator;
@@ -78,7 +75,6 @@ public class MainActivity extends Activity implements Observer {
 			@Override
 			public void run()
 			{
-				SetADSRUIElements(hiveAudioGenerator.GetADSR());
 				SetWaveformUIElements(GetWaveform());
 				SetADSREnabledUIElements(hiveAudioGenerator.GetADSREnabled());
 				adsrView.SetADSR(hiveAudioGenerator.GetADSR());
@@ -118,19 +114,9 @@ public class MainActivity extends Activity implements Observer {
 			});
     	tglADSR.setChecked(true);
     	
-    	//setup ADSR main button
-    	seekAttack = (SeekBar)findViewById(R.id.seekAttack);
-		seekDecay = (SeekBar)findViewById(R.id.seekDecay);
-		seekSustain = (SeekBar)findViewById(R.id.seekSustain);
-		seekRelease = (SeekBar)findViewById(R.id.seekRelease);
-		
-		seekAttack.setOnSeekBarChangeListener(new ADSRDialogSeekBarChangeListener((TextView)findViewById(R.id.txtAttackValue), MAX_MS));
-		seekDecay.setOnSeekBarChangeListener(new ADSRDialogSeekBarChangeListener((TextView)findViewById(R.id.txtDecayValue), MAX_MS));
-		seekSustain.setOnSeekBarChangeListener(new ADSRDialogSeekBarChangeListener((TextView)findViewById(R.id.txtSustainValue), 1));
-		seekRelease.setOnSeekBarChangeListener(new ADSRDialogSeekBarChangeListener((TextView)findViewById(R.id.txtReleaseValue), MAX_MS));
-		SetADSR(new ADSREnvelope(100, 100, 0.8f, 100));
-		
 		adsrView = (ADSRView)findViewById(R.id.adsrVisualization);
+		adsrView.SetMainActivity(this);
+		SetADSR(new ADSREnvelope(100, 100, 0.8f, 100));
 		
 		//set up STUB recording
 		noteHistory = new HapticNoteList();
@@ -231,68 +217,11 @@ public class MainActivity extends Activity implements Observer {
     	hiveAudioGenerator.SetADSR(envelope);
     }
     
-    public void SetADSRUIElements(ADSREnvelope envelope)
-    {
-		if(seekAttack != null)
-		{
-			seekAttack.setMax(MAX_MS);
-			seekAttack.setProgress(envelope.getAttack());
-		}
-		
-		if(seekDecay != null)
-		{
-			seekDecay.setMax(MAX_MS);
-			seekDecay.setProgress(envelope.getDecay());
-		}
-		
-		if(seekSustain != null)
-		{
-			seekSustain.setMax(100);
-			seekSustain.setProgress((int)(envelope.getSustain()*100));
-		}
-		
-		if(seekRelease != null)
-		{
-			seekRelease.setMax(MAX_MS);
-			seekRelease.setProgress(envelope.getRelease());
-		}
-    }
-    
 	public ADSREnvelope GetUIADSR()
 	{
-		return new ADSREnvelope((int)((float)seekAttack.getProgress()/(float)seekAttack.getMax()*(float)MAX_MS), 
-				(int)((float)seekDecay.getProgress()/(float)seekDecay.getMax()*(float)MAX_MS),
-				(float)seekSustain.getProgress()/(float)seekSustain.getMax(),
-				(int)((float)seekRelease.getProgress()/(float)seekRelease.getMax()*(float)MAX_MS));
+		return adsrView.GetADSR();
 	}
     
-	class ADSRDialogSeekBarChangeListener implements OnSeekBarChangeListener
-	{
-		TextView displayView;
-		int max;
-		public ADSRDialogSeekBarChangeListener(TextView displayView, int max)
-		{
-			this.displayView = displayView;
-			this.max = max;
-		}
-
-		@Override
-		public void onProgressChanged(SeekBar arg0, int arg1, boolean arg2)
-		{
-			float value = ((float)arg1/(float)arg0.getMax() * (float) max); 
-			displayView.setText(""+value);
-		}
-		@Override
-		public void onStartTrackingTouch(SeekBar arg0) {}
-
-		@Override
-		public void onStopTrackingTouch(SeekBar arg0)
-		{
-			SetADSR(GetUIADSR());			
-		}
-		
-	}
-	
 	class RecordingButtonCheckedListener implements OnCheckedChangeListener
 	{
 		@Override

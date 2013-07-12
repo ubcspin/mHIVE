@@ -28,6 +28,9 @@ public class ADSRView extends View {
 	private final float MS_IN_WIDTH = 3*MAX_MS + MIN_SUSTAIN_WIDTH_IN_MS;
 	private final int nDottedLinesForSustain = 10;
 	
+	//TODO: THIS SHOULD BE INTERFACE 
+	MainActivity mainActivity;
+	
 	
 	private enum ADSRViewMode
 	{
@@ -54,6 +57,13 @@ public class ADSRView extends View {
 	public ADSRView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		Init();
+	}
+	
+	
+	
+	public void SetMainActivity(MainActivity ma)
+	{
+		mainActivity = ma;
 	}
 	
 	
@@ -220,6 +230,11 @@ public class ADSRView extends View {
 		Update();
 	}
 	
+	public ADSREnvelope GetADSR()
+	{
+		return adsr;
+	}
+	
 	private void Update()
 	{
 		attackDecayCircle = new RectF(	MS2Width(adsr.getAttack())-SELECTION_CIRCLE_RADIUS, -SELECTION_CIRCLE_RADIUS,
@@ -228,6 +243,10 @@ public class ADSRView extends View {
 										SustainLeft()+SELECTION_CIRCLE_RADIUS, SustainHeight()+SELECTION_CIRCLE_RADIUS);
 		sustainReleaseCircle = new RectF(	SustainRight()-SELECTION_CIRCLE_RADIUS, SustainHeight()-SELECTION_CIRCLE_RADIUS,
 											SustainRight()+SELECTION_CIRCLE_RADIUS, SustainHeight()+SELECTION_CIRCLE_RADIUS);
+		if(mainActivity != null)
+		{
+			mainActivity.SetADSR(adsr);
+		}
 		this.invalidate();
 	}
 	
@@ -303,5 +322,4 @@ public class ADSRView extends View {
 		c.drawOval(sustainReleaseCircle, circleBGPaint);
 		c.drawOval(sustainReleaseCircle, circleStrokePaint);
 	}
-
 }
