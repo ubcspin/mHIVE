@@ -24,7 +24,7 @@ public class ADSRView extends View {
 	ADSREnvelope adsr;
 	
 	private final int MAX_MS = 1000;
-	private final int MIN_SUSTAIN_WIDTH_IN_MS = 100;
+	private final int MIN_SUSTAIN_WIDTH_IN_MS = 50;
 	private final float MS_IN_WIDTH = 3*MAX_MS + MIN_SUSTAIN_WIDTH_IN_MS;
 	private final int nDottedLinesForSustain = 10;
 	
@@ -113,10 +113,10 @@ public class ADSRView extends View {
 					SetAttackXY(x, y);
 				} else if (mode == ADSRViewMode.DRAGGING_DECAYSUSTAIN_CIRCLE)
 				{
-					
+					SetDecaySustainXY(x, y);
 				} else if (mode == ADSRViewMode.DRAGGING_SUSTAINRELEASE_CIRCLE)
 				{
-					
+					SetSustainReleaseXY(x,y);
 				}
 		} else if (event.getAction() == MotionEvent.ACTION_UP)
     	{
@@ -141,6 +141,76 @@ public class ADSRView extends View {
 			adsr = new ADSREnvelope(ms, adsr.getDecay(), adsr.getSustain(), adsr.getRelease());
 		}
 		
+		Update();
+	}
+	
+	
+	//DECAY_SUSTAIN MOVEMENT
+	private void SetDecaySustainXY(float x, float y)
+	{
+		int ms = Width2MS(x)-adsr.getAttack();
+		float atten = Height2Sustain(y);
+		
+		int newDecay = 0;
+		float newSustain = 1.0f;
+		
+		
+		if (ms >= MAX_MS)
+		{
+			newDecay = MAX_MS;
+		} else if (ms <= 0)
+		{
+			newDecay = 0;
+		} else {
+			newDecay = ms;
+		}
+		
+		if (atten >= 1.0f)
+		{
+			newSustain = 1.0f;
+		} else if (atten <= 0)
+		{
+			newSustain = 0;
+		} else {
+			newSustain = atten;
+		}
+		
+		adsr = new ADSREnvelope(adsr.getAttack(), newDecay, newSustain, adsr.getRelease());
+		Update();
+	}
+	
+	//SUSTAIN_RELEASE MOVEMENT
+	//TODO: extract SUSTAIN stuff to separate function?
+	private void SetSustainReleaseXY(float x, float y)
+	{
+		int ms = Width2MS(getWidth()-x);
+		float atten = Height2Sustain(y);
+		
+		int newRelease = 0;
+		float newSustain = 1.0f;
+		
+		
+		if (ms >= MAX_MS)
+		{
+			newRelease = MAX_MS;
+		} else if (ms <= 0)
+		{
+			newRelease = 0;
+		} else {
+			newRelease = ms;
+		}
+		
+		if (atten >= 1.0f)
+		{
+			newSustain = 1.0f;
+		} else if (atten <= 0)
+		{
+			newSustain = 0;
+		} else {
+			newSustain = atten;
+		}
+		
+		adsr = new ADSREnvelope(adsr.getAttack(), adsr.getDecay(), newSustain, newRelease);
 		Update();
 	}
 	
@@ -171,10 +241,17 @@ public class ADSRView extends View {
 		return (int) (x/getWidth()*((float)MS_IN_WIDTH));
 	}
 	
-	private float SustainHeight()
+	private float SustainHeight() { return SustainHeight(adsr.getSustain()); }
+	private float SustainHeight(float sus)
 	{
-		return (1.0f-adsr.getSustain())*getHeight(); 
+		return (1.0f-sus)*getHeight(); 
 	}
+	
+	private float Height2Sustain(float y)
+	{
+		return 1.0f - (y/getHeight());
+	}
+	
 	
 	private float SustainWidth()
 	{
