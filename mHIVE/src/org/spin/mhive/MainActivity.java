@@ -51,7 +51,7 @@ public class MainActivity extends Activity implements Observer {
     private VisualTraceView mainInputView;
     
 	private SeekBar seekAttack, seekDecay, seekSustain, seekRelease;
-	private final int MAX_MS = 1000;
+	private final int MAX_MS = 3000;
     
 	ToggleButton tglADSR;
 	
@@ -61,6 +61,8 @@ public class MainActivity extends Activity implements Observer {
     private ArrayAdapter<HapticNote> noteHistoryAdapter;
     Handler uiHandler;
     Runnable updateThread;
+    
+    ADSRView adsrView;
     
     WaveformDialog waveformDialog;
     ADSRDialog adsrDialog;
@@ -79,6 +81,7 @@ public class MainActivity extends Activity implements Observer {
 				SetADSRUIElements(hiveAudioGenerator.GetADSR());
 				SetWaveformUIElements(GetWaveform());
 				SetADSREnabledUIElements(hiveAudioGenerator.GetADSREnabled());
+				adsrView.SetADSR(hiveAudioGenerator.GetADSR());
 			}
 		};
         
@@ -126,6 +129,8 @@ public class MainActivity extends Activity implements Observer {
 		seekSustain.setOnSeekBarChangeListener(new ADSRDialogSeekBarChangeListener((TextView)findViewById(R.id.txtSustainValue), 1));
 		seekRelease.setOnSeekBarChangeListener(new ADSRDialogSeekBarChangeListener((TextView)findViewById(R.id.txtReleaseValue), MAX_MS));
 		SetADSR(new ADSREnvelope(100, 100, 0.8f, 100));
+		
+		adsrView = (ADSRView)findViewById(R.id.adsrVisualization);
 		
 		//set up STUB recording
 		noteHistory = new HapticNoteList();

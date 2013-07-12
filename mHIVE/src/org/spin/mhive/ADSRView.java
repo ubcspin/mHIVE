@@ -20,7 +20,7 @@ public class ADSRView extends View {
 	RectF decaySustainCircle;
 	RectF sustainReleaseCircle;
 	
-	float attack, decay, sustain, release;
+	ADSREnvelope adsr;
 	
 	private final float MS_IN_WIDTH = 1000;
 	private final int nDottedLinesForSustain = 10;
@@ -62,11 +62,28 @@ public class ADSRView extends View {
 		circleBGPaint.setARGB(127, 0, 0, 255);
 		circleBGPaint.setStyle(Style.FILL);
 		
-		attack = 100;
-		decay = 100;
-		sustain = 0.5f;
-		release = 100;
 		
+		adsr = new ADSREnvelope(100, 100, 0.5f, 100);
+		
+		Update();
+	}
+	
+	
+	public void SetADSR(ADSREnvelope adsr)
+	{
+		this.adsr = adsr;
+		Update();
+	}
+	
+	private void Update()
+	{
+		attackDecayCircle = new RectF(	MS2Width(adsr.getAttack())-SELECTION_CIRCLE_RADIUS, -SELECTION_CIRCLE_RADIUS,
+										MS2Width(adsr.getAttack())+SELECTION_CIRCLE_RADIUS, SELECTION_CIRCLE_RADIUS);
+		decaySustainCircle = new RectF(	SustainLeft()-SELECTION_CIRCLE_RADIUS, SustainHeight()-SELECTION_CIRCLE_RADIUS,
+										SustainLeft()+SELECTION_CIRCLE_RADIUS, SustainHeight()+SELECTION_CIRCLE_RADIUS);
+		sustainReleaseCircle = new RectF(	SustainRight()-SELECTION_CIRCLE_RADIUS, SustainHeight()-SELECTION_CIRCLE_RADIUS,
+											SustainRight()+SELECTION_CIRCLE_RADIUS, SustainHeight()+SELECTION_CIRCLE_RADIUS);
+		this.invalidate();
 	}
 	
 	private float MS2Width(float ms)
@@ -76,7 +93,7 @@ public class ADSRView extends View {
 	
 	private float SustainHeight()
 	{
-		return (1.0f-sustain)*getHeight(); 
+		return (1.0f-adsr.getSustain())*getHeight(); 
 	}
 	
 	private float SustainWidth()
@@ -87,12 +104,12 @@ public class ADSRView extends View {
 	
 	private float SustainLeft()
 	{
-		return MS2Width(attack+decay);
+		return MS2Width(adsr.getAttack()+adsr.getDecay());
 	}
 	
 	private float SustainRight()
 	{
-		return MS2Width(attack+decay)+SustainWidth();
+		return SustainLeft()+SustainWidth();
 	}
 	
 	@Override
@@ -102,10 +119,10 @@ public class ADSRView extends View {
 		c.drawRect(0, 0, getWidth(), getHeight(), bgPaint);
 		
 		//attack
-		c.drawLine(0, getHeight(), MS2Width(attack), 0, linePaint);
+		c.drawLine(0, getHeight(), MS2Width(adsr.getAttack()), 0, linePaint);
 		
 		//decay
-		c.drawLine(MS2Width(attack), 0, SustainLeft(), SustainHeight(), linePaint);
+		c.drawLine(MS2Width(adsr.getAttack()), 0, SustainLeft(), SustainHeight(), linePaint);
 		
 		//sustain
 		float[] sustain_pts = new float[nDottedLinesForSustain*4];
@@ -120,16 +137,7 @@ public class ADSRView extends View {
 		c.drawLines(sustain_pts, linePaint);
 		
 		//release
-		c.drawLine(SustainRight(), SustainHeight(), getWidth(), getHeight(), linePaint);
-		
-		
-		//TODO: Move this to UPDATE
-		attackDecayCircle = new RectF(	MS2Width(attack)-SELECTION_CIRCLE_RADIUS, -SELECTION_CIRCLE_RADIUS,
-										MS2Width(attack)+SELECTION_CIRCLE_RADIUS, SELECTION_CIRCLE_RADIUS);
-		decaySustainCircle = new RectF(	SustainLeft()-SELECTION_CIRCLE_RADIUS, SustainHeight()-SELECTION_CIRCLE_RADIUS,
-										SustainLeft()+SELECTION_CIRCLE_RADIUS, SustainHeight()+SELECTION_CIRCLE_RADIUS);
-		sustainReleaseCircle = new RectF(	SustainRight()-SELECTION_CIRCLE_RADIUS, SustainHeight()-SELECTION_CIRCLE_RADIUS,
-											SustainRight()+SELECTION_CIRCLE_RADIUS, SustainHeight()+SELECTION_CIRCLE_RADIUS);
+		c.drawLine(SustainRight(), SustainHeight(), getWidth(), getHeight(), linePaint);		
 		
 		//selection circles
 		c.drawOval(attackDecayCircle, circleBGPaint);
