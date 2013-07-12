@@ -117,6 +117,7 @@ public class MainActivity extends Activity implements Observer {
 		adsrView = (ADSRView)findViewById(R.id.adsrVisualization);
 		adsrView.SetMainActivity(this);
 		SetADSR(new ADSREnvelope(100, 100, 0.8f, 100));
+    	hiveAudioGenerator.SetADSRView(adsrView);
 		
 		//set up STUB recording
 		noteHistory = new HapticNoteList();

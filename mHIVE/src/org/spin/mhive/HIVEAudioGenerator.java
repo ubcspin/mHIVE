@@ -37,6 +37,7 @@ public class HIVEAudioGenerator extends Observable
     private HapticNote recordingNote;
     private long previousRecordTime = 0L;
     VisualTraceView visualTraceView;
+    ADSRView adsrView;
 	
 	static {
     	System.loadLibrary("fmodex");
@@ -105,6 +106,11 @@ public class HIVEAudioGenerator extends Observable
 		visualTraceView = vtv;
 	}
 	
+	public void SetADSRView(ADSRView adsrView)
+	{
+		this.adsrView = adsrView;
+	}
+	
 	public VisualTraceView GetVisualTraceView()
 	{
 		return visualTraceView;
@@ -117,6 +123,10 @@ public class HIVEAudioGenerator extends Observable
 		{
 			playing = true;
 			cNoteOn();
+	    	if(adsrView != null)
+	    	{
+	    		adsrView.NoteOn();
+	    	}
 		}
     	
 		cSetChannelFrequency(freq);
@@ -150,6 +160,10 @@ public class HIVEAudioGenerator extends Observable
 			//cSetChannelVolume(0);
 	    	playing = false;
 	    	cNoteOff();
+	    	if(adsrView != null)
+	    	{
+	    		adsrView.NoteOff();
+	    	}
 		}
 		
 		if(currentlyRecording)

@@ -1,11 +1,15 @@
 package org.spin.mhive;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.RectF;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -16,6 +20,7 @@ public class ADSRView extends View {
 	Paint bgPaint;
 	Paint circleStrokePaint;
 	Paint circleBGPaint;
+	Paint playHeadPaint;
 
 	RectF attackDecayCircle;
 	RectF decaySustainCircle;
@@ -40,6 +45,13 @@ public class ADSRView extends View {
 		NOT_DRAGGING
 	}
 	ADSRViewMode mode;
+	
+	Timer tmrPlayBar;
+	final int PLAYBAR_UPDATE_INTERVAL = 100;//ms
+	long playPosition = 0; //in MS
+	long startTime = 0; //in MS;
+	boolean isPlaying = false;
+	Handler uiHandler;
 	
 	
 	private final int SELECTION_CIRCLE_RADIUS = 50;
@@ -69,6 +81,8 @@ public class ADSRView extends View {
 	
 	private void Init()
 	{
+		uiHandler = new Handler();
+		
 		linePaint = new Paint();
 		linePaint.setColor(Color.BLACK);
 		linePaint.setStrokeWidth(5);
@@ -85,6 +99,13 @@ public class ADSRView extends View {
 		circleBGPaint.setARGB(127, 0, 0, 255);
 		circleBGPaint.setStyle(Style.FILL);
 		
+		
+		playHeadPaint = new Paint();
+		playHeadPaint.setARGB(127,  255, 0, 0);
+		playHeadPaint.setStrokeWidth(5);
+		
+		tmrPlayBar = new Timer();
+		tmrPlayBar.scheduleAtFixedRate(new PlayBarTask(), PLAYBAR_UPDATE_INTERVAL, PLAYBAR_UPDATE_INTERVAL);
 		
 		adsr = new ADSREnvelope(100, 100, 0.5f, 100);
 		mode = ADSRViewMode.NOT_DRAGGING;
@@ -235,6 +256,18 @@ public class ADSRView extends View {
 		return adsr;
 	}
 	
+	public void NoteOn()
+	{
+		startTime = System.currentTimeMillis();
+		isPlaying = true;
+	}
+	
+	public void NoteOff()
+	{
+		startTime = System.currentTimeMillis();
+		isPlaying = true;
+	}
+	
 	private void Update()
 	{
 		attackDecayCircle = new RectF(	MS2Width(adsr.getAttack())-SELECTION_CIRCLE_RADIUS, -SELECTION_CIRCLE_RADIUS,
@@ -247,6 +280,9 @@ public class ADSRView extends View {
 		{
 			mainActivity.SetADSR(adsr);
 		}
+		
+		playPosition = System.currentTimeMillis() - startTime;
+		
 		this.invalidate();
 	}
 	
@@ -321,5 +357,30 @@ public class ADSRView extends View {
 		c.drawOval(decaySustainCircle, circleStrokePaint);
 		c.drawOval(sustainReleaseCircle, circleBGPaint);
 		c.drawOval(sustainReleaseCircle, circleStrokePaint);
+		
+		//draw playhead
+		playPosition = System.currentTimeMillis() - startTime;
+		if(isPlaying)
+		{
+			c.drawLine(MS2Width(playPosition), 0, MS2Width(playPosition), getHeight(), playHeadPaint);
+		}
+		
+	}
+	
+	
+	class PlayBarTask extends TimerTask
+	{
+
+		@Override
+		public void run()
+		{
+			uiHandler.post(new Runnable() {
+									@Override
+									public void run() {
+										Update();
+									}
+							});
+		}
+		
 	}
 }
