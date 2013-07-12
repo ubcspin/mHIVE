@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 
 public class ADSRView extends View {
@@ -22,11 +23,23 @@ public class ADSRView extends View {
 	
 	ADSREnvelope adsr;
 	
-	private final float MS_IN_WIDTH = 1000;
+	private final int MAX_MS = 1000;
+	private final int MIN_SUSTAIN_WIDTH_IN_MS = 100;
+	private final float MS_IN_WIDTH = 3*MAX_MS + MIN_SUSTAIN_WIDTH_IN_MS;
 	private final int nDottedLinesForSustain = 10;
 	
 	
-	private final int SELECTION_CIRCLE_RADIUS = 35;
+	private enum ADSRViewMode
+	{
+		DRAGGING_ATTACKDECAY_CIRCLE,
+		DRAGGING_DECAYSUSTAIN_CIRCLE,
+		DRAGGING_SUSTAINRELEASE_CIRCLE,
+		NOT_DRAGGING
+	}
+	ADSRViewMode mode;
+	
+	
+	private final int SELECTION_CIRCLE_RADIUS = 50;
 	
 	public ADSRView(Context context) {
 		super(context);
@@ -64,10 +77,72 @@ public class ADSRView extends View {
 		
 		
 		adsr = new ADSREnvelope(100, 100, 0.5f, 100);
-		
+		mode = ADSRViewMode.NOT_DRAGGING;
 		Update();
 	}
 	
+	
+	@Override
+    public boolean onTouchEvent(MotionEvent event)
+	{
+		float x = event.getX();
+		float y = event.getY();
+		
+		if(event.getAction() == MotionEvent.ACTION_DOWN
+    			|| event.getAction() == MotionEvent.ACTION_MOVE)
+		{
+		
+		
+				if (mode == ADSRViewMode.NOT_DRAGGING)
+				{
+					if (attackDecayCircle.contains(x, y))
+					{
+						mode = ADSRViewMode.DRAGGING_ATTACKDECAY_CIRCLE;
+					} else if (decaySustainCircle.contains(x, y))
+					{
+						mode = ADSRViewMode.DRAGGING_DECAYSUSTAIN_CIRCLE;
+		
+					} else if (sustainReleaseCircle.contains(x, y))
+					{
+						mode = ADSRViewMode.DRAGGING_SUSTAINRELEASE_CIRCLE;
+					}
+				}
+				
+				if (mode == ADSRViewMode.DRAGGING_ATTACKDECAY_CIRCLE)
+				{
+					SetAttackXY(x, y);
+				} else if (mode == ADSRViewMode.DRAGGING_DECAYSUSTAIN_CIRCLE)
+				{
+					
+				} else if (mode == ADSRViewMode.DRAGGING_SUSTAINRELEASE_CIRCLE)
+				{
+					
+				}
+		} else if (event.getAction() == MotionEvent.ACTION_UP)
+    	{
+			mode = ADSRViewMode.NOT_DRAGGING;
+    	}
+		
+		
+		return true;
+	}
+	
+	//ATTACK MOVEMENT
+	private void SetAttackXY(float x, float y)
+	{
+		int ms = Width2MS(x); 
+		if (ms >= MAX_MS)
+		{
+			adsr = new ADSREnvelope(MAX_MS, adsr.getDecay(), adsr.getSustain(), adsr.getRelease());
+		} else if (ms <= 0)
+		{
+			adsr = new ADSREnvelope(0, adsr.getDecay(), adsr.getSustain(), adsr.getRelease());
+		} else {
+			adsr = new ADSREnvelope(ms, adsr.getDecay(), adsr.getSustain(), adsr.getRelease());
+		}
+		
+		Update();
+	}
 	
 	public void SetADSR(ADSREnvelope adsr)
 	{
@@ -91,6 +166,11 @@ public class ADSRView extends View {
 		return ms/MS_IN_WIDTH * getWidth();
 	}
 	
+	private int Width2MS(float x)
+	{
+		return (int) (x/getWidth()*((float)MS_IN_WIDTH));
+	}
+	
 	private float SustainHeight()
 	{
 		return (1.0f-adsr.getSustain())*getHeight(); 
@@ -98,8 +178,7 @@ public class ADSRView extends View {
 	
 	private float SustainWidth()
 	{
-		//TODO: Stub
-		return 100;
+		return MS2Width(MS_IN_WIDTH-(adsr.getAttack()+adsr.getDecay()+adsr.getRelease()));
 	}
 	
 	private float SustainLeft()

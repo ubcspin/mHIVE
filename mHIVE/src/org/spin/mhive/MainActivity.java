@@ -170,7 +170,6 @@ public class MainActivity extends Activity implements Observer {
     		} else {
     			hiveAudioGenerator.Stop();
     		}
-    		
     	}
     	else if (event.getAction() == MotionEvent.ACTION_UP)
     	{
