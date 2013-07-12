@@ -153,6 +153,11 @@
 				        
 				     </LinearLayout>
 				     
+				     <org.spin.mhive.ADSRView
+					        android:id="@+id/adsrVisualization"
+				            android:layout_width="200dp"
+				            android:layout_height="200dp"
+					        />
  				    <Space
  				        android:layout_width="0dp"
 				        android:layout_height="match_parent"
