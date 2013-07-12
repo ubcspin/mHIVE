@@ -47,9 +47,10 @@ public class ADSRView extends View {
 	ADSRViewMode mode;
 	
 	Timer tmrPlayBar;
-	final int PLAYBAR_UPDATE_INTERVAL = 100;//ms
+	final int PLAYBAR_UPDATE_INTERVAL = 25;//ms
 	long playPosition = 0; //in MS
 	long startTime = 0; //in MS;
+	float playBarX = 0;
 	boolean isPlaying = false;
 	Handler uiHandler;
 	
@@ -265,7 +266,7 @@ public class ADSRView extends View {
 	public void NoteOff()
 	{
 		startTime = System.currentTimeMillis();
-		isPlaying = true;
+		isPlaying = false;
 	}
 	
 	private void Update()
@@ -282,6 +283,16 @@ public class ADSRView extends View {
 		}
 		
 		playPosition = System.currentTimeMillis() - startTime;
+		if(isPlaying)
+		{
+			playBarX = MS2Width(playPosition);
+			if (playBarX > SustainRight())
+			{
+				playBarX = SustainLeft() + ((int)(MS2Width(playPosition)-SustainLeft()))%((int)SustainWidth());
+			}
+		} else {
+			playBarX = MS2Width(playPosition)+SustainRight();
+		}
 		
 		this.invalidate();
 	}
@@ -359,11 +370,7 @@ public class ADSRView extends View {
 		c.drawOval(sustainReleaseCircle, circleStrokePaint);
 		
 		//draw playhead
-		playPosition = System.currentTimeMillis() - startTime;
-		if(isPlaying)
-		{
-			c.drawLine(MS2Width(playPosition), 0, MS2Width(playPosition), getHeight(), playHeadPaint);
-		}
+		c.drawLine(playBarX, 0, playBarX, getHeight(), playHeadPaint);
 		
 	}
 	
