@@ -47,7 +47,7 @@ public class ADSRView extends View {
 	ADSRViewMode mode;
 	
 	Timer tmrPlayBar;
-	final int PLAYBAR_UPDATE_INTERVAL = 25;//ms
+	final int PLAYBAR_UPDATE_INTERVAL = 20;//ms
 	long playPosition = 0; //in MS
 	long startTime = 0; //in MS;
 	float playBarX = 0;
@@ -282,6 +282,11 @@ public class ADSRView extends View {
 			mainActivity.SetADSR(adsr);
 		}
 		
+		this.invalidate();
+	}
+	
+	private void UpdatePlayBar()
+	{
 		playPosition = System.currentTimeMillis() - startTime;
 		if(isPlaying)
 		{
@@ -293,9 +298,9 @@ public class ADSRView extends View {
 		} else {
 			playBarX = MS2Width(playPosition)+SustainRight();
 		}
-		
 		this.invalidate();
 	}
+
 	
 	private float MS2Width(float ms)
 	{
@@ -384,7 +389,7 @@ public class ADSRView extends View {
 			uiHandler.post(new Runnable() {
 									@Override
 									public void run() {
-										Update();
+										UpdatePlayBar();
 									}
 							});
 		}
