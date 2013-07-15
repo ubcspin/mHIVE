@@ -29,9 +29,9 @@ public class ADSRView extends View {
 	ADSREnvelope adsr;
 	
 	private final int MAX_MS = 1000;
-	private final int MIN_SUSTAIN_WIDTH_IN_MS = 50;
+	private final int MIN_SUSTAIN_WIDTH_IN_MS = 200;
 	private final float MS_IN_WIDTH = 3*MAX_MS + MIN_SUSTAIN_WIDTH_IN_MS;
-	private final int nDottedLinesForSustain = 10;
+	private final float nDottedLinesForSustainPerPx = 0.15f;
 	
 	//TODO: THIS SHOULD BE INTERFACE 
 	MainActivity mainActivity;
@@ -360,6 +360,7 @@ public class ADSRView extends View {
 		c.drawLine(MS2Width(adsr.getAttack()), 0, SustainLeft(), SustainHeight(), linePaint);
 		
 		//sustain
+		int nDottedLinesForSustain = (int) (nDottedLinesForSustainPerPx*SustainWidth());
 		float[] sustain_pts = new float[nDottedLinesForSustain*4];
 		float sustainLineWidth = SustainWidth()/((float)nDottedLinesForSustain*4);
 		for (int i = 0; i < nDottedLinesForSustain*4; i+=4)
