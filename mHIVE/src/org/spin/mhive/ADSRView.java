@@ -248,8 +248,11 @@ public class ADSRView extends View {
 	
 	public void SetADSR(ADSREnvelope adsr)
 	{
-		this.adsr = adsr;
-		Update();
+		if(adsr != this.adsr)
+		{
+			this.adsr = adsr;
+			Update();
+		}
 	}
 	
 	public ADSREnvelope GetADSR()

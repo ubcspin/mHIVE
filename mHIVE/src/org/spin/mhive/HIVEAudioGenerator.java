@@ -31,6 +31,7 @@ public class HIVEAudioGenerator extends Observable
 	private boolean initiated = false;
 	private boolean playing = false;
 	public final String TAG = "HIVEAudioGenerator";
+	ADSREnvelope currentADSREnvelope;
 	
 	ReplayThread replayThread;
     private boolean currentlyRecording = false;
@@ -97,7 +98,7 @@ public class HIVEAudioGenerator extends Observable
 		cBegin();
 		cSetWaveform(currentWaveform);
 		cSetChannelVolume(0);
-		SetADSR(100, 100, 0.5f, 300);
+		SetADSR(new ADSREnvelope(100, 100, 0.5f, 300));
 		EnableADSR();
 	}
 	
@@ -289,23 +290,26 @@ public class HIVEAudioGenerator extends Observable
 	}
 	
 	
-	public void SetADSR(ADSREnvelope envelope) {SetADSR(envelope.getAttack(), envelope.getDecay(), envelope.getSustain(), envelope.getRelease());}
-	public void SetADSR(int attack, int decay, float sustain, int release)
+	public void SetADSR(ADSREnvelope envelope)
 	{
-		cSetADSR(attack, decay, sustain, release);
-		if(currentlyRecording)
+		if (envelope != currentADSREnvelope && envelope != null)
 		{
-    		long currentTime = System.currentTimeMillis();
-    		recordingNote.AddRecord(new HapticNoteRecordADSR(currentTime - previousRecordTime, new ADSREnvelope(attack, decay, sustain, release)));
-    		previousRecordTime = currentTime;
+			currentADSREnvelope = envelope;
+			cSetADSR(currentADSREnvelope.getAttack(), currentADSREnvelope.getDecay(), currentADSREnvelope.getSustain(), currentADSREnvelope.getRelease());
+			if(currentlyRecording)
+			{
+	    		long currentTime = System.currentTimeMillis();
+	    		recordingNote.AddRecord(new HapticNoteRecordADSR(currentTime - previousRecordTime, currentADSREnvelope));
+	    		previousRecordTime = currentTime;
+			}
+			setChanged();
+			notifyObservers();
 		}
-		setChanged();
-		notifyObservers();
 	}
 	
 	public ADSREnvelope GetADSR()
 	{
-		return new ADSREnvelope(cGetADSRAttack(),cGetADSRDecay(),cGetADSRSustain(),cGetADSRRelease());
+		return currentADSREnvelope;
 	}
 	
 	/**
