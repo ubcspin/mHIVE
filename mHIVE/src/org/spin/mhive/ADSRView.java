@@ -21,6 +21,7 @@ public class ADSRView extends View {
 	Paint circleStrokePaint;
 	Paint circleBGPaint;
 	Paint playHeadPaint;
+	Paint numericDisplayPaint;
 
 	RectF attackDecayCircle;
 	RectF decaySustainCircle;
@@ -28,8 +29,13 @@ public class ADSRView extends View {
 	
 	ADSREnvelope adsr;
 	
+	
+	private final int SELECTION_CIRCLE_RADIUS = 50;
+	private final int SELECTION_CIRCLE_STROKE_WIDTH = 4;
+	private final int NUMERIC_LINE_STROKE_WIDTH = 4;
+	private final float numericDisplayHeight = SELECTION_CIRCLE_RADIUS+SELECTION_CIRCLE_STROKE_WIDTH/2;
 	private final int MAX_MS = 1000;
-	private final int MIN_SUSTAIN_WIDTH_IN_MS = 200;
+	private final int MIN_SUSTAIN_WIDTH_IN_MS = 300;
 	private final float MS_IN_WIDTH = 3*MAX_MS + MIN_SUSTAIN_WIDTH_IN_MS;
 	private final float nDottedLinesForSustainPerPx = 0.15f;
 	
@@ -54,10 +60,7 @@ public class ADSRView extends View {
 	boolean isPlaying = false;
 	Handler uiHandler;
 	
-	
-	private final int SELECTION_CIRCLE_RADIUS = 50;
-	private final int SELECTION_CIRCLE_STROKE_WIDTH = 4;
-	private final float NumericTopHeight = SELECTION_CIRCLE_RADIUS+SELECTION_CIRCLE_STROKE_WIDTH/2;
+
 
 	
 	public ADSRView(Context context) {
@@ -113,6 +116,10 @@ public class ADSRView extends View {
 		playHeadPaint.setARGB(127,  255, 0, 0);
 		playHeadPaint.setStrokeWidth(5);
 		
+		numericDisplayPaint = new Paint();
+		numericDisplayPaint.setARGB(255, 0, 127, 255);
+		numericDisplayPaint.setStrokeWidth(NUMERIC_LINE_STROKE_WIDTH);
+		
 		tmrPlayBar = new Timer();
 		tmrPlayBar.scheduleAtFixedRate(new PlayBarTask(), PLAYBAR_UPDATE_INTERVAL, PLAYBAR_UPDATE_INTERVAL);
 		
@@ -124,17 +131,37 @@ public class ADSRView extends View {
 	
 	private float GetVisualizationHeight()
 	{
-		return getHeight() - NumericTopHeight;
+		return getHeight() - numericDisplayHeight;
 	}
 	
 	private float GetVisualizationTop()
 	{
-		return NumericTopHeight;
+		return numericDisplayHeight;
 	}
 	
 	private float GetVisualizationBottom()
 	{
 		return getHeight();
+	}
+	
+	private float GetNumericTop()
+	{
+		return 0;
+	}
+	
+	private float GetNumericBottom()
+	{
+		return GetVisualizationTop();
+	}
+	
+	private float GetNumericHorizontalLineHeight()
+	{
+		return (GetNumericBottom() + GetNumericTop())*2/3;
+	}
+	
+	private float GetNumericTextHeight()
+	{
+		return (GetNumericBottom() + GetNumericTop())/3;
 	}
 	
 	@Override
@@ -368,6 +395,8 @@ public class ADSRView extends View {
 	@Override
 	public void onDraw(Canvas c)
 	{
+		//DRAW MAIN VISUALIZATION
+		
 		//bg
 		c.drawRect(0, GetVisualizationTop(), getWidth(), GetVisualizationBottom(), bgPaint);
 		
@@ -403,6 +432,18 @@ public class ADSRView extends View {
 		
 		//draw playhead
 		c.drawLine(playBarX, GetVisualizationTop(), playBarX, GetVisualizationBottom(), playHeadPaint);
+		
+		
+		//DRAW NUMERIC TOP
+		
+		c.drawLine(NUMERIC_LINE_STROKE_WIDTH/2, GetNumericTop(), 2/NUMERIC_LINE_STROKE_WIDTH, GetNumericBottom(), numericDisplayPaint);
+		c.drawLine(NUMERIC_LINE_STROKE_WIDTH/2, GetNumericHorizontalLineHeight(), MS2Width(adsr.getAttack()), GetNumericHorizontalLineHeight(), numericDisplayPaint);
+		c.drawLine(MS2Width(adsr.getAttack()), GetNumericTop(), MS2Width(adsr.getAttack()), GetNumericBottom(), numericDisplayPaint);
+		c.drawLine(MS2Width(adsr.getAttack()), GetNumericHorizontalLineHeight(), SustainLeft(), GetNumericHorizontalLineHeight(), numericDisplayPaint);
+		c.drawLine(SustainLeft(), GetNumericTop(), SustainLeft(), GetNumericBottom(), numericDisplayPaint);
+		c.drawLine(SustainRight(), GetNumericTop(), SustainRight(), GetNumericBottom(), numericDisplayPaint);
+		c.drawLine(SustainRight(), GetNumericHorizontalLineHeight(), getWidth(), GetNumericHorizontalLineHeight(), numericDisplayPaint);
+		c.drawLine(getWidth()-NUMERIC_LINE_STROKE_WIDTH/2, GetNumericTop(), getWidth()-NUMERIC_LINE_STROKE_WIDTH/2, GetNumericBottom(), numericDisplayPaint);
 		
 	}
 	
