@@ -77,6 +77,7 @@ public class MainActivity extends Activity implements Observer {
 			{
 				SetWaveformUIElements(GetWaveform());
 				SetADSREnabledUIElements(hiveAudioGenerator.GetADSREnabled());
+				adsrView.EnableADSR(hiveAudioGenerator.GetADSREnabled());
 				adsrView.SetADSR(hiveAudioGenerator.GetADSR());
 			}
 		};

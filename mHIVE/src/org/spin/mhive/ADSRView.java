@@ -24,6 +24,7 @@ public class ADSRView extends View {
 	Paint playHeadPaint;
 	Paint numericDisplayPaint;
 	Paint numericDisplayTextPaint;
+	Paint disablePaint;
 
 	RectF attackDecayCircle;
 	RectF decaySustainCircle;
@@ -63,6 +64,8 @@ public class ADSRView extends View {
 	float playBarX = 0;
 	boolean isPlaying = false;
 	Handler uiHandler;
+	
+	boolean enabled = true;
 	
 
 
@@ -128,6 +131,10 @@ public class ADSRView extends View {
 		numericDisplayTextPaint.setARGB(255, 0, 127, 255);
 		numericDisplayTextPaint.setTextAlign(Align.CENTER);
 		numericDisplayTextPaint.setTextSize(36);
+		
+		disablePaint = new Paint();
+		disablePaint.setARGB(170, 80, 80, 80);
+		disablePaint.setStyle(Style.FILL);
 
 		
 		tmrPlayBar = new Timer();
@@ -429,6 +436,14 @@ public class ADSRView extends View {
 		return SustainLeft()+SustainWidth();
 	}
 	
+	public void DisableADSR() { EnableADSR(false);}
+	public void EnableADSR() { EnableADSR(true);}
+	public void EnableADSR(boolean b)
+	{
+		enabled = b;
+		this.invalidate();
+	}
+	
 	@Override
 	public void onDraw(Canvas c)
 	{
@@ -515,6 +530,11 @@ public class ADSRView extends View {
 			textX = SustainRight() + MS2Width(adsr.getRelease())/2;
 		}
 		c.drawText(adsr.getReleaseString(), textX, GetNumericTextHeight(), numericDisplayTextPaint);
+		
+		if(!enabled)
+		{
+			c.drawRect(GetVisualizationLeft(), 0, getWidth(), getHeight(), disablePaint);
+		}
 		
 	}
 	
