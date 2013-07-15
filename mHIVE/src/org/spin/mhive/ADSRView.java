@@ -32,6 +32,7 @@ public class ADSRView extends View {
 	private final int MIN_SUSTAIN_WIDTH_IN_MS = 200;
 	private final float MS_IN_WIDTH = 3*MAX_MS + MIN_SUSTAIN_WIDTH_IN_MS;
 	private final float nDottedLinesForSustainPerPx = 0.15f;
+	private final float NumericTopHeight = 40;
 	
 	//TODO: THIS SHOULD BE INTERFACE 
 	MainActivity mainActivity;
@@ -118,6 +119,21 @@ public class ADSRView extends View {
 		Update();
 	}
 	
+	
+	private float GetVisualizationHeight()
+	{
+		return getHeight() - NumericTopHeight;
+	}
+	
+	private float GetVisualizationTop()
+	{
+		return NumericTopHeight;
+	}
+	
+	private float GetVisualizationBottom()
+	{
+		return getHeight();
+	}
 	
 	@Override
     public boolean onTouchEvent(MotionEvent event)
@@ -279,8 +295,8 @@ public class ADSRView extends View {
 	
 	private void Update()
 	{
-		attackDecayCircle = new RectF(	MS2Width(adsr.getAttack())-SELECTION_CIRCLE_RADIUS, -SELECTION_CIRCLE_RADIUS,
-										MS2Width(adsr.getAttack())+SELECTION_CIRCLE_RADIUS, SELECTION_CIRCLE_RADIUS);
+		attackDecayCircle = new RectF(	MS2Width(adsr.getAttack())-SELECTION_CIRCLE_RADIUS, GetVisualizationTop()-SELECTION_CIRCLE_RADIUS,
+										MS2Width(adsr.getAttack())+SELECTION_CIRCLE_RADIUS, GetVisualizationTop()+SELECTION_CIRCLE_RADIUS);
 		decaySustainCircle = new RectF(	SustainLeft()-SELECTION_CIRCLE_RADIUS, SustainHeight()-SELECTION_CIRCLE_RADIUS,
 										SustainLeft()+SELECTION_CIRCLE_RADIUS, SustainHeight()+SELECTION_CIRCLE_RADIUS);
 		sustainReleaseCircle = new RectF(	SustainRight()-SELECTION_CIRCLE_RADIUS, SustainHeight()-SELECTION_CIRCLE_RADIUS,
@@ -323,12 +339,12 @@ public class ADSRView extends View {
 	private float SustainHeight() { return SustainHeight(adsr.getSustain()); }
 	private float SustainHeight(float sus)
 	{
-		return (1.0f-sus)*getHeight(); 
+		return (1.0f-sus)*GetVisualizationHeight()+GetVisualizationTop(); 
 	}
 	
 	private float Height2Sustain(float y)
 	{
-		return 1.0f - (y/getHeight());
+		return 1.0f - (y/GetVisualizationHeight());
 	}
 	
 	
@@ -351,13 +367,13 @@ public class ADSRView extends View {
 	public void onDraw(Canvas c)
 	{
 		//bg
-		c.drawRect(0, 0, getWidth(), getHeight(), bgPaint);
+		c.drawRect(0, GetVisualizationTop(), getWidth(), GetVisualizationBottom(), bgPaint);
 		
 		//attack
-		c.drawLine(0, getHeight(), MS2Width(adsr.getAttack()), 0, linePaint);
+		c.drawLine(0, GetVisualizationBottom(), MS2Width(adsr.getAttack()), GetVisualizationTop(), linePaint);
 		
 		//decay
-		c.drawLine(MS2Width(adsr.getAttack()), 0, SustainLeft(), SustainHeight(), linePaint);
+		c.drawLine(MS2Width(adsr.getAttack()), GetVisualizationTop(), SustainLeft(), SustainHeight(), linePaint);
 		
 		//sustain
 		int nDottedLinesForSustain = (int) (nDottedLinesForSustainPerPx*SustainWidth());
@@ -373,7 +389,7 @@ public class ADSRView extends View {
 		c.drawLines(sustain_pts, linePaint);
 		
 		//release
-		c.drawLine(SustainRight(), SustainHeight(), getWidth(), getHeight(), linePaint);		
+		c.drawLine(SustainRight(), SustainHeight(), getWidth(), GetVisualizationBottom(), linePaint);		
 		
 		//selection circles
 		c.drawOval(attackDecayCircle, circleBGPaint);
@@ -384,7 +400,7 @@ public class ADSRView extends View {
 		c.drawOval(sustainReleaseCircle, circleStrokePaint);
 		
 		//draw playhead
-		c.drawLine(playBarX, 0, playBarX, getHeight(), playHeadPaint);
+		c.drawLine(playBarX, GetVisualizationTop(), playBarX, GetVisualizationBottom(), playHeadPaint);
 		
 	}
 	
