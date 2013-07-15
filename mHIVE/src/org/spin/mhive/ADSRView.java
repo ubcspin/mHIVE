@@ -32,7 +32,6 @@ public class ADSRView extends View {
 	private final int MIN_SUSTAIN_WIDTH_IN_MS = 200;
 	private final float MS_IN_WIDTH = 3*MAX_MS + MIN_SUSTAIN_WIDTH_IN_MS;
 	private final float nDottedLinesForSustainPerPx = 0.15f;
-	private final float NumericTopHeight = 40;
 	
 	//TODO: THIS SHOULD BE INTERFACE 
 	MainActivity mainActivity;
@@ -57,6 +56,9 @@ public class ADSRView extends View {
 	
 	
 	private final int SELECTION_CIRCLE_RADIUS = 50;
+	private final int SELECTION_CIRCLE_STROKE_WIDTH = 4;
+	private final float NumericTopHeight = SELECTION_CIRCLE_RADIUS+SELECTION_CIRCLE_STROKE_WIDTH/2;
+
 	
 	public ADSRView(Context context) {
 		super(context);
@@ -99,7 +101,7 @@ public class ADSRView extends View {
 		
 		circleStrokePaint = new Paint();
 		circleStrokePaint.setARGB(255, 0, 0, 255);
-		circleStrokePaint.setStrokeWidth(5);
+		circleStrokePaint.setStrokeWidth(SELECTION_CIRCLE_STROKE_WIDTH);
 		circleStrokePaint.setStyle(Style.STROKE);
 		
 		circleBGPaint = new Paint();
