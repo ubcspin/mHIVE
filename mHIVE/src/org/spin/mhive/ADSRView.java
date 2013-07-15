@@ -7,6 +7,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Paint.Align;
 import android.graphics.Paint.Style;
 import android.graphics.RectF;
 import android.os.Handler;
@@ -22,6 +23,7 @@ public class ADSRView extends View {
 	Paint circleBGPaint;
 	Paint playHeadPaint;
 	Paint numericDisplayPaint;
+	Paint numericDisplayTextPaint;
 
 	RectF attackDecayCircle;
 	RectF decaySustainCircle;
@@ -120,6 +122,12 @@ public class ADSRView extends View {
 		numericDisplayPaint.setARGB(255, 0, 127, 255);
 		numericDisplayPaint.setStrokeWidth(NUMERIC_LINE_STROKE_WIDTH);
 		
+		numericDisplayTextPaint = new Paint();
+		numericDisplayTextPaint.setARGB(255, 0, 127, 255);
+		numericDisplayTextPaint.setTextAlign(Align.CENTER);
+		numericDisplayTextPaint.setTextSize(24);
+
+		
 		tmrPlayBar = new Timer();
 		tmrPlayBar.scheduleAtFixedRate(new PlayBarTask(), PLAYBAR_UPDATE_INTERVAL, PLAYBAR_UPDATE_INTERVAL);
 		
@@ -161,7 +169,7 @@ public class ADSRView extends View {
 	
 	private float GetNumericTextHeight()
 	{
-		return (GetNumericBottom() + GetNumericTop())/3;
+		return GetNumericHorizontalLineHeight() - 5;
 	}
 	
 	@Override
@@ -436,6 +444,7 @@ public class ADSRView extends View {
 		
 		//DRAW NUMERIC TOP
 		
+		//lines
 		c.drawLine(NUMERIC_LINE_STROKE_WIDTH/2, GetNumericTop(), 2/NUMERIC_LINE_STROKE_WIDTH, GetNumericBottom(), numericDisplayPaint);
 		c.drawLine(NUMERIC_LINE_STROKE_WIDTH/2, GetNumericHorizontalLineHeight(), MS2Width(adsr.getAttack()), GetNumericHorizontalLineHeight(), numericDisplayPaint);
 		c.drawLine(MS2Width(adsr.getAttack()), GetNumericTop(), MS2Width(adsr.getAttack()), GetNumericBottom(), numericDisplayPaint);
@@ -444,6 +453,12 @@ public class ADSRView extends View {
 		c.drawLine(SustainRight(), GetNumericTop(), SustainRight(), GetNumericBottom(), numericDisplayPaint);
 		c.drawLine(SustainRight(), GetNumericHorizontalLineHeight(), getWidth(), GetNumericHorizontalLineHeight(), numericDisplayPaint);
 		c.drawLine(getWidth()-NUMERIC_LINE_STROKE_WIDTH/2, GetNumericTop(), getWidth()-NUMERIC_LINE_STROKE_WIDTH/2, GetNumericBottom(), numericDisplayPaint);
+		
+		//text
+		c.drawText(adsr.getAttackString(), MS2Width(adsr.getAttack())/2, GetNumericTextHeight(), numericDisplayTextPaint);
+		c.drawText(adsr.getDecayString(), MS2Width(adsr.getAttack())+MS2Width(adsr.getDecay())/2, GetNumericTextHeight(), numericDisplayTextPaint);
+		c.drawText(adsr.getSustainString(), SustainLeft() + SustainWidth()/2, GetNumericTextHeight(), numericDisplayTextPaint);
+		c.drawText(adsr.getReleaseString(), SustainRight() + MS2Width(adsr.getRelease())/2, GetNumericTextHeight(), numericDisplayTextPaint);
 		
 	}
 	
