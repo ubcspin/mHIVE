@@ -36,10 +36,10 @@ public class ADSRView extends View {
 	private final int SELECTION_CIRCLE_STROKE_WIDTH = 4;
 	private final int NUMERIC_LINE_STROKE_WIDTH = 4;
 	private final float numericDisplayHeight = SELECTION_CIRCLE_RADIUS+SELECTION_CIRCLE_STROKE_WIDTH/2;
-	private final float LEFT_SIDE_BUFFER_SIZE = 100;
+	private final float LEFT_SIDE_BUFFER_SIZE = 110;
 	private final int MAX_MS = 1000;
 	private final int MIN_SUSTAIN_WIDTH_IN_MS = 400;
-	private final float MIN_DISPLAY_TEXT_WIDTH_IN_MS = 400;
+	private final float MIN_DISPLAY_TEXT_WIDTH_IN_MS = 550;
 	private final float MS_IN_WIDTH = 3*MAX_MS + MIN_SUSTAIN_WIDTH_IN_MS;
 	private final float nDottedLinesForSustainPerPx = 0.15f;
 	
@@ -127,7 +127,7 @@ public class ADSRView extends View {
 		numericDisplayTextPaint = new Paint();
 		numericDisplayTextPaint.setARGB(255, 0, 127, 255);
 		numericDisplayTextPaint.setTextAlign(Align.CENTER);
-		numericDisplayTextPaint.setTextSize(24);
+		numericDisplayTextPaint.setTextSize(36);
 
 		
 		tmrPlayBar = new Timer();
@@ -167,7 +167,7 @@ public class ADSRView extends View {
 	
 	private float GetNumericHorizontalLineHeight()
 	{
-		return (GetNumericBottom() + GetNumericTop())*2/3;
+		return (GetNumericBottom() + GetNumericTop())*3/4;
 	}
 	
 	private float GetNumericTextHeight()
