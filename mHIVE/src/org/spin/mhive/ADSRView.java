@@ -47,7 +47,7 @@ public class ADSRView extends View {
 	ADSRViewMode mode;
 	
 	Timer tmrPlayBar;
-	final int PLAYBAR_UPDATE_INTERVAL = 20;//ms
+	final int PLAYBAR_UPDATE_INTERVAL = 33;//ms
 	long playPosition = 0; //in MS
 	long startTime = 0; //in MS;
 	float playBarX = 0;
@@ -72,6 +72,11 @@ public class ADSRView extends View {
 		Init();
 	}
 	
+	@Override
+	 public void onWindowFocusChanged(boolean hasFocus) {
+	  super.onWindowFocusChanged(hasFocus);
+	  Update();
+	  }
 	
 	
 	public void SetMainActivity(MainActivity ma)
