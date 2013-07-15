@@ -17,11 +17,22 @@ public class HapticNoteRecordVisualPoint extends HapticNoteRecord implements Run
 	@Override
 	public void PerformAction(HIVEAudioGenerator audiogen)
 	{
+		audiogen.ReplayVisualPoint(this);
 		vtv = audiogen.GetVisualTraceView();
 		if(vtv != null)
 		{
 			vtv.GetUIHandler().post(this);
 		}
+	}
+	
+	public float getX()
+	{
+		return x;
+	}
+	
+	public float getY()
+	{
+		return y;
 	}
 
 	@Override

@@ -117,6 +117,20 @@ public class HIVEAudioGenerator extends Observable
 		return visualTraceView;
 	}	
 	
+	public void ReplayVisualPoint(HapticNoteRecordVisualPoint vp)
+	{
+		if (visualTraceView != null)
+		{
+			visualTraceView.GetUIHandler().post(vp);
+		}
+		if (currentlyRecording)
+		{
+			long currentTime = System.currentTimeMillis();
+    		recordingNote.AddRecord(new HapticNoteRecordVisualPoint(currentTime - previousRecordTime, vp.getX(), vp.getY()));
+    		previousRecordTime = currentTime;
+		}
+	}
+	
 	
 	public void Play(int freq, float atten)
 	{
