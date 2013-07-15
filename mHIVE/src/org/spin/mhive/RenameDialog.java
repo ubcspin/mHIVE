@@ -60,6 +60,20 @@ public class RenameDialog extends DialogFragment
 									dismiss();
 								}
 							});
+		
+		((Button)view.findViewById(R.id.btnDeleteRecording)).setOnClickListener(new OnClickListener()
+		{
+			@Override
+			public void onClick(View v)
+			{
+				if(hn != null && noteHistoryAdapter != null)
+				{
+					noteHistoryAdapter.remove(hn);
+					noteHistoryAdapter.notifyDataSetChanged();
+					dismiss();
+				}
+			}
+		});
 		return view;
 	}
 	
