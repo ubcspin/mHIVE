@@ -37,7 +37,8 @@ public class ADSRView extends View {
 	private final int NUMERIC_LINE_STROKE_WIDTH = 4;
 	private final float numericDisplayHeight = SELECTION_CIRCLE_RADIUS+SELECTION_CIRCLE_STROKE_WIDTH/2;
 	private final int MAX_MS = 1000;
-	private final int MIN_SUSTAIN_WIDTH_IN_MS = 300;
+	private final int MIN_SUSTAIN_WIDTH_IN_MS = 400;
+	private final float MIN_DISPLAY_TEXT_WIDTH_IN_MS = 350;
 	private final float MS_IN_WIDTH = 3*MAX_MS + MIN_SUSTAIN_WIDTH_IN_MS;
 	private final float nDottedLinesForSustainPerPx = 0.15f;
 	
@@ -455,10 +456,31 @@ public class ADSRView extends View {
 		c.drawLine(getWidth()-NUMERIC_LINE_STROKE_WIDTH/2, GetNumericTop(), getWidth()-NUMERIC_LINE_STROKE_WIDTH/2, GetNumericBottom(), numericDisplayPaint);
 		
 		//text
+
+		//attack
 		c.drawText(adsr.getAttackString(), MS2Width(adsr.getAttack())/2, GetNumericTextHeight(), numericDisplayTextPaint);
-		c.drawText(adsr.getDecayString(), MS2Width(adsr.getAttack())+MS2Width(adsr.getDecay())/2, GetNumericTextHeight(), numericDisplayTextPaint);
+		
+		//decay
+		float textX = 0;
+		if(adsr.getDecay() < MIN_DISPLAY_TEXT_WIDTH_IN_MS)
+		{
+			textX = MS2Width(adsr.getAttack() + adsr.getDecay() + MIN_DISPLAY_TEXT_WIDTH_IN_MS/2);
+		} else {
+			textX = MS2Width(adsr.getAttack())+MS2Width(adsr.getDecay())/2;
+		}
+		c.drawText(adsr.getDecayString(), textX, GetNumericTextHeight(), numericDisplayTextPaint);
+		
+		//sustain
 		c.drawText(adsr.getSustainString(), SustainLeft() + SustainWidth()/2, GetNumericTextHeight(), numericDisplayTextPaint);
-		c.drawText(adsr.getReleaseString(), SustainRight() + MS2Width(adsr.getRelease())/2, GetNumericTextHeight(), numericDisplayTextPaint);
+		
+		//release
+		if(adsr.getRelease() < MIN_DISPLAY_TEXT_WIDTH_IN_MS)
+		{
+			textX = SustainRight() - MS2Width(MIN_DISPLAY_TEXT_WIDTH_IN_MS/2);
+		} else {
+			textX = SustainRight() + MS2Width(adsr.getRelease())/2;
+		}
+		c.drawText(adsr.getReleaseString(), textX, GetNumericTextHeight(), numericDisplayTextPaint);
 		
 	}
 	
