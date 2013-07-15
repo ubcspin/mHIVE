@@ -38,16 +38,17 @@
     <style parent="@android:style/Widget.CompoundButton.RadioButton" name="WaveformButtonStyle">
         <item name="android:background">@drawable/radio</item>
         <item name="android:button">@null</item>
-        <item name="android:layout_width">125dp</item>
-        <item name="android:layout_height">125dp</item>
+        <item name="android:layout_width">110dp</item>
+        <item name="android:layout_height">200dp</item>
         <item name="android:textSize">27sp</item>
         <item name="android:gravity">center</item>
     </style>
     
-    <style name="ADSRSeekBarStyle" parent="@android:style/Widget.SeekBar">
-        <item name="android:layout_width">300dp</item>
-        <item name="android:layout_height">wrap_content</item>
+    <style name="ADSRStyle">
+        <item name="android:layout_width">540dp</item>
+        <item name="android:layout_height">200dp</item>
     </style>
+    
     
     <style name="RecordButtonStyle">
         <item name="android:layout_width">wrap_content</item>

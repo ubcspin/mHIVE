@@ -38,13 +38,12 @@
 		            <ToggleButton
 					     android:id="@+id/tglADSR"
 					     android:layout_width="100dp"
-					     android:layout_height="50dp"
+					     android:layout_height="match_parent"
 					     android:text="ADSR" />
 					 
 				     <org.spin.mhive.ADSRView
 					        android:id="@+id/adsrVisualization"
-				            android:layout_width="400dp"
-				            android:layout_height="200dp"
+				            style="@style/ADSRStyle"
 					        />
  				    <Space
  				        android:layout_width="0dp"
