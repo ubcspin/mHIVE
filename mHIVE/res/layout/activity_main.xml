@@ -35,20 +35,6 @@
 			        android:background="#006688"
 			        android:layout_weight="1" >
 			        
-		            <ToggleButton
-					     android:id="@+id/tglADSR"
-					     android:layout_width="100dp"
-					     android:layout_height="match_parent"
-					     android:text="ADSR" />
-					 
-				     <org.spin.mhive.ADSRView
-					        android:id="@+id/adsrVisualization"
-				            style="@style/ADSRStyle"
-					        />
- 				    <Space
- 				        android:layout_width="0dp"
-				        android:layout_height="match_parent"
-				        android:layout_weight="2" />
 					<RadioGroup
 					    android:layout_width="wrap_content"
 				        android:layout_height="wrap_content"
@@ -74,7 +60,24 @@
 								        style="@style/WaveformButtonStyle"
 								        android:text="@string/waveform_text_triangle" />
 
-				</RadioGroup>
+					</RadioGroup>
+					
+					<Space
+ 				        android:layout_width="0dp"
+				        android:layout_height="match_parent"
+				        android:layout_weight="2" />
+				
+					<org.spin.mhive.ADSRView
+					        android:id="@+id/adsrVisualization"
+				            style="@style/ADSRStyle"
+					        />
+					
+		          	<ToggleButton
+					     android:id="@+id/tglADSR"
+					     android:layout_width="100dp"
+					     android:layout_height="match_parent"
+					     android:text="ADSR" />
+					 
 	            </LinearLayout>
 	            
 		        
