@@ -148,8 +148,7 @@ public class MainActivity extends Activity implements Observer {
     	    				&& mainInputView.getY()+mainInputView.getHeight() >= event.getY())
     		{
 	        	float xVal = (event.getX()-mainInputView.getX())/mainInputView.getWidth();
-	        	float yVal = (event.getY()-mainInputView.getY())/mainInputView.getHeight();
-	        	yVal = (float) (1.0 - Math.log(event.getY()) / Math.log(mainInputView.getHeight()));
+	        	float yVal = 1.0f-(event.getY()-mainInputView.getY())/mainInputView.getHeight();
 	        	yVal = Math.min(Math.max(yVal, 0.0f), 1.0f);
 	        	int freq = (int)(xVal * (maxFreq-minFreq)) + minFreq;
 	        	float atten = yVal; //attenuation
