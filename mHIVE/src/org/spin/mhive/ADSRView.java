@@ -483,7 +483,10 @@ public class ADSRView extends View {
 		c.drawOval(sustainReleaseCircle, circleStrokePaint);
 		
 		//draw playhead
-		c.drawLine(playBarX, GetVisualizationTop(), playBarX, GetVisualizationBottom(), playHeadPaint);
+		if(enabled)
+		{
+			c.drawLine(playBarX, GetVisualizationTop(), playBarX, GetVisualizationBottom(), playHeadPaint);
+		}
 		
 		
 		//DRAW NUMERIC TOP
