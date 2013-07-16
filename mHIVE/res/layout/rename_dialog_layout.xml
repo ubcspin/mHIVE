@@ -32,6 +32,7 @@
        <Button
             android:id="@+id/btnDeleteRecording"
             style="@style/RenameButton"
+            android:textColor="@color/DeleteButtonColour"
             android:text="Delete" />
 
         <Button
