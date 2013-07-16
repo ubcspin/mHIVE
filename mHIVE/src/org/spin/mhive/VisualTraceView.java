@@ -9,13 +9,18 @@ import java.util.TimerTask;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.RectF;
+import android.graphics.Paint.Style;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
 public class VisualTraceView extends TextView {
 
-	Paint paint;
+	Paint linePaint;
+	Paint circlePaint;
+	Paint circleLinePaint;
+	float CIRCLERADIUS = 20;
 	List<PointRecord> ptList;
 	float[] displayPts;
 	final int INITIAL_ARRAY_SIZE = 4;
@@ -47,12 +52,22 @@ public class VisualTraceView extends TextView {
 	
 	private void init()
 	{
-		paint = new Paint();
-		paint.setStyle(Paint.Style.STROKE);
-		paint.setStrokeWidth(10);
-		paint.setARGB(127, 255, 255, 255);
+		linePaint = new Paint();
+		linePaint.setStyle(Paint.Style.STROKE);
+		linePaint.setStrokeWidth(10);
+		linePaint.setARGB(127, 255, 255, 255);
 		ptList = new ArrayList<PointRecord>();
 		displayPts = new float[INITIAL_ARRAY_SIZE];
+		
+		circlePaint = new Paint();
+		circlePaint.setARGB(170, 255, 255, 255);
+		circlePaint.setStyle(Style.FILL);
+
+		
+		circleLinePaint = new Paint();
+		circleLinePaint.setARGB(255, 255, 255, 255);
+		circleLinePaint.setStrokeWidth(2);
+		circleLinePaint.setStyle(Style.STROKE);
 		
 		uiHandler = new Handler();
 		uiUpdateDecay = new Thread()
@@ -124,6 +139,7 @@ public class VisualTraceView extends TextView {
 			//then, get final point. Only need x, y for this one.
 			displayPts[displayPts.length-2] = ptList.get(ptList.size()-1).x;
 			displayPts[displayPts.length-1] = ptList.get(ptList.size()-1).y;
+			
 		} else {
 			displayPts = new float[0];
 		}
@@ -136,7 +152,9 @@ public class VisualTraceView extends TextView {
 	{
 		if(displayPts.length >= 4)
 		{
-			c.drawLines(displayPts, paint);
+			c.drawLines(displayPts, linePaint);
+			c.drawCircle(ptList.get(ptList.size()-1).x, ptList.get(ptList.size()-1).y, CIRCLERADIUS, circlePaint);
+			c.drawCircle(ptList.get(ptList.size()-1).x, ptList.get(ptList.size()-1).y, CIRCLERADIUS, circleLinePaint);
 		}
 	}
 	
