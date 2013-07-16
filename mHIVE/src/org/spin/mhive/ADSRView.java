@@ -210,13 +210,13 @@ public class ADSRView extends View {
 		
 				if (mode == ADSRViewMode.NOT_DRAGGING)
 				{
-					if (attackDecayCircle.contains(x, y))
-					{
-						mode = ADSRViewMode.DRAGGING_ATTACKDECAY_CIRCLE;
-					} else if (decaySustainCircle.contains(x, y))
+					if (decaySustainCircle.contains(x, y))
 					{
 						mode = ADSRViewMode.DRAGGING_DECAYSUSTAIN_CIRCLE;
 		
+					} else if (attackDecayCircle.contains(x, y))
+					{
+						mode = ADSRViewMode.DRAGGING_ATTACKDECAY_CIRCLE;
 					} else if (sustainReleaseCircle.contains(x, y))
 					{
 						mode = ADSRViewMode.DRAGGING_SUSTAINRELEASE_CIRCLE;
