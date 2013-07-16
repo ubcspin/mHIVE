@@ -495,7 +495,7 @@ public class ADSRView extends View {
 		//DRAW NUMERIC TOP
 		
 		//lines
-		c.drawLine(GetVisualizationLeft(), GetNumericTop(), GetVisualizationLeft(), GetNumericBottom(), numericDisplayPaint);
+		c.drawLine(GetVisualizationLeft()+NUMERIC_LINE_STROKE_WIDTH/2, GetNumericTop(), GetVisualizationLeft()+NUMERIC_LINE_STROKE_WIDTH/2, GetNumericBottom(), numericDisplayPaint);
 		c.drawLine(GetVisualizationLeft(), GetNumericHorizontalLineHeight(), OffsetMS2Width(adsr.getAttack()), GetNumericHorizontalLineHeight(), numericDisplayPaint);
 		c.drawLine(OffsetMS2Width(adsr.getAttack()), GetNumericTop(), OffsetMS2Width(adsr.getAttack()), GetNumericBottom(), numericDisplayPaint);
 		c.drawLine(OffsetMS2Width(adsr.getAttack()), GetNumericHorizontalLineHeight(), SustainLeft(), GetNumericHorizontalLineHeight(), numericDisplayPaint);
