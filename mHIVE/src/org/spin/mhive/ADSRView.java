@@ -149,7 +149,7 @@ public class ADSRView extends View {
 	
 	private float GetVisualizationHeight()
 	{
-		return getHeight() - numericDisplayHeight;
+		return GetVisualizationBottom() - numericDisplayHeight;
 	}
 	
 	private float GetVisualizationTop()
@@ -159,7 +159,7 @@ public class ADSRView extends View {
 	
 	private float GetVisualizationBottom()
 	{
-		return getHeight();
+		return getHeight()-SELECTION_CIRCLE_RADIUS;
 	}
 	
 	private float GetNumericTop()
@@ -450,7 +450,10 @@ public class ADSRView extends View {
 		//DRAW MAIN VISUALIZATION
 		
 		//bg
-		c.drawRect(GetVisualizationLeft(), GetVisualizationTop(), GetVisualizationRight(), GetVisualizationBottom(), bgPaint);
+		c.drawRect(GetVisualizationLeft(), GetVisualizationTop(), GetVisualizationRight(), getHeight(), bgPaint);
+		
+		//bottom area
+		c.drawRect(GetVisualizationLeft(), GetVisualizationBottom(), GetVisualizationRight(), getHeight(), disablePaint);
 		
 		//attack
 		c.drawLine(GetVisualizationLeft(), GetVisualizationBottom(), OffsetMS2Width(adsr.getAttack()), GetVisualizationTop(), linePaint);
