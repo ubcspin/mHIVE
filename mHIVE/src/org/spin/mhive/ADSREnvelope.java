@@ -21,6 +21,8 @@ public class ADSREnvelope
 	public String getDecayString() {return decayString;}
 	public String getSustainString() {return sustainString;}
 	public String getReleaseString() {return releaseString;}
+	
+	private String[] stringArray = null;
 
 	
 	public ADSREnvelope(int attack, int decay, float sustain, int release)
@@ -34,6 +36,13 @@ public class ADSREnvelope
 		decayString = ""+decay+"ms";
 		sustainString = ""+Math.round(sustain*100)/100.0f;
 		releaseString = ""+release+"ms";
+		
+		stringArray = new String[] {getAttackString(), getDecayString(), getSustainString(),getReleaseString()};
+	}
+	
+	public String[] GetStringArray()
+	{
+		return stringArray;
 	}
 	
 
