@@ -48,6 +48,9 @@ public class MainActivity extends Activity implements Observer {
 
     private int minFreq = 20;
     private int maxFreq = 140;
+    public int getMinFreq() {return minFreq;}
+    public int getMaxFreq() {return maxFreq;}
+    
     private VisualTraceView mainInputView;
     
 	ToggleButton tglADSR;
@@ -89,6 +92,7 @@ public class MainActivity extends Activity implements Observer {
         display.getSize(size);
         
     	mainInputView = (VisualTraceView)findViewById(R.id.fullscreen_content);
+    	mainInputView.SetFrequencyRange(minFreq, maxFreq);
     	
     	//set up Audio Generator
     	hiveAudioGenerator = new HIVEAudioGenerator();

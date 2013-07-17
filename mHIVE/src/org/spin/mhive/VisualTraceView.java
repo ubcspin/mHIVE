@@ -10,6 +10,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.graphics.Paint.Align;
 import android.graphics.Paint.Style;
 import android.os.Handler;
 import android.util.AttributeSet;
@@ -20,7 +21,11 @@ public class VisualTraceView extends TextView {
 	Paint linePaint;
 	Paint circlePaint;
 	Paint circleLinePaint;
+	Paint bgTextPaint;
 	float CIRCLERADIUS = 20;
+	int maxFreq = 0;
+	int minFreq = 0;
+	int freqRange = 0;
 	List<PointRecord> ptList;
 	float[] displayPts;
 	final int INITIAL_ARRAY_SIZE = 4;
@@ -69,6 +74,11 @@ public class VisualTraceView extends TextView {
 		circleLinePaint.setStrokeWidth(2);
 		circleLinePaint.setStyle(Style.STROKE);
 		
+		bgTextPaint = new Paint();
+		bgTextPaint.setARGB(65, 255, 255, 255);
+		bgTextPaint.setTextSize(36);
+		bgTextPaint.setTextAlign(Align.CENTER);
+		
 		uiHandler = new Handler();
 		uiUpdateDecay = new Thread()
 		{
@@ -82,6 +92,13 @@ public class VisualTraceView extends TextView {
 		
 		Timer delayTimer = new Timer();
 		delayTimer.scheduleAtFixedRate(new DecayUpdateTask(), DECAY_UPDATE_RATE_IN_MS, DECAY_UPDATE_RATE_IN_MS);
+	}
+	
+	public void SetFrequencyRange(int min, int max)
+	{
+		minFreq = min;
+		maxFreq = max;
+		freqRange = max-min;
 	}
 	
 	class DecayUpdateTask extends TimerTask {
@@ -147,6 +164,20 @@ public class VisualTraceView extends TextView {
 		invalidate();
 	}
 	
+	private void drawVolumeBackground(Canvas c, float f)
+	{
+		c.drawText(""+f+" dB", getWidth()/2, (1-f)*getHeight(), bgTextPaint);
+	}
+	
+	private void drawFrequencyBackground(Canvas c, float f)
+	{
+		if (minFreq != maxFreq)
+		{
+			float x = (f - minFreq)/(maxFreq-minFreq);
+			c.drawText(f+"Hz", x*getWidth(), getHeight()/2, bgTextPaint);
+		}
+	}
+	
 	@Override
 	public void onDraw(Canvas c)
 	{
@@ -156,6 +187,18 @@ public class VisualTraceView extends TextView {
 			c.drawCircle(ptList.get(ptList.size()-1).x, ptList.get(ptList.size()-1).y, CIRCLERADIUS, circlePaint);
 			c.drawCircle(ptList.get(ptList.size()-1).x, ptList.get(ptList.size()-1).y, CIRCLERADIUS, circleLinePaint);
 		}
+		drawVolumeBackground(c, 0.1f);
+		drawVolumeBackground(c, 0.3f);
+		drawVolumeBackground(c, 0.5f);
+		drawVolumeBackground(c, 0.7f);
+		drawVolumeBackground(c, 0.9f);
+		
+		drawFrequencyBackground(c, 30);
+		drawFrequencyBackground(c, 60);
+		drawFrequencyBackground(c, 100);
+		drawFrequencyBackground(c, 130);
+		
 	}
 	
 }
+
