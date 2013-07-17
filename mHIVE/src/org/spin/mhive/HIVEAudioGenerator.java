@@ -27,6 +27,7 @@ public class HIVEAudioGenerator extends Observable
 {
 	//log to file?
 	private final boolean LOGGING = true;
+	private long LOG_START_TIME = 0;
 	private PrintWriter outWriter;
 	
     private FMODAudioDevice mFMODAudioDevice = new FMODAudioDevice();
@@ -77,6 +78,7 @@ public class HIVEAudioGenerator extends Observable
 			setChanged();
 			notifyObservers();
 		}
+		Log("SETWAVEFORM", new String[] {getCurrentWaveformName()});
 		
 		
 	}
@@ -139,19 +141,30 @@ public class HIVEAudioGenerator extends Observable
 		
 		try {
 			outWriter = new PrintWriter(f);
-			outWriter.print("test");
-			outWriter.close();
+			LOG_START_TIME = System.currentTimeMillis();
+			outWriter.println("START,"+LOG_START_TIME);
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
-	private void Log(String s)
+	private void Log(String cmd) {Log(cmd, null);}
+	private void Log(String cmd, String[] args)
 	{
 		if (LOGGING)
 		{
-			outWriter.print(s);
+			long t = System.currentTimeMillis() - LOG_START_TIME;
+			String logString = ""+t+","+cmd;
+			if (args != null)
+			{
+				for (String arg : args)
+				{
+					logString = logString + "," + arg;
+				}
+			}
+			outWriter.println(logString);
+			outWriter.flush();
 		}
 	}
 	
@@ -206,6 +219,7 @@ public class HIVEAudioGenerator extends Observable
     		recordingNote.AddRecord(new HapticNoteRecordPlay(currentTime - previousRecordTime, atten, freq));
     		previousRecordTime = currentTime;
     	}
+		Log("PLAY", new String[] {""+freq, ""+atten});
 
 	}
 	
@@ -240,6 +254,8 @@ public class HIVEAudioGenerator extends Observable
     		recordingNote.AddRecord(new HapticNoteRecordStop(currentTime - previousRecordTime));
     		previousRecordTime = currentTime;
 		}
+		
+		Log("STOP");
 	}
 	
 	public void Close()
@@ -275,6 +291,7 @@ public class HIVEAudioGenerator extends Observable
 			replayThread = new ReplayThread(this, hapticNote);
 			replayThread.start();
 		//}
+		Log("REPLAY");
 	}
 	
 	public void StopReplay()
@@ -283,6 +300,7 @@ public class HIVEAudioGenerator extends Observable
 		{
 			replayThread.stopPlaying();
 		}
+		Log("STOPREPLAY");
 	}
 	
 	class ReplayThread extends Thread
@@ -348,6 +366,7 @@ public class HIVEAudioGenerator extends Observable
     		recordingNote.AddRecord(new HapticNoteRecordEnableADSR(currentTime - previousRecordTime, b));
     		previousRecordTime = currentTime;
 		}
+		Log("ENABLEADSR", new String[] {""+b});
 		notifyObservers();
 	}
 	
@@ -371,6 +390,7 @@ public class HIVEAudioGenerator extends Observable
 			}
 			setChanged();
 			notifyObservers();
+			Log("SETADSR", currentADSREnvelope.GetStringArray());
 		}
 	}
 	
