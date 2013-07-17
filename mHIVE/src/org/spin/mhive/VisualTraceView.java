@@ -173,8 +173,6 @@ public class VisualTraceView extends TextView {
 	{
 		if (minFreq != maxFreq)
 		{
-			float x = (f - minFreq)/(maxFreq-minFreq);
-			c.drawText(f+"Hz", x*getWidth(), getHeight()/2, bgTextPaint);
 		}
 	}
 	

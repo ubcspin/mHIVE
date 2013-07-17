@@ -11,12 +11,23 @@ import org.spin.mhive.replay.HapticNoteRecordVisualPoint;
 import org.spin.mhive.replay.HapticNoteRecordWaveform;
 
 import android.R;
+import android.os.Environment;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.lang.UnsupportedOperationException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Observable;
 
 //Handles audio generation for mHIVE
 public class HIVEAudioGenerator extends Observable
 {
+	//log to file?
+	private final boolean LOGGING = true;
+	private PrintWriter outWriter;
 	
     private FMODAudioDevice mFMODAudioDevice = new FMODAudioDevice();
 
@@ -94,6 +105,10 @@ public class HIVEAudioGenerator extends Observable
 	
 	public HIVEAudioGenerator()
 	{	
+		if(LOGGING)
+		{
+			SetupLogging();
+		}
 		initiated = true;
 		mFMODAudioDevice.start();
 		cBegin();
@@ -101,6 +116,43 @@ public class HIVEAudioGenerator extends Observable
 		cSetChannelVolume(0);
 		SetADSR(new ADSREnvelope(100, 100, 0.5f, 300));
 		EnableADSR();
+	}
+	
+	private void SetupLogging()
+	{
+		//set up output file (comma separated value text file)
+		//date formats for directory and file name
+		//file will have the day, hour, minute, and second as part of the file name 
+		DateFormat dateFormat = new SimpleDateFormat("yyyyMMMdd-hh-mm-ss");
+		Date date = new Date();
+		
+		//set up the file name
+		String fileString = "mHIVE_"+dateFormat.format(date)+".csv";
+		
+		//create directory
+		File d = new File(Environment.getExternalStorageDirectory() + "/" + "mHIVE");
+		if(!d.exists())
+		{
+			d.mkdirs();
+		}
+		File f = new File(Environment.getExternalStorageDirectory() + "/" + "mHIVE" + "/" + fileString);
+		
+		try {
+			outWriter = new PrintWriter(f);
+			outWriter.print("test");
+			outWriter.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	private void Log(String s)
+	{
+		if (LOGGING)
+		{
+			outWriter.print(s);
+		}
 	}
 	
 	public void SetVisualTraceView(VisualTraceView vtv)
