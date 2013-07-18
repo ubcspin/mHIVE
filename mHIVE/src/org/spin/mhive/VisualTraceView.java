@@ -23,9 +23,9 @@ public class VisualTraceView extends TextView {
 	Paint circleLinePaint;
 	Paint bgTextPaint;
 	float CIRCLERADIUS = 20;
-	int maxFreq = 0;
-	int minFreq = 0;
-	int freqRange = 0;
+	float maxFreq = 0;
+	float minFreq = 0;
+	float freqRange = 0;
 	List<PointRecord> ptList;
 	float[] displayPts;
 	final int INITIAL_ARRAY_SIZE = 4;
@@ -166,13 +166,14 @@ public class VisualTraceView extends TextView {
 	
 	private void drawVolumeBackground(Canvas c, float f)
 	{
-		c.drawText(""+f+" dB", getWidth()/2, (1-f)*getHeight(), bgTextPaint);
+		c.drawText(""+(int)(f*10)+" dB", getWidth()/2, (1-f)*getHeight(), bgTextPaint);
 	}
 	
 	private void drawFrequencyBackground(Canvas c, float f)
 	{
 		if (minFreq != maxFreq)
 		{
+			c.drawText(""+f+"Hz", (f-minFreq)/freqRange*getWidth(), getHeight()/2.0f, bgTextPaint);
 		}
 	}
 	

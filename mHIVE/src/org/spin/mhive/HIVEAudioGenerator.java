@@ -39,7 +39,7 @@ public class HIVEAudioGenerator extends Observable
     public static final int OSCILLATOR_SAWUP = 2;
     public static final int OSCILLATOR_TRIANGLE = 4;
     private int currentWaveform = OSCILLATOR_SINE;
-    private final float[] waveformScaleFactor = {0.8f, 0.1f, 0.1f, 0.0f, 1.0f}; //balancing overall output
+    private final float[] waveformScaleFactor = {1.0f, 1.0f, 1.0f, 0.0f, 1.0f};//{0.8f, 0.1f, 0.1f, 0.0f, 1.0f}; //balancing overall output
 	
 	private boolean initiated = false;
 	private boolean playing = false;
