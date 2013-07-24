@@ -3,15 +3,15 @@
 	    <item android:state_checked="false"  >
         	<shape android:shape="oval">
 	            <solid android:color="#770000" />
-  				<stroke android:width="24dp" android:color="#333333" />
-  				<size android:width="125dp" android:height="125dp" />
+  				<stroke android:width="@dimen/record_button_stroke_width" android:color="#333333" />
+  				<size android:width="@dimen/record_button_width" android:height="@dimen/record_button_width" />
             </shape>
         </item>
 	    <item android:state_checked="true"  >
         	<shape android:shape="oval">
 	            <solid android:color="#FF0000" />
-  				<stroke android:width="24dp" android:color="#999999" />
-  				<size android:width="125dp" android:height="125dp" />
+  				<stroke android:width="@dimen/record_button_stroke_width" android:color="#999999" />
+  				<size android:width="@dimen/record_button_width" android:height="@dimen/record_button_width" />
             </shape>
         </item>
     </selector>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="history_list_height">525dp</dimen>
+    <dimen name="record_button_width">125dp</dimen>
+    <dimen name="record_button_stroke_width">24dp</dimen>
+    <dimen name="settings_button_height">100dp</dimen>
+    <dimen name="adsr_width">540dp</dimen>
+    <dimen name="rename_button_height">75dp</dimen>
+    <dimen name="rename_text_size">20sp</dimen>
+    <dimen name="bottom_bar_height">200dp</dimen>
+    <dimen name="waveform_text_size">27sp</dimen>
+    <dimen name="rename_button_width">200dp</dimen>
+    <dimen name="waveform_button_width">110dp</dimen>
+    
+</resources>

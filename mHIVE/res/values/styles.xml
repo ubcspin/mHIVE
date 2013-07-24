@@ -38,15 +38,15 @@
     <style parent="@android:style/Widget.CompoundButton.RadioButton" name="WaveformButtonStyle">
         <item name="android:background">@drawable/radio</item>
         <item name="android:button">@null</item>
-        <item name="android:layout_width">110dp</item>
-        <item name="android:layout_height">200dp</item>
-        <item name="android:textSize">27sp</item>
+        <item name="android:layout_width">@dimen/waveform_button_width</item>
+        <item name="android:layout_height">@dimen/bottom_bar_height</item>
+        <item name="android:textSize">@dimen/waveform_text_size</item>
         <item name="android:gravity">center</item>
     </style>
     
     <style name="ADSRStyle">
-        <item name="android:layout_width">540dp</item>
-        <item name="android:layout_height">200dp</item>
+        <item name="android:layout_width">@dimen/adsr_width</item>
+        <item name="android:layout_height">@dimen/bottom_bar_height</item>
     </style>
     
     
@@ -58,9 +58,9 @@
     </style>
     
     <style name="RenameButton">
-        <item name="android:layout_width">200dp</item>
-        <item name="android:layout_height">75dp</item>
-        <item name="android:textSize">20sp</item>
+        <item name="android:layout_width">@dimen/rename_button_width</item>
+        <item name="android:layout_height">@dimen/rename_button_height</item>
+        <item name="android:textSize">@dimen/rename_text_size</item>
     </style>
 
 </resources>
