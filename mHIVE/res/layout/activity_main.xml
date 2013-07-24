@@ -102,8 +102,13 @@
         <ListView
             android:id="@+id/lstHistory"
             android:layout_width="200dp"
-            android:layout_height="wrap_content" >
-        </ListView>
+            android:layout_height="@dimen/history_list_height" />
+	        					
+        <Button
+            android:id="@+id/btnSettings"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/settings_button_height"
+			android:text="Settings" />
 		    
      </LinearLayout>
     

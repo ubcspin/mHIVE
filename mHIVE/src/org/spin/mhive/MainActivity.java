@@ -67,6 +67,7 @@ public class MainActivity extends Activity implements Observer {
     WaveformDialog waveformDialog;
     ADSRDialog adsrDialog;
     RenameDialog renameDialog;
+    SettingsDialog settingsDialog;
     
 
     @Override
@@ -136,6 +137,19 @@ public class MainActivity extends Activity implements Observer {
 		
 		//set up rename dialog
 		renameDialog = new RenameDialog();
+		
+		
+		//set up settings dialog
+		settingsDialog = new SettingsDialog();
+		Button settingsButton = (Button)findViewById(R.id.btnSettings);
+		settingsButton.setOnClickListener(new OnClickListener() {
+								@Override
+								public void onClick(View v) {
+								    FragmentTransaction ft = getFragmentManager().beginTransaction();
+									settingsDialog.show(ft, "SettingsDialog");
+								}
+								
+							});
 		
 		hiveAudioGenerator.addObserver(this);
 		update(hiveAudioGenerator, null);
