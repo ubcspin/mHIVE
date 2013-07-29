@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.NumberPicker;
+import android.widget.NumberPicker.OnValueChangeListener;
 
 import com.example.mhive.R;
 
@@ -32,6 +33,29 @@ public class SettingsDialog extends DialogFragment
 		
 		parent = (MainActivity)getActivity();
 		
+		minFrequencyPicker.setOnValueChangedListener(new OnValueChangeListener() {
+							@Override
+							public void onValueChange(NumberPicker picker, int oldVal,
+									int newVal) {
+								parent.setMinFreq(newVal);
+								UpdateFrequencyValues();
+							}});
+		
+		maxFrequencyPicker.setOnValueChangedListener(new OnValueChangeListener() {
+			@Override
+			public void onValueChange(NumberPicker picker, int oldVal,
+					int newVal) {
+				parent.setMaxFreq(newVal);
+				UpdateFrequencyValues();
+			}});
+		
+		UpdateFrequencyValues();
+
+		return view;
+	}
+	
+	private void UpdateFrequencyValues()
+	{
 		Resources res = getResources();
 		minFrequencyPicker.setMinValue(res.getInteger(R.integer.MinAllowedFrequencyInHz));
 		minFrequencyPicker.setMaxValue(res.getInteger(R.integer.MaxAllowedFrequencyInHz));
@@ -41,8 +65,6 @@ public class SettingsDialog extends DialogFragment
 
 		minFrequencyPicker.setValue(parent.getMinFreq());
 		maxFrequencyPicker.setValue(parent.getMaxFreq());
-		
-		return view;
 	}
 	
 }

@@ -50,6 +50,20 @@ public class MainActivity extends Activity implements Observer {
     private int maxFreq = 140;
     public int getMinFreq() {return minFreq;}
     public int getMaxFreq() {return maxFreq;}
+    public void setMinFreq(int newMinFreq)
+    {
+    	if (newMinFreq < maxFreq)
+    	{
+    		minFreq = newMinFreq;
+    	}
+    }
+    public void setMaxFreq(int newMaxFreq)
+    {
+    	if(newMaxFreq > minFreq)
+    	{
+    		maxFreq = newMaxFreq;
+    	}
+    }
     
     private VisualTraceView mainInputView;
     
