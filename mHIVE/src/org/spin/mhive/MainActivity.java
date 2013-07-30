@@ -70,12 +70,12 @@ public class MainActivity extends Activity implements Observer {
      * @author oli
      *
      */
-    public enum FrequencyMode {
+    public enum ScalingMode {
     	LOG, LINEAR, EXP
     }
-    private FrequencyMode frequencyMode = FrequencyMode.LOG;
-    public FrequencyMode GetFrequencyMode() { return frequencyMode;}
-    public void SetFrequency(FrequencyMode newMode)
+    private ScalingMode frequencyMode = ScalingMode.LOG;
+    public ScalingMode GetFrequencyMode() { return frequencyMode;}
+    public void SetFrequency(ScalingMode newMode)
 	{ frequencyMode = newMode;
     	if (mainInputView != null)
     	{
@@ -191,13 +191,13 @@ public class MainActivity extends Activity implements Observer {
     {
     	int freq = 0;
     	float freqRange = maxFreq - minFreq;
-    	if (frequencyMode == FrequencyMode.LOG)
+    	if (frequencyMode == ScalingMode.LOG)
     	{
     		freq = (int)(Math.log(zeroToOne*(freqRange-1)+1)/Math.log(freqRange)*freqRange) + minFreq;
-    	} else if (frequencyMode == FrequencyMode.LINEAR)
+    	} else if (frequencyMode == ScalingMode.LINEAR)
     	{
     		freq = (int)(zeroToOne * freqRange) + minFreq;
-    	} else if (frequencyMode == FrequencyMode.EXP)
+    	} else if (frequencyMode == ScalingMode.EXP)
     	{
     		freq = (int) (Math.pow(freqRange+1, zeroToOne)) + minFreq - 1;
     	}

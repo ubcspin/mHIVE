@@ -1,6 +1,6 @@
 package org.spin.mhive;
 
-import org.spin.mhive.MainActivity.FrequencyMode;
+import org.spin.mhive.MainActivity.ScalingMode;
 
 import android.app.DialogFragment;
 import android.content.res.Resources;
@@ -63,19 +63,19 @@ public class SettingsDialog extends DialogFragment
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView,
 					boolean isChecked) {
-				parent.SetFrequency(FrequencyMode.LOG);
+				parent.SetFrequency(ScalingMode.LOG);
 			}});
 		((RadioButton)view.findViewById(R.id.radFrequencyLinear)).setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView,
 					boolean isChecked) {
-				parent.SetFrequency(FrequencyMode.LINEAR);
+				parent.SetFrequency(ScalingMode.LINEAR);
 			}});
 		((RadioButton)view.findViewById(R.id.radFrequencyExp)).setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView,
 					boolean isChecked) {
-				parent.SetFrequency(FrequencyMode.EXP);
+				parent.SetFrequency(ScalingMode.EXP);
 			}});
 		
 		return view;
