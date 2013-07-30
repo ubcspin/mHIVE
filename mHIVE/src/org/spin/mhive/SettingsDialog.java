@@ -1,13 +1,18 @@
 package org.spin.mhive;
 
+import org.spin.mhive.MainActivity.FrequencyMode;
+
 import android.app.DialogFragment;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.NumberPicker;
 import android.widget.NumberPicker.OnValueChangeListener;
+import android.widget.RadioButton;
 
 import com.example.mhive.R;
 
@@ -28,6 +33,8 @@ public class SettingsDialog extends DialogFragment
 	{
 		View view = inflater.inflate(R.layout.settings_dialog_layout, container);
 		
+		
+		//FREQUENCY MAX/MIN
 		minFrequencyPicker = (NumberPicker)view.findViewById(R.id.nmbrMinimumFrequency);
 		maxFrequencyPicker = (NumberPicker)view.findViewById(R.id.nmbrMaximumFrequency);
 		
@@ -51,6 +58,26 @@ public class SettingsDialog extends DialogFragment
 		
 		UpdateFrequencyValues();
 
+		//FREQUENCY MODE
+		((RadioButton)view.findViewById(R.id.radFrequencyLog)).setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				parent.SetFrequency(FrequencyMode.LOG);
+			}});
+		((RadioButton)view.findViewById(R.id.radFrequencyLinear)).setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				parent.SetFrequency(FrequencyMode.LINEAR);
+			}});
+		((RadioButton)view.findViewById(R.id.radFrequencyExp)).setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				parent.SetFrequency(FrequencyMode.EXP);
+			}});
+		
 		return view;
 	}
 	

@@ -46,8 +46,8 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
  */
 public class MainActivity extends Activity implements Observer {
 
-    private int minFreq = 20;
-    private int maxFreq = 140;
+    private int minFreq = 16;
+    private int maxFreq = 240;
     public int getMinFreq() {return minFreq;}
     public int getMaxFreq() {return maxFreq;}
     public void setMinFreq(int newMinFreq)
