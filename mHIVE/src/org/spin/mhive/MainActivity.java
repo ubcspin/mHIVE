@@ -73,7 +73,7 @@ public class MainActivity extends Activity implements Observer {
     public enum ScalingMode {
     	LOG, LINEAR, EXP
     }
-    private ScalingMode frequencyMode = ScalingMode.LOG;
+    private ScalingMode frequencyMode = ScalingMode.LINEAR;
     public ScalingMode GetFrequencyMode() { return frequencyMode;}
     public void SetFrequencyMode(ScalingMode newMode)
 	{ frequencyMode = newMode;
@@ -82,7 +82,7 @@ public class MainActivity extends Activity implements Observer {
     		mainInputView.invalidate();
     	}
 	}
-    private ScalingMode amplitudeMode = ScalingMode.LOG;
+    private ScalingMode amplitudeMode = ScalingMode.LINEAR;
     public ScalingMode GetAmplitudeMode() { return amplitudeMode;}
     public void SetAmplitudeMode(ScalingMode newMode)
 	{ amplitudeMode = newMode;
