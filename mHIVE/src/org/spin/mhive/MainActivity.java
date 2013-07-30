@@ -75,8 +75,17 @@ public class MainActivity extends Activity implements Observer {
     }
     private ScalingMode frequencyMode = ScalingMode.LOG;
     public ScalingMode GetFrequencyMode() { return frequencyMode;}
-    public void SetFrequency(ScalingMode newMode)
+    public void SetFrequencyMode(ScalingMode newMode)
 	{ frequencyMode = newMode;
+    	if (mainInputView != null)
+    	{
+    		mainInputView.invalidate();
+    	}
+	}
+    private ScalingMode amplitudeMode = ScalingMode.LOG;
+    public ScalingMode GetAmplitudeMode() { return amplitudeMode;}
+    public void SetAmplitudeMode(ScalingMode newMode)
+	{ amplitudeMode = newMode;
     	if (mainInputView != null)
     	{
     		mainInputView.invalidate();
@@ -205,6 +214,23 @@ public class MainActivity extends Activity implements Observer {
     	return freq;
    }
     
+    public float CalculateAmplitudeFromFractionalPosition(float zeroToOne)
+    {
+    	float amp = 0;
+    	if (amplitudeMode == ScalingMode.LOG)
+    	{
+    		amp = (float)(Math.log(zeroToOne*99+1)/Math.log(100));
+    	} else if (amplitudeMode == ScalingMode.LINEAR)
+    	{
+    		amp = zeroToOne;
+    	} else if (amplitudeMode == ScalingMode.EXP)
+    	{
+    		amp = (float)Math.pow(2, zeroToOne)-1;
+    	}
+    	
+    	return amp;
+   }
+    
     @Override
     public boolean onTouchEvent(MotionEvent event) {
     	if(event.getAction() == MotionEvent.ACTION_DOWN
@@ -219,7 +245,7 @@ public class MainActivity extends Activity implements Observer {
 	        	float yVal = 1.0f-(event.getY()-mainInputView.getY())/mainInputView.getHeight();
 	        	yVal = Math.min(Math.max(yVal, 0.0f), 1.0f);
 	        	int freq = CalculateFrequencyFromFractionalPosition(xVal);
-	        	float atten = yVal; //attenuation
+	        	float atten = CalculateAmplitudeFromFractionalPosition(yVal); //attenuation
 	        	hiveAudioGenerator.Play(freq, atten, event.getX(), event.getY());
 	        		        	
     		} else {

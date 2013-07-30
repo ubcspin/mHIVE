@@ -63,19 +63,39 @@ public class SettingsDialog extends DialogFragment
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView,
 					boolean isChecked) {
-				parent.SetFrequency(ScalingMode.LOG);
+				parent.SetFrequencyMode(ScalingMode.LOG);
 			}});
 		((RadioButton)view.findViewById(R.id.radFrequencyLinear)).setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView,
 					boolean isChecked) {
-				parent.SetFrequency(ScalingMode.LINEAR);
+				parent.SetFrequencyMode(ScalingMode.LINEAR);
 			}});
 		((RadioButton)view.findViewById(R.id.radFrequencyExp)).setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView,
 					boolean isChecked) {
-				parent.SetFrequency(ScalingMode.EXP);
+				parent.SetFrequencyMode(ScalingMode.EXP);
+			}});
+		
+		//AMPLITUDE MODE
+		((RadioButton)view.findViewById(R.id.radAmplitudeLog)).setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				parent.SetAmplitudeMode(ScalingMode.LOG);
+			}});
+		((RadioButton)view.findViewById(R.id.radAmplitudeLinear)).setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				parent.SetAmplitudeMode(ScalingMode.LINEAR);
+			}});
+		((RadioButton)view.findViewById(R.id.radAmplitudeExp)).setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				parent.SetAmplitudeMode(ScalingMode.EXP);
 			}});
 		
 		return view;

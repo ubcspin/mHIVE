@@ -169,7 +169,10 @@ public class VisualTraceView extends TextView {
 	
 	private void drawVolumeBackground(Canvas c, float f)
 	{
-		c.drawText(""+(int)(f*10)+" dB", getWidth()/2, (1-f)*getHeight(), bgTextPaint);
+		if(mainActivity != null)
+		{
+			c.drawText(""+Math.round(mainActivity.CalculateAmplitudeFromFractionalPosition(f)*100)/100.0f, getWidth()/2, (1-f)*getHeight(), bgTextPaint);
+		}
 	}
 	
 	private void drawFrequencyBackground(Canvas c, float zeroToOne)
