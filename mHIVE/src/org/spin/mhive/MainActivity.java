@@ -65,6 +65,24 @@ public class MainActivity extends Activity implements Observer {
     	}
     }
     
+    /**
+     *  Frequency Mode manipulation
+     * @author oli
+     *
+     */
+    public enum FrequencyMode {
+    	LOG, LINEAR, EXP
+    }
+    private FrequencyMode frequencyMode = FrequencyMode.LOG;
+    public FrequencyMode GetFrequencyMode() { return frequencyMode;}
+    public void SetFrequency(FrequencyMode newMode)
+	{ frequencyMode = newMode;
+    	if (mainInputView != null)
+    	{
+    		mainInputView.invalidate();
+    	}
+	}
+    
     private VisualTraceView mainInputView;
     
 	ToggleButton tglADSR;
@@ -169,6 +187,24 @@ public class MainActivity extends Activity implements Observer {
 		update(hiveAudioGenerator, null);
     }
     
+    public int CalculateFrequencyFromFractionalPosition(float zeroToOne)
+    {
+    	int freq = 0;
+    	float freqRange = maxFreq - minFreq;
+    	if (frequencyMode == FrequencyMode.LOG)
+    	{
+    		freq = (int)(Math.log(zeroToOne*(freqRange-1)+1)/Math.log(freqRange)*freqRange) + minFreq;
+    	} else if (frequencyMode == FrequencyMode.LINEAR)
+    	{
+    		freq = (int)(zeroToOne * freqRange) + minFreq;
+    	} else if (frequencyMode == FrequencyMode.EXP)
+    	{
+    		freq = (int) (Math.pow(freqRange+1, zeroToOne)) + minFreq - 1;
+    	}
+    	
+    	return freq;
+   }
+    
     @Override
     public boolean onTouchEvent(MotionEvent event) {
     	if(event.getAction() == MotionEvent.ACTION_DOWN
@@ -182,7 +218,7 @@ public class MainActivity extends Activity implements Observer {
 	        	float xVal = (event.getX()-mainInputView.getX())/mainInputView.getWidth();
 	        	float yVal = 1.0f-(event.getY()-mainInputView.getY())/mainInputView.getHeight();
 	        	yVal = Math.min(Math.max(yVal, 0.0f), 1.0f);
-	        	int freq = (int)(xVal * (maxFreq-minFreq)) + minFreq;
+	        	int freq = CalculateFrequencyFromFractionalPosition(xVal);
 	        	float atten = yVal; //attenuation
 	        	hiveAudioGenerator.Play(freq, atten, event.getX(), event.getY());
 	        		        	
