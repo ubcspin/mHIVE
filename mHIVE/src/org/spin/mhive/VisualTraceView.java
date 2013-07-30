@@ -33,10 +33,11 @@ public class VisualTraceView extends TextView {
 	final int DECAY_UPDATE_RATE_IN_MS = 10;
 	Handler uiHandler;
 	Runnable uiUpdateDecay;
+	MainActivity mainActivity;
 	
 	public VisualTraceView(Context context) {
 		super(context);
-		init();
+		init((MainActivity)context);
 	}
 
 	public Handler GetUIHandler()
@@ -46,17 +47,19 @@ public class VisualTraceView extends TextView {
 	
 	public VisualTraceView(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		init();
+		init((MainActivity)context);
 	}
 
 	public VisualTraceView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
-		init();
+		init((MainActivity)context);
 	}
 	
 	
-	private void init()
+	private void init(MainActivity ma)
 	{
+		mainActivity = ma;
+		
 		linePaint = new Paint();
 		linePaint.setStyle(Paint.Style.STROKE);
 		linePaint.setStrokeWidth(10);
@@ -169,11 +172,11 @@ public class VisualTraceView extends TextView {
 		c.drawText(""+(int)(f*10)+" dB", getWidth()/2, (1-f)*getHeight(), bgTextPaint);
 	}
 	
-	private void drawFrequencyBackground(Canvas c, float f)
+	private void drawFrequencyBackground(Canvas c, float zeroToOne)
 	{
-		if (minFreq != maxFreq)
+		if (minFreq != maxFreq && mainActivity != null)
 		{
-			c.drawText(""+f+"Hz", (f-minFreq)/freqRange*getWidth(), getHeight()/2.0f, bgTextPaint);
+			c.drawText(""+mainActivity.CalculateFrequencyFromFractionalPosition(zeroToOne)+"Hz", zeroToOne*getWidth(), getHeight()/2.0f, bgTextPaint);
 		}
 	}
 	
@@ -192,10 +195,10 @@ public class VisualTraceView extends TextView {
 		drawVolumeBackground(c, 0.7f);
 		drawVolumeBackground(c, 0.9f);
 		
-		drawFrequencyBackground(c, 30);
-		drawFrequencyBackground(c, 60);
-		drawFrequencyBackground(c, 100);
-		drawFrequencyBackground(c, 130);
+		drawFrequencyBackground(c, 0.1f);
+		drawFrequencyBackground(c, 0.3f);
+		drawFrequencyBackground(c, 0.7f);
+		drawFrequencyBackground(c, 0.9f);
 		
 	}
 	
