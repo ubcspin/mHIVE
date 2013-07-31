@@ -1,5 +1,8 @@
 package org.spin.mhive;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import org.spin.mhive.MainActivity.ScalingMode;
 
 import android.app.DialogFragment;
@@ -7,20 +10,31 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.NumberPicker;
 import android.widget.NumberPicker.OnValueChangeListener;
 import android.widget.RadioButton;
+import android.widget.Spinner;
 
 import com.example.mhive.R;
 
 public class SettingsDialog extends DialogFragment
 {	
-	NumberPicker minFrequencyPicker;
-	NumberPicker maxFrequencyPicker;
+	Spinner minFrequencyPicker;
+	Spinner maxFrequencyPicker;
 	
+	List<Integer> freqValues;
+	
+	ArrayAdapter<Integer> minAdapter;
+	ArrayAdapter<Integer> maxAdapter;
+
 	MainActivity parent;
 	
 	public SettingsDialog()
@@ -35,39 +49,58 @@ public class SettingsDialog extends DialogFragment
 		
 		
 		//FREQUENCY MAX/MIN
-		minFrequencyPicker = (NumberPicker)view.findViewById(R.id.nmbrMinimumFrequency);
-		maxFrequencyPicker = (NumberPicker)view.findViewById(R.id.nmbrMaximumFrequency);
-//		minFrequencyPicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
-//		maxFrequencyPicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
-		
-		
+		minFrequencyPicker = (Spinner)view.findViewById(R.id.nmbrMinimumFrequency);
+		maxFrequencyPicker = (Spinner)view.findViewById(R.id.nmbrMaximumFrequency);
+		Resources res = getResources();
+		int minFreq = res.getInteger(R.integer.MinAllowedFrequencyInHz);
+		int maxFreq = res.getInteger(R.integer.MaxAllowedFrequencyInHz);
+		freqValues = new LinkedList<Integer>();
+		for (int i = minFreq; i <= maxFreq; i+=5)
+		{
+			freqValues.add(i);
+		}
+		minAdapter = new ArrayAdapter<Integer>(view.getContext(), android.R.layout.simple_spinner_item);
+		minAdapter.addAll(freqValues);
+		maxAdapter = new ArrayAdapter<Integer>(view.getContext(), android.R.layout.simple_spinner_item);
+		maxAdapter.addAll(freqValues);
+		minFrequencyPicker.setAdapter(minAdapter);
+		maxFrequencyPicker.setAdapter(maxAdapter);
+		minAdapter.notifyDataSetChanged();
+		maxAdapter.notifyDataSetChanged();
+
+
 		parent = (MainActivity)getActivity();
 		
-		minFrequencyPicker.setOnValueChangedListener(new OnValueChangeListener() {
-							@Override
-							public void onValueChange(NumberPicker picker, int oldVal,
-									int newVal) {
-								parent.setMinFreq(newVal);
-								UpdateFrequencyValues();
-							}});
-		
-		maxFrequencyPicker.setOnValueChangedListener(new OnValueChangeListener() {
-			@Override
-			public void onValueChange(NumberPicker picker, int oldVal,
-					int newVal) {
-				parent.setMaxFreq(newVal);
-				UpdateFrequencyValues();
-			}});
-		
-		Resources res = getResources();
-		minFrequencyPicker.setMinValue(res.getInteger(R.integer.MinAllowedFrequencyInHz));
-		minFrequencyPicker.setMaxValue(res.getInteger(R.integer.MaxAllowedFrequencyInHz));
+		minFrequencyPicker.setOnItemSelectedListener(new OnItemSelectedListener() {
+					@Override
+					public void onItemSelected(AdapterView<?> arg0, View arg1,
+							int arg2, long arg3) {
+						parent.setMinFreq((Integer)minFrequencyPicker.getSelectedItem());
+						UpdateFrequencyValues();							
+					}
 
-		maxFrequencyPicker.setMinValue(res.getInteger(R.integer.MinAllowedFrequencyInHz));
-		maxFrequencyPicker.setMaxValue(res.getInteger(R.integer.MaxAllowedFrequencyInHz));
+					@Override
+					public void onNothingSelected(AdapterView<?> arg0) {
+						UpdateFrequencyValues();							
+					}});
+		
+		maxFrequencyPicker.setOnItemSelectedListener(new OnItemSelectedListener() {
+			@Override
+			public void onItemSelected(AdapterView<?> arg0, View arg1,
+					int arg2, long arg3) {
+				parent.setMaxFreq((Integer)maxFrequencyPicker.getSelectedItem());
+				UpdateFrequencyValues();							
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+				UpdateFrequencyValues();							
+			}});
+
 		
 		UpdateFrequencyValues();
 
+		
 		//FREQUENCY MODE
 		RadioButton radFreqLog = (RadioButton)view.findViewById(R.id.radFrequencyLog);
 		radFreqLog.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -143,8 +176,9 @@ public class SettingsDialog extends DialogFragment
 	
 	private void UpdateFrequencyValues()
 	{
-		minFrequencyPicker.setValue(parent.getMinFreq());
-		maxFrequencyPicker.setValue(parent.getMaxFreq());
+		minFrequencyPicker.setSelection(minAdapter.getPosition(parent.getMinFreq()));
+		maxFrequencyPicker.setSelection(maxAdapter.getPosition(parent.getMaxFreq()));
+
 	}
 	
 }
