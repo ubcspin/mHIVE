@@ -233,6 +233,7 @@ public class HIVEAudioGenerator extends Observable
     		recordingNote.AddRecord(new HapticNoteRecordVisualPoint(currentTime - previousRecordTime, x, y));
     		previousRecordTime = currentTime;
     	}
+		Log("PLAY_XY", new String[] {""+freq, ""+atten, ""+x, ""+y});
 	}
 	
 	public void Stop()
