@@ -429,4 +429,9 @@ public class HIVEAudioGenerator extends Observable
 	public native float cGetADSRSustain();
 	public native int cGetADSRRelease();
 
+	public void Synchronize()
+	{
+		Log("SYNCHRONIZE");
+	}
+
 }

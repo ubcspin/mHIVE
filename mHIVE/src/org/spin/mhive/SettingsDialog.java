@@ -16,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.NumberPicker;
@@ -170,6 +171,14 @@ public class SettingsDialog extends DialogFragment
 		{
 			radAmpExp.setChecked(true);
 		}
+		
+		
+		((Button)view.findViewById(R.id.btnSynchronize)).setOnClickListener(new OnClickListener(){
+							@Override
+							public void onClick(View v) {
+								parent.Synchronize();
+							}
+						});
 		
 		return view;
 	}

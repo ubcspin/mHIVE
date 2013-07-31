@@ -325,6 +325,11 @@ public class MainActivity extends Activity implements Observer {
 		return adsrView.GetADSR();
 	}
     
+	public void Synchronize()
+	{
+		hiveAudioGenerator.Synchronize();
+	}
+	
 	class RecordingButtonCheckedListener implements OnCheckedChangeListener
 	{
 		@Override
