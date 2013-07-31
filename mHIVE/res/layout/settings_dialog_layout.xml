@@ -16,10 +16,10 @@
             android:text="Minimum Frequency:"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
-        <NumberPicker
+        <Spinner
             android:id="@+id/nmbrMinimumFrequency"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content" />
     </LinearLayout>
 
     <LinearLayout
@@ -34,10 +34,10 @@
             android:text="Maximum Frequency:"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
-        <NumberPicker
+        <Spinner
             android:id="@+id/nmbrMaximumFrequency"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content" />
     </LinearLayout>
 
     <TextView 
@@ -45,6 +45,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Frequency Mode"
+        android:textAppearance="?android:attr/textAppearanceLarge"
         />
     
     <RadioGroup
@@ -79,6 +80,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Amplitude Mode"
+        android:textAppearance="?android:attr/textAppearanceLarge"
         />
     
     <RadioGroup

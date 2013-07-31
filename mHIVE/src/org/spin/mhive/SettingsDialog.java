@@ -37,6 +37,9 @@ public class SettingsDialog extends DialogFragment
 		//FREQUENCY MAX/MIN
 		minFrequencyPicker = (NumberPicker)view.findViewById(R.id.nmbrMinimumFrequency);
 		maxFrequencyPicker = (NumberPicker)view.findViewById(R.id.nmbrMaximumFrequency);
+//		minFrequencyPicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+//		maxFrequencyPicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+		
 		
 		parent = (MainActivity)getActivity();
 		
@@ -55,6 +58,13 @@ public class SettingsDialog extends DialogFragment
 				parent.setMaxFreq(newVal);
 				UpdateFrequencyValues();
 			}});
+		
+		Resources res = getResources();
+		minFrequencyPicker.setMinValue(res.getInteger(R.integer.MinAllowedFrequencyInHz));
+		minFrequencyPicker.setMaxValue(res.getInteger(R.integer.MaxAllowedFrequencyInHz));
+
+		maxFrequencyPicker.setMinValue(res.getInteger(R.integer.MinAllowedFrequencyInHz));
+		maxFrequencyPicker.setMaxValue(res.getInteger(R.integer.MaxAllowedFrequencyInHz));
 		
 		UpdateFrequencyValues();
 
@@ -133,13 +143,6 @@ public class SettingsDialog extends DialogFragment
 	
 	private void UpdateFrequencyValues()
 	{
-		Resources res = getResources();
-		minFrequencyPicker.setMinValue(res.getInteger(R.integer.MinAllowedFrequencyInHz));
-		minFrequencyPicker.setMaxValue(res.getInteger(R.integer.MaxAllowedFrequencyInHz));
-
-		maxFrequencyPicker.setMinValue(res.getInteger(R.integer.MinAllowedFrequencyInHz));
-		maxFrequencyPicker.setMaxValue(res.getInteger(R.integer.MaxAllowedFrequencyInHz));
-
 		minFrequencyPicker.setValue(parent.getMinFreq());
 		maxFrequencyPicker.setValue(parent.getMaxFreq());
 	}
