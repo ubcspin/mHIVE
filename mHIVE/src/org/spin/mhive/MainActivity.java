@@ -55,6 +55,10 @@ public class MainActivity extends Activity implements Observer {
     	if (newMinFreq < maxFreq)
     	{
     		minFreq = newMinFreq;
+        	if (mainInputView != null)
+        	{
+        		mainInputView.invalidate();
+        	}
     	}
     }
     public void setMaxFreq(int newMaxFreq)
@@ -62,6 +66,10 @@ public class MainActivity extends Activity implements Observer {
     	if(newMaxFreq > minFreq)
     	{
     		maxFreq = newMaxFreq;
+        	if (mainInputView != null)
+        	{
+        		mainInputView.invalidate();
+        	}
     	}
     }
     
