@@ -108,21 +108,30 @@ public class SettingsDialog extends DialogFragment
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView,
 					boolean isChecked) {
-				parent.SetFrequencyMode(ScalingMode.LOG);
+				if(isChecked)
+				{
+					parent.SetFrequencyMode(ScalingMode.LOG);
+				}
 			}});
 		RadioButton radFreqLinear = (RadioButton)view.findViewById(R.id.radFrequencyLinear);
 		radFreqLinear.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView,
 					boolean isChecked) {
-				parent.SetFrequencyMode(ScalingMode.LINEAR);
+				if(isChecked)
+				{
+					parent.SetFrequencyMode(ScalingMode.LINEAR);
+				}
 			}});
 		RadioButton radFreqExp = (RadioButton)view.findViewById(R.id.radFrequencyExp);
 		radFreqExp.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView,
 					boolean isChecked) {
-				parent.SetFrequencyMode(ScalingMode.EXP);
+				if(isChecked)
+				{
+					parent.SetFrequencyMode(ScalingMode.EXP);
+				}
 			}});
 		
 		if(parent.GetFrequencyMode() == ScalingMode.LOG)
@@ -144,21 +153,30 @@ public class SettingsDialog extends DialogFragment
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView,
 					boolean isChecked) {
-				parent.SetAmplitudeMode(ScalingMode.LOG);
+				if(isChecked)
+				{
+					parent.SetAmplitudeMode(ScalingMode.LOG);
+				}
 			}});
 		RadioButton radAmpLinear = (RadioButton)view.findViewById(R.id.radAmplitudeLinear);
 		radAmpLinear.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView,
 					boolean isChecked) {
-				parent.SetAmplitudeMode(ScalingMode.LINEAR);
+				if(isChecked)
+				{
+					parent.SetAmplitudeMode(ScalingMode.LINEAR);
+				}
 			}});
 		RadioButton radAmpExp = (RadioButton)view.findViewById(R.id.radAmplitudeExp);
 		radAmpExp.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView,
 					boolean isChecked) {
-				parent.SetAmplitudeMode(ScalingMode.EXP);
+				if(isChecked)
+				{
+					parent.SetAmplitudeMode(ScalingMode.EXP);
+				}
 			}});
 
 		if(parent.GetAmplitudeMode() == ScalingMode.LOG)
