@@ -41,6 +41,21 @@ typedef struct
 //TODO: Make this local!
 ADSRSettings *gADSRSettings;
 
+//Recording data
+typedef struct
+{
+	float *buffer;
+	unsigned long pos;
+	jboolean recording;
+	sem_t sem;
+} RecordingData;
+//TODO: Make this local as well
+RecordingData *gRecordingData;
+const long RECORDING_BUFFER_SIZE_IN_SECONDS=60;
+const long RECORDING_BUFFER_SIZE_IN_SAMPLES=0;
+FMOD_DSP	 *gRecordingDSP   = 0;
+
+
 //Waveform data
 const long OSCILLATOR_SINE = 0;
 const long OSCILLATOR_SQUARE = 1;
@@ -70,6 +85,58 @@ long GetCurrentTimeMillis()
 	long millis = curTime.tv_sec * 1000 + curTime.tv_usec / 1000;
 	return millis;
 }
+
+void InitializeRecordingData()
+{
+    if(gRecordingData->buffer != NULL)
+    {
+    	free(gRecordingData->buffer);
+    }
+	gRecordingData->buffer=(float*)malloc(sizeof(float)*RECORDING_BUFFER_SIZE_IN_SAMPLES);
+    gRecordingData->pos=0;
+    gRecordingData->recording=JNI_FALSE;
+}
+
+
+FMOD_RESULT F_CALLBACK DSPRecord(FMOD_DSP_STATE *dsp_state, float *inbuffer, float *outbuffer, unsigned int length, int inchannels, int outchannels)
+{
+    unsigned int count;
+    int count2;
+    FMOD_DSP *thisdsp = dsp_state->instance;
+
+	sem_wait(&(gRecordingData->sem));
+
+    /*
+        This loop assumes inchannels = outchannels, which it will be if the DSP is created with '0'
+        as the number of channels in FMOD_DSP_DESCRIPTION.
+        Specifying an actual channel count will mean you have to take care of any number of channels coming in,
+        but outputting the number of channels specified.  Generally it is best to keep the channel
+        count at 0 for maximum compatibility.
+    */
+    for (count = 0; count < length; count++)
+    {
+        /*
+            Feel free to unroll this.
+        */
+        for (count2 = 0; count2 < outchannels; count2++)
+        {
+            /*
+                This DSP stores the output
+            */
+            outbuffer[(count * outchannels) + count2] = inbuffer[(count * inchannels) + count2];
+            if(gRecordingData->pos <RECORDING_BUFFER_SIZE_IN_SAMPLES)
+			{
+				gRecordingData->buffer[gRecordingData->pos++] = outbuffer[(count * outchannels) + count2];
+			}
+        }
+    }
+
+	sem_post(&(gRecordingData->sem));
+
+    return FMOD_OK;
+}
+
+
 
 FMOD_RESULT F_CALLBACK ADSRCallback(FMOD_DSP_STATE *dsp_state, float *inbuffer, float *outbuffer, unsigned int length, int inchannels, int outchannels)
 {
@@ -189,11 +256,34 @@ void Java_org_spin_mhive_HIVEAudioGenerator_cBegin(JNIEnv *env, jobject thiz)
 
 	result = FMOD_System_CreateDSP(gSystem, &dspdesc, &gADSRDSP);
 	CHECK_RESULT(result);
-//		Inactive by default.
+	//		Inactive by default.
 	//FMOD_DSP_SetBypass(gADSRDSP, 1);
-//		Add to system
+	//		Add to system
 	result = FMOD_System_AddDSP(gSystem, gADSRDSP, 0);
 	CHECK_RESULT(result);
+
+
+//add in recording DSP
+    gRecordingData = (RecordingData*)malloc(sizeof(RecordingData));
+	gRecordingData->buffer = NULL;
+	InitializeRecordingData();
+	sem_init(&(gRecordingData->sem), 0, 1);
+
+	FMOD_DSP_DESCRIPTION  recording_dspdesc;
+	memset(&recording_dspdesc, 0, sizeof(FMOD_DSP_DESCRIPTION));
+	strcpy(recording_dspdesc.name, "Capture Output");
+	recording_dspdesc.channels     = 0;                   // 0 = whatever comes in, else specify.
+	recording_dspdesc.read         = DSPRecord;
+	recording_dspdesc.userdata     = NULL;
+
+	result = FMOD_System_CreateDSP(gSystem, &recording_dspdesc, &gRecordingDSP);
+	CHECK_RESULT(result);
+//		Inactive by default.
+	//FMOD_DSP_SetBypass(gRecordingDSP, 1);
+//		Add to system
+	result = FMOD_System_AddDSP(gSystem, gRecordingDSP, 0);
+	CHECK_RESULT(result);
+
 
     /* Play */
 	result = FMOD_System_PlayDSP(gSystem, FMOD_CHANNEL_REUSE, gDSP, 1, &gChannel);
@@ -212,11 +302,18 @@ void Java_org_spin_mhive_HIVEAudioGenerator_cEnd(JNIEnv *env, jobject thiz)
 {
 	FMOD_RESULT result = FMOD_OK;
 
+	//TODO: free the RecordingDSP
 	result = FMOD_DSP_Release(gADSRDSP);
 	CHECK_RESULT(result);
 	free(gADSRDSP);
+	if(gRecordingData->buffer != NULL)
+	{
+		free(gRecordingData->buffer);
+	}
 	sem_destroy(&(gADSRSettings->sem));
+	sem_destroy(&(gRecordingData->sem));
 	free(gADSRSettings);
+	free(gRecordingData);
 
     result = FMOD_DSP_Release(gDSP);
     CHECK_RESULT(result);
@@ -373,4 +470,27 @@ jlong Java_org_spin_mhive_HIVEAudioGenerator_cGetADSRRelease(JNIEnv *env, jobjec
 	return 0;
 }
 
+
+
+jboolean Java_org_spin_mhive_HIVEAudioGenerator_cStartRecording(JNIEnv *env, jobject thiz)
+{
+	sem_wait(&(gRecordingData->sem));
+	InitializeRecordingData();
+	gRecordingData->recording = JNI_TRUE;
+
+	sem_post(&(gRecordingData->sem));
+	return JNI_FALSE;
+}
+
+jboolean Java_org_spin_mhive_HIVEAudioGenerator_cStopRecording(JNIEnv *env, jobject thiz)
+{
+	sem_wait(&(gRecordingData->sem));
+
+	gRecordingData->recording = JNI_FALSE;
+	free(gRecordingData->buffer);
+	gRecordingData->buffer = NULL;
+
+	sem_post(&(gRecordingData->sem));
+	return JNI_FALSE;
+}
 
