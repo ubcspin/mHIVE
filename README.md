@@ -1,6 +1,8 @@
 # mHIVE
 mHIVE is a mobile Haptic Instrument for Vibrotactile Exploration, an Android application that enables rapid prototyping of haptic feedback.
 
+mHIVE is part of the Haptic Jazz project: http://oliverschneider.ca/haptic-jazz/
+
 ## Author
 mHIVE is created and maintained by [Oliver Schneider](oschneid@cs.ubc.ca); contact him at oschneid@cs.ubc.ca if you have any questions.
 
